@@ -1,0 +1,46 @@
+<div class="bg-light border-right" id="sidebar-wrapper">
+  <div class="sidebar-heading">Dashboard</div>
+  <div class="list-group list-group-flush">
+      <div class="list-group-item disabled">Simulations</div>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'dashboard:submit' %}">
+        <i class="fa fa-solid fa-truck-monster"></i>
+        <span>Submit</span>
+      </a>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'dashboard:carto' %}">
+        <i class="fa fa-solid fa-map"></i>
+        <span>Cartography layer</span>
+      </a>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'dashboard:sim_view' %}">
+        <i class="fa fa-solid fa-database"></i>
+        <span>Results database</span>
+      </a>
+
+      <div class="list-group-item disabled">MTS</div>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'mtsdata:mts_view' %}">
+        <i class="fa fa-solid fa-chart-line"></i>
+        <span>Dataset</span>
+      </a>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'mtsdata:mts_clu' %}">
+        <i class="fa fa-solid fa-map"></i>
+        <span>Cluster</span>
+      </a>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'mtsdata:mts_rank' %}">
+        <i class="fas fa-cubes"></i>
+        <span>Validation/Ranking</span>
+      </a>
+      <!-- 
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'mtsdata:mts_forecast' %}">
+      <i class="fas fa-binoculars"></i>
+      <span>Forecast/Local Anomaly</span>
+      </a> 
+      -->
+
+      <!--
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'comingsoon' %}">Coils</a>
+      <a class="list-group-item list-group-item-action bg-light" href="{% url 'comingsoon' %}">Tim O/D Data</a>
+      <a class="list-group-item list-group-item-action bg-light" href="#!">Events</a>
+      <a class="list-group-item list-group-item-action bg-light" href="#!">Profile</a>
+      <a class="list-group-item list-group-item-action bg-light" href="#!">Status</a>
+      -->
+  </div>
+</div>

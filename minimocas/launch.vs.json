@@ -1,0 +1,19 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "name": "debug minitest",
+      "type": "default",
+      "project": "${env.WORKSPACE}\\minimocas\\bin\\DEBUG\\minitest.exe",
+      "args": [ "${env.USERPROFILE}\\Desktop\\monicaforever\\estrai_bologna\\mini.json" ]
+    },
+    {
+      "name": "debug multiscale",
+      "type": "default",
+      "project": "${env.WORKSPACE}\\minimocas\\bin\\DEBUG\\multiscale.exe",
+      //"args": [ "${env.USERPROFILE}\\Telecom\\multiscale\\venice.json" ]
+      "args": [ "${env.USERPROFILE}\\Desktop\\bla\\venice.json" ]
+    }
+  ]
+}

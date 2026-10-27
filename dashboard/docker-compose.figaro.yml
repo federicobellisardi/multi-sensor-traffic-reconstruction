@@ -1,0 +1,64 @@
+# build image with with
+# > docker-compose build
+# create and run container with
+# > docker-compose up -d slides_ws
+# create and run container with .env
+# > docker-compose -f docker-compose.prod.yml --project-name "mover" up --build -d
+
+version: '3.4'
+
+services:
+
+  sim_ws:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    environment:
+      - TZ=Europe/Rome
+      - WORKERS_PER_CORE=1
+      - MAX_WORKERS=3
+      - TIMEOUT=300
+      - HOST=0.0.0.0
+      - PORT=80
+    ports:
+      - 11001:80
+    volumes:
+      -  /data01/mover/data:/data
+      -  /data01/mover/sync_sim:/output
+
+  gui:
+    build:
+      context: ./django
+      dockerfile: Dockerfile
+    env_file:
+      - .env.prod
+    volumes:
+      - static_volume:/code/staticfiles
+      - /data01/mover/data:/data
+    depends_on:
+      - sim_ws
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 11003:80
+      - 11000:443
+    volumes:
+      - static_volume:/staticfiles
+
+  crono:
+    build:
+      context: ./crono
+      dockerfile: Dockerfile
+    image: crono_image
+    environment:
+      - TZ=Europe/Rome
+    ports:
+      - 11004:8000
+    volumes:
+      - /data01/mover/data:/data
+
+volumes:
+  static_volume:

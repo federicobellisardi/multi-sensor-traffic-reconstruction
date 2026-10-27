@@ -1,32 +1,54 @@
-# proprietary or bulky inputs (mobile-phone OD, Viasat GPS, simulation archives)
-data/
-cache/
-vars/
-results/*
-!results/revision/
-results/revision/link_metrics_*.csv
-python/cache/
-python/*.html
-ipynb/od.ipynb
-ipynb/stat_test.ipynb
-ipynb/track_viasat.ipynb
-ipynb/regenerate_figures_04_clustering_executed.ipynb
-ipynb/figures_incident_risk/*.pdf
-ipynb/figures_incident_risk/high_risk_anomaly_links.csv
-# LaTeX build products
-tex/*.aux
-tex/*.bbl
-tex/*.blg
-tex/*.fdb_latexmk
-tex/*.fls
-tex/*.log
-tex/*.out
-tex/*.synctex.gz
-tex/mover_*.pdf
-tex/sn-article-template/
-tex/images/*.pdf
-!tex/images/model_scheme.pdf
-tex/images/incidents_2020/
-tex/images/validation_20*/
+# Work folder
+build*/
+work_*/
+.vscode/
+*.docx
+*.geojson
+
+# Debug
+bin/
 __pycache__/
-python/revision/loo/work/
+
+# Build e local files
+vars/templates/sim_template.json
+vars/templates/check_template.json
+vars/data
+vars/conf/config.json
+
+# Runtime data file
+od-average-holidays.csv
+od-average-weekdays.csv
+*.zip
+
+## dashboard
+gui.log
+*.sqlite3
+dashboard/django/venv
+dashboard/fastapi/venv
+dashboard/logs
+dashboard/django/gui/static/sim_result
+dashboard/django/gui/staticfiles
+
+## Repository hygiene (multi-sensor-traffic-reconstruction)
+# credentials: never commit
+.env*
+!.env.example
+**/.ssh/
+*.pem
+*_rsa
+*_rsa.pub
+# proprietary and large data (TIM, Viasat, raw GPS), local caches and environments
+data/
+article/
+paper/
+MCF/
+.venv/
+.agents/
+declaratoria_tesi-signed.pdf
+research/datasets/raw/
+.gitmodules
+
+# internal working notes (local only)
+article1/PLAN.md
+article1/reports/original_brief.txt
+research/PROGRESS.md

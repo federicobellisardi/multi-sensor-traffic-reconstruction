@@ -1,0 +1,71 @@
+# build image with with
+# > docker-compose build
+# create and run container with
+# > docker-compose up -d gui
+# > docker-compose up -d sim_ws
+# create and run container with .env
+# > docker compose --env-file .env.prod -f docker-compose.prod.yml --project-name "mover" up --build -d
+
+version: '3.4'
+
+services:
+
+  sim_ws:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    image: simws_image
+    environment:
+      - TZ=Europe/Rome
+      - WORKERS_PER_CORE=1
+      - MAX_WORKERS=3
+      - TIMEOUT=300
+      - HOST=0.0.0.0
+      - PORT=80
+    ports:
+      - 21001:80
+    volumes:
+      - ../data:/data
+
+  gui:
+    build:
+      context: ./django
+      dockerfile: Dockerfile
+    image: gui_django_image
+    env_file:
+      - .env.prod
+    command: python manage.py runserver 0.0.0.0:8000 --insecure
+    ports:
+      - 21002:8000
+    volumes:
+      - static_volume:/code/staticfiles  
+      - ../data:/data
+
+    depends_on:
+      - sim_ws
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 21000:80
+      - 21003:443
+    volumes:
+      - static_volume:/staticfiles
+
+  crono:
+    build:
+      context: ./crono
+      dockerfile: Dockerfile
+    image: crono_image
+    environment:
+      - TZ=Europe/Rome
+    ports:
+      - 21004:8000
+    volumes:
+      - ../data:/data
+
+
+volumes:
+  static_volume:

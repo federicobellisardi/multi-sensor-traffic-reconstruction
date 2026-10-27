@@ -1,0 +1,370 @@
+language: cpp
+
+matrix:
+  include:
+
+   - os: osx
+     compiler: gcc
+     name: macOS - gcc@5
+     env:
+       - MATRIX_EVAL="brew update && brew install gcc@5 fltk freeglut && brew upgrade cmake && CC=gcc-5 && CXX=g++-5"
+       - EXTRA_CMAKE_SETTINGS=""
+       - INSTALL_BOOST=""
+
+    - os: osx
+      compiler: gcc
+      name: macOS - native gcc (llvm backend)
+      env:
+        - MATRIX_EVAL="brew update && brew install fltk freeglut && brew upgrade cmake"
+        - EXTRA_CMAKE_SETTINGS=""
+        - INSTALL_BOOST=""
+
+    - os: osx
+      compiler: clang
+      name: macOS - native clang
+      env:
+        - MATRIX_EVAL="brew update && brew install fltk freeglut && brew upgrade cmake"
+        - EXTRA_CMAKE_SETTINGS=""
+        - INSTALL_BOOST=""
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - native clang
+      addons:
+        apt:
+          update: true
+          packages:
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL=""
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@3.6
+      addons:
+        apt:
+          update: true
+          packages:
+            - clang-3.6
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@3.8
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-3.8
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-3.8
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@3.9
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-3.9
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-3.9
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@4.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-4.0
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-4.0
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@5.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-5.0
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-5.0
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@6.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-6.0
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-6.0
+            - libc++-dev
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - EXTRA_CMAKE_SETTINGS="-DFORCE_LLVM_CPP_STDLIB=TRUE -DBOOST_ROOT:PATHNAME=/home/travis/boost -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_clang.sh"
+
+   - os: linux
+     compiler: gcc
+     name: ubuntu - native gcc
+     addons:
+       apt:
+         update: true
+         packages:
+           - libfltk1.3-dev
+           - freeglut3-dev
+           - libgl1-mesa-dev
+           - libglu1-mesa-dev
+           - libxinerama-dev
+           - libjpeg-dev
+           - libxi-dev
+           - libxmu-dev
+           - libsqlite3-dev
+     env:
+       - MATRIX_EVAL=""
+       - EXTRA_CMAKE_SETTINGS="-DBOOST_ROOT:PATH=/home/travis/boost -DBOOST_INCLUDEDIR:PATH=/home/travis/boost/include -DBOOST_LIBRARYDIR:PATH=/home/travis/boost/lib -DBoost_NO_BOOST_CMAKE=TRUE"
+       - INSTALL_BOOST="./install_boost_gcc.sh"
+
+   - os: linux
+     compiler: gcc
+     name: ubuntu - gcc@4.9
+     addons:
+       apt:
+         update: true
+         sources:
+           - ubuntu-toolchain-r-test
+         packages:
+           - g++-4.9
+           - libfltk1.3-dev
+           - freeglut3-dev
+           - libgl1-mesa-dev
+           - libglu1-mesa-dev
+           - libxinerama-dev
+           - libjpeg-dev
+           - libxi-dev
+           - libxmu-dev
+           - libsqlite3-dev
+     env:
+       - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9 && AR=gcc-ar-4.9 && RANLIB=gcc-ranlib-4.9"
+       - EXTRA_CMAKE_SETTINGS="-DBOOST_ROOT:PATH=/home/travis/boost -DBOOST_INCLUDEDIR:PATH=/home/travis/boost/include -DBOOST_LIBRARYDIR:PATH=/home/travis/boost/lib -DBoost_NO_BOOST_CMAKE=TRUE"
+       - INSTALL_BOOST="./install_boost_gcc.sh"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@5.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && AR=gcc-ar-5 && RANLIB=gcc-ranlib-5"
+        - EXTRA_CMAKE_SETTINGS="-DBOOST_ROOT:PATH=/home/travis/boost -DBOOST_INCLUDEDIR:PATH=/home/travis/boost/include -DBOOST_LIBRARYDIR:PATH=/home/travis/boost/lib -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_gcc.sh"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@6.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6 && AR=gcc-ar-6 && RANLIB=gcc-ranlib-6"
+        - EXTRA_CMAKE_SETTINGS="-DBOOST_ROOT:PATH=/home/travis/boost -DBOOST_INCLUDEDIR:PATH=/home/travis/boost/include -DBOOST_LIBRARYDIR:PATH=/home/travis/boost/lib -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_gcc.sh"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@7.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && AR=gcc-ar-7 && RANLIB=gcc-ranlib-7"
+        - EXTRA_CMAKE_SETTINGS="-DBOOST_ROOT:PATH=/home/travis/boost -DBOOST_INCLUDEDIR:PATH=/home/travis/boost/include -DBOOST_LIBRARYDIR:PATH=/home/travis/boost/lib -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_gcc.sh"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@8.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+            - libfltk1.3-dev
+            - freeglut3-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libxinerama-dev
+            - libjpeg-dev
+            - libxi-dev
+            - libxmu-dev
+            - libsqlite3-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && AR=gcc-ar-8 && RANLIB=gcc-ranlib-8"
+        - EXTRA_CMAKE_SETTINGS="-DBOOST_ROOT:PATH=/home/travis/boost -DBOOST_INCLUDEDIR:PATH=/home/travis/boost/include -DBOOST_LIBRARYDIR:PATH=/home/travis/boost/lib -DBoost_NO_BOOST_CMAKE=TRUE"
+        - INSTALL_BOOST="./install_boost_gcc.sh"
+
+  allow_failures:
+    - name: macOS - gcc@5.0      # fatal error: _stdio.h: No such file or directory
+    - name: ubuntu - native gcc
+    - name: ubuntu - gcc@4.9
+
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+  - git clone https://github.com/physycom/sysconfig.git
+  - export WORKSPACE=$(pwd)
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget --no-check-certificate https://cmake.org/files/v3.12/cmake-3.12.2-Linux-x86_64.tar.gz       ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar -xzf cmake-3.12.2-Linux-x86_64.tar.gz                                                        ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export PATH=$PWD/cmake-3.12.2-Linux-x86_64/bin:$PATH                                             ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc"* ]]; then mkdir -p latest-gcc-symlinks                                                  ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc"* ]]; then ln -s /usr/bin/$CXX latest-gcc-symlinks/g++                                   ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc"* ]]; then ln -s /usr/bin/$CC  latest-gcc-symlinks/gcc                                   ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc"* ]]; then export PATH=$PWD/latest-gcc-symlinks:$PATH                                    ;fi
+
+
+install:
+  - travis_wait 45 ${INSTALL_BOOST}
+  - mkdir build && cd build
+
+script:
+  - cmake .. ${EXTRA_CMAKE_SETTINGS} && cmake --build .

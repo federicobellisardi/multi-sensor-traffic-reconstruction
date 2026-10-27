@@ -1,0 +1,20 @@
+{
+  ///// cartography setup
+  "file_pro"          : "$ENV{WORKSPACE}/covid_hep/vars/carto/er-main.pro",
+  "file_pnt"          : "$ENV{WORKSPACE}/covid_hep/vars/carto/er-main.pnt",
+  "file_barrier"      : "$ENV{WORKSPACE}/covid_hep/vars/extra/er_barriers.csv",
+
+  "carto_cell_side"   : 10000,
+  "state_grid_cell_m" : 1000,
+
+  ////// functionalities
+  "enable_geojson"    : false,                 // grid spec geojson output
+  "enable_cid_dump"   : false,                 // write a json containing poly cids next to cams
+  "enable_gui"        : true,                  // fltk gui
+  "frame_per_dt"      : 1,                     // control speed of animation
+
+  ///// simulation parameters
+  "sampling_dt"       : 600,
+  "sampling_graphics" : 20,
+  "dt"                : 60
+}

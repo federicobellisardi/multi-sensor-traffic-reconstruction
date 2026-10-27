@@ -1,0 +1,2 @@
+00 2 25 * * /usr/local/bin/python /app/get-coils-api.py
+30 2 25 * * chown -R 1000:1000 /data

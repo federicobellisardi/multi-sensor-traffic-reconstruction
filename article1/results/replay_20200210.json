@@ -1,0 +1,23 @@
+{
+  "date": "2020-02-10",
+  "same_directed_link_keys": true,
+  "same_hourly_columns": true,
+  "identical_counts": false,
+  "archive_total_link_counts": 34334965,
+  "replay_total_link_counts": 33361561,
+  "mean_absolute_cell_difference": 43.29825609173435,
+  "max_absolute_cell_difference": 71547.0,
+  "nonidentical_cell_fraction": 0.8880046583850931,
+  "input_sha256": {
+    "work_viasat/sim2020/uniq/sim_230330113558146127.json": "88786f9739405c1190201759bcb214bfbde08444983085052b2399154fbc54e4",
+    "article1/work/repro_20200210/20200210.json": "04fcd2fa4d0ae70039bb7aa3f391539a3365368038c50e48f844b6217e8d5257",
+    "bin/pysim.cpython-312-x86_64-linux-gnu.so": "b9598daf20bbe94d9039895eab58affd8729d20e650fc0dd0d0e232b45e0fd6f",
+    "article/python/revision/rerun/work/ws/covid_hep/vars/carto/er-speed.pro": "bdae1bc5514cc428dff49fdcaf9a14e040db3fdbf68c9b18c1b097f92c128292",
+    "article/python/revision/rerun/work/ws/covid_hep/vars/carto/er-speed.pnt": "5ad83bf389cd13c7a3ca72b0aa3a798ae71901aa7ae513e7051e01d7072bd6a3",
+    "article/python/revision/rerun/work/ws/covid_hep/vars/extra/er_barriers.csv": "421323a6bbc9f40869b07abb10f519f6f284b110957ed3634c562b252ca4b1fd",
+    "article/python/revision/rerun/work/ws/covid_hep/vars/extra/ace_score.csv": "09e635bca49e3cd608e7d2b8fb7ae94e9faa2793cd22dce13fa8783be95cbb10",
+    "article/python/revision/rerun/work/ws/covid_hep/vars/extra/noturn.csv": "72b534c0afc4a43872ebe8c06f878c780bc66a210ab03f79a1c51e7c7c5ad08c"
+  },
+  "interpretation": "Executable completed; historical reproducibility is determined by identical_counts. Audit binary/source/network/input compatibility before promoting reruns.",
+  "elapsed_seconds": 607
+}

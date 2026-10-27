@@ -1,0 +1,96 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block header_script %}
+<!-- Bootstrap core JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+{% endblock header_script %}
+
+{% block main %}
+<div class="container-fluid">
+  <h1 class="mt-4">MTS Cluster</h1>
+  <p>Explanation...</p>
+  <div id="mymap" class="mb-5" style="height: 700px;"></div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- map plot code -->
+<script>
+  var southWest = L.latLng(43.748822, 9.201408),
+      northEast = L.latLng(45.127953, 12.749101),
+      bounds = L.latLngBounds(southWest, northEast);
+
+  var mymap = L.map('mymap', {
+    center: [45,11],
+  });
+  mymap.fitBounds(bounds);
+
+  // tile layers
+  var sat_tile = new L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution: "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.",
+      detectRetina: false, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false
+    }
+  );
+
+  var map_tile = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+  );
+  map_tile.addTo(mymap);
+
+  var tile_layers = {
+    Satellite:sat_tile,
+    OpenStreetMap:map_tile,
+  };
+
+  // vector layers
+  {% if geodata %}
+  var vecdata = {{ geodata.data | safe }}
+  {% endif %}
+
+  layers = {}
+  vec_layers = {}
+  lbllay = L.layerGroup();
+  for (const [key, value] of Object.entries(vecdata)) {
+    var lay = L.layerGroup().addTo(mymap);
+    value.data.forEach(function (item, index) {
+      var pt = L.circleMarker([item[0][0], item[0][1]], {color:'blue', radius:1}).addTo(lay);
+      var pt = L.marker([item[0][0], item[0][1]],
+        {
+          icon: L.divIcon({
+            className: "empty",
+            html: item[1],
+          })
+        }
+      ).addTo(lay);
+      var pt = L.marker([item[0][0], item[0][1]],
+        {
+          icon: L.divIcon({
+            className: "empty",
+            html: '<svg height="50" width="100"> <text x="10" y="20" style="font-size:12px">' + item[2] + '</text> </svg>',
+          })
+        }
+      ).addTo(lbllay);
+
+    })
+    vec_layers['<span style="color:' + value.color + ';">' + key + '</span>'] = lay
+  }
+  vec_layers['labels'] = lbllay
+
+  var opt_layers = {
+    collapsed: false,
+    autoZIndex: false,
+  }
+
+  L.control.layers(tile_layers, vec_layers, opt_layers).addTo(mymap);
+
+</script>
+{% endblock %}
+

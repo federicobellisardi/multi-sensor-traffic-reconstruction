@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+<body>
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar-->
+    {% include 'navbar.html' %}
+
+    <!-- Page Content-->
+    <div id="page-content-wrapper">
+      {% include 'topbar.html' %}
+
+      {% block main %}
+      {% endblock main %}
+
+      <!-- Footer -->
+      <footer class="py-2 bg-light mt-auto">
+          <div class="container-fluid">
+              <div class="d-flex align-items-center justify-content-between small">
+                  <div class="text-muted">Copyright &copy; physycom 2021</div>
+              </div>
+          </div>
+      </footer>
+    </div>
+  </div>
+</body>
+
+{% endblock body %}
+

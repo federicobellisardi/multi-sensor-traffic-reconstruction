@@ -1,0 +1,262 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block header_script %}
+<!-- Bootstrap core JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.en-GB.min.js" charset="UTF-8"></script>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.hr.min.js" charset="UTF-8"></script>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.it.min.js" charset="UTF-8"></script>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.it-CH.min.js" charset="UTF-8"></script>
+<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.uk.min.js" charset="UTF-8"></script>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+
+<style>
+  .label, label.inline {
+    display: inline-block;
+    width: 80px;
+  }
+</style>
+{% endblock header_script %}
+
+{% block main %}
+<div class="container-fluid">
+  <h1 class="mt-4">Simulation</h1>
+  <p>Select your parameters and perform a simulation</p>
+
+
+  <div class="card shadow mb-4">
+    {% csrf_token %}
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Console</h6>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <label for="datepicker" class="label">Date</label>
+          <input id="datepicker" style="text-align: right">
+          <br>
+          <label for="startpicker" class="label">Start Time</label>
+          <input id="startpicker" class="timepicker" value="02:00:00" style="text-align: right">
+          <br>
+          <label for="stoppicker" class="label">Stop Time</label>
+          <input id="stoppicker" class="timepicker" value="03:30:00" style="text-align: right">
+        </div>
+        <div class="col d-sm-flex align-items-center justify-content-right">
+          <h3 id="statusText">Status: idle</h3>
+        </div>
+        <div class="col d-sm-flex align-items-center justify-content-right" id="user_buttons">
+          <button id="post_long_task" class="btn btn-lg btn-primary mr-2 float-right" onclick="submit_sim()">Run</button>
+          <a id="download_json" href="" download class="btn btn-lg btn-danger mr-2 float-right" hidden>Download JSON</a>
+          <a id="download_csv" href="" download class="btn btn-lg btn-danger mr-2 float-right" hidden>Download CSV</a>
+
+          <button id="resync_prog" class="btn btn-lg btn-warning mr-2 float-right">Resync</button>
+        </div>
+      </div>
+      <div id="probar" hidden>
+        <h4 class="font-weight-bold mt-4" >
+          <span id="task_label">No task</span>
+          <span id="task_percentage" class="float-right"></span>
+        </h4>
+        <div class="progress mb-4">
+          <div id="tast_progress" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+
+      <div class="col" hidden id="results">
+        Simulation results visualization and download available at : <a href="" id="simulation_url">link</a>.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="text-center p-3 mb-5" style="background-color: rgba(0, 0, 0, 0.1);">
+    Engine version: <b>{{ engine_ver }}</b>
+  </div>
+
+</div>
+
+
+{% endblock main %}
+
+{% block script %}
+  <!-- Core theme JS-->
+  <script src="{% static 'js/scripts.js' %}"></script>
+  <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+  <script>
+    var updateTimeout;
+    var task_url = '';
+    var user_start = '';
+
+    function startTimeout() {
+      updateTimeout = setInterval(updateProgress, 1000);
+    }
+
+    function stopTimeout() {
+      //console.log('timeout stopped')
+      clearTimeout(updateTimeout);
+    }
+
+    // recursive loop for status request to api
+    function updateProgress(){
+      jQuery.ajax({
+        url: task_url,
+        success: function(data){
+          //console.log(data)
+          status = data["status"];
+
+          if(status != "invalid sim_uid"){
+            elapsed = data["elapsed"];
+            completion = data["completion"];
+            sim_uid = data['sim_uid'];
+
+            // fai le cose da fare alla fine del ciclo
+            if (completion == 1) {
+              results = data["data"];
+              $("#tast_progress").attr("class","progress-bar bg-success");
+              $('#statusText').html('Status : done')
+
+              $('#download_csv').removeAttr('hidden');
+              // $('#download_csv').attr("href", "/static/sim_result/sim_" + sim_uid + '.csv');
+              $('#download_csv').attr("href", "/simulations/result/" + sim_uid);
+
+              //$('#download_json').removeAttr('hidden');
+              //$('#download_json').attr("href", "/static/sim_result/sim_" + sim_uid + '.csv'); // TODO: fix for JSON
+
+              $("#results").removeAttr("hidden");
+              simdetail_url = "{% url 'dashboard:simuid_detail' sim_uid=None %}";
+              simdetail_url = simdetail_url.replace("None", sim_uid);
+              $("#simulation_url").attr("href", simdetail_url);
+              stopTimeout();
+            }
+            else {
+              if(completion==0) {
+                $('#statusText').html('Status : sim init')
+              }
+              else {
+                $('#statusText').html('Status : running (' + elapsed + 's)')
+              }
+            }
+            $("#tast_progress").attr("style","width: " + Math.floor(completion*100) + "%");
+            $("#task_percentage").html(Math.floor(completion*100) + "%");
+          } else {
+            $('#statusText').html('Error : ' + status)
+            $('#task_label').html('Please reload the page')
+          }
+        }
+      })
+    }
+
+    // submit simulation to api url
+    function submit_sim(){
+      date = $("#datepicker").val()
+      start = $("#startpicker").val()
+      stop = $("#stoppicker").val()
+      $("#task_percentage").html("");
+      $("#tast_progress").attr("class","progress-bar bg-warning");
+      $("#tast_progress").attr("style","width: 0%");
+      $('#statusText').html('Status : submitting sim...')
+      $('#task_label').html('')
+      $('#probar').removeAttr('hidden');
+      $('#results').attr('hidden', true);
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'dashboard:sim_forward' %}",
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        data: JSON.stringify({
+          "start_date"  : date + " " + start,
+          "stop_date"   : date + " " + stop,
+          "sampling_dt" : 3600,
+        }),
+        success: function(response){
+          console.log(response)
+          error = response['error']
+          if ( error == null ) {
+            $('#statusText').html('Status : sim submitted!')
+            $('#task_label').html('Simulation (uid ' + response['sim_uid'] + ') progress:')
+            $("#task_percentage").html("0%");
+            // console.log('data: ' + response['sim_uid']);
+            task_url = response['status_url'];
+            user_start = response['user_start'];
+            // console.log(response);
+            startTimeout()
+          }
+          else {
+            console.log(error)
+            $('#statusText').html('Status : ERROR')
+            $('#task_label').html('Failed : ' + error)
+          }
+        },
+        error: function(html){
+          $('#statusText').html('Status : ERROR')
+          $('#task_label').html('Failed: check sim-app')
+          $('#post_long_task').prop("disabled",true)
+
+        }
+      })
+    }
+
+    function get_cookies() {
+      cookies = document.cookie.split('; ').reduce((prev, current) => {
+        const [name, ...value] = current.split('=');
+        prev[name] = value.join('=');
+        return prev;
+      }, {});
+      // console.log(document.cookie)
+      // console.log(cookies)
+      // console.log(cookies['cookie-sim_uid'])
+
+      var ctuid = cookies['cookie-sim_uid'];
+      return ctuid;
+    }
+
+    $(document).on('click', '#resync_prog', function(e){
+      e.preventDefault();
+      ctuid = get_cookies();
+      if (ctuid) {
+        $('#probar').removeAttr('hidden');
+        $("#task_label").text("Task " + ctuid);
+        task_url = "{% url 'dashboard:sim_status' sim_uid='AAAA' %}".replace('AAAA', ctuid)
+        //console.log(task_url)
+        startTimeout()
+      }
+    });
+
+    // date and time picker options
+    $('#datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+    }).datepicker("setDate", new Date());
+
+    $('input.timepicker').timepicker({
+      timeFormat: 'HH:mm:ss',
+      interval: 15,
+      dynamic: false,
+      dropdown: true,
+      scrollbar: true,
+      use24hours: true
+    });
+
+    var engver = '{{ engine_ver }}';
+    if ( engver == 'error' ) {
+      $("#post_long_task").attr("disabled", true);
+    }
+
+    // ctuid = get_cookies();
+    // if (ctuid) {
+    //   $("#resync_prog").attr("hidden", false);
+    // } else {
+    //   $("#resync_prog").attr("hidden", true);
+    // }
+
+  </script>
+
+{% endblock script %}

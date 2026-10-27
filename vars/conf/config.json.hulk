@@ -1,0 +1,7 @@
+{
+  "coils_table_dir": "/home/ale/Code/covid_hep/vars/data",
+  "od_average_dir": "/home/ale/Code/covid_hep/vars/data",
+  "num_city": 50,
+  "wdir" : "/home/ale/Code/covid_hep/work_ws/output",
+  "remove_local_output" : false
+}

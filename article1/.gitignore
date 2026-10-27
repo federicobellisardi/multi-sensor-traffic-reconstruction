@@ -1,0 +1,13 @@
+# Raw or link-level derived proprietary information must remain local.
+work/
+results/private/
+__pycache__/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc

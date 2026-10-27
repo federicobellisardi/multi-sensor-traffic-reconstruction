@@ -1,0 +1,47 @@
+# build image with with
+# > docker-compose build
+# create and run container with
+# > docker-compose up -d slides_ws
+
+version: '3.4'
+
+services:
+
+  sim_ws:
+    container_name: sim_ws_container
+    build:
+      context: './fastapi'
+    image: simws_image
+    environment:
+      - TZ=Europe/Rome
+      - WORKERS_PER_CORE=1
+      - MAX_WORKERS=3
+      - TIMEOUT=300
+      - HOST=0.0.0.0
+      - PORT=80
+    ports:
+      - 11000:80
+    volumes:
+      - ./fastapi/sim-ws.py:/app/main.py
+      - d:/Container/Covid_hep/data:/data
+      - d:/Container/Covid_hep/sync_fastapi:/output
+
+  gui:
+    container_name: gui_django_container
+    build:
+      context: './django'
+    image: gui_django_image
+    command: python manage.py runserver 0.0.0.0:8000 --insecure
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      #- DJANGO_DEBUG=True
+      - SIMWS_BASE_URL=sim_ws
+      - DJANGO_DATA_DIR=/data
+    ports:
+      - 11001:8000
+    volumes:
+      - ./django:/code
+      - d:/Container/Covid_hep/data:/data
+      - d:/Container/Covid_hep/sync_django:/output
+    depends_on:
+      - sim_ws

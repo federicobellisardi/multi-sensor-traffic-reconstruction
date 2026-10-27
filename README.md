@@ -1,35 +1,45 @@
-# Article refresh
+# Multi-sensor traffic reconstruction
 
-This directory is the working area for the revised paper. The historical source
-is kept in `../paper/main.tex`; its adapted working copy is
-`tex/main.tex`, preserving the original paper structure and Springer class.
-The earlier `tex/text.tex` file is an exploratory analysis draft and is not the
-main manuscript.
+Regional traffic reconstruction for Emilia-Romagna (Italy) from mobile-phone origin–destination
+demand, an agent-based simulator on an OpenStreetMap-derived road graph, inductive loop detectors
+(MTS) and GPS probes, with the analyses and manuscripts built on it.
 
-## Figure provenance
+## Contents
 
-The figures included in the original paper come from three main pipelines:
+| Path | Content |
+|---|---|
+| `minimocas/` | Agent-based traffic simulator (C++, pybind11 interface) |
+| `src/`, `CMakeLists.txt`, `cmake/`, `build.sh` | Build of the simulator and of the Python bindings |
+| `python/` | OD processing, simulation configuration and analysis tools |
+| `vars/` | Project cartography (`vars/carto`, 3,925 polylines) and metadata (detectors, no-turn rules) |
+| `dashboard/` | Web platform: FastAPI simulation service, Django dashboard, MTS data fetcher, nginx |
+| `article1/` | Article 1, *Large-scale traffic flow reconstruction from heterogeneous mobility sensors*: manuscript, supplement, analysis pipeline (`article1/analysis`) |
+| `research/` | Programme notes, literature, dataset provenance and processing scripts for the companion studies |
 
-| Topic in `paper/main.tex` | Original figure examples | Generating source found in the repository |
-| --- | --- | --- |
-| OD demand and activity | `ER-OD_heatmap_weekdays.png`, `ER-histo_weekday.png`, `ER-hourly_trend.png` | `python/od/od-1-pack.py`; further revised exploration is in `article/python/od.ipynb` |
-| Coil and simulated-flow comparison | `both_plot_20220622_coil_282_compare.*.png` | `python/tools/compare_viasat_plot.py`, called by the simulation workflow |
-| Viasat penetration and clusters | `histlog_penetrazione_statistica_*.png`, `major_cluster*.png`, `log_cluster_mean_*.png`, dendrograms | `python/tools/viasat_analysis.py`; a developed copy is in `article/python/viasat_analysis.py` |
-| Cartographic context | `coils_distribution.png`, `cartography_ER.png` | mapping utilities in `python/preanalysis/` and `python/tools/fluxes_map.py` |
+The history of the previous manuscript revision is kept on the branch `revision-v2`.
 
-Some explanatory images in the old manuscript, including `Dijkstra.png`, do
-not have a direct export command identifiable from the tracked analysis code.
+## Build
 
-## Revised figure workflow
+```sh
+./build.sh          # requires CMake, Boost and pybind11
+```
 
-The refreshed figure code is divided into the notebooks in `ipynb/`:
+## Data
 
-| Notebook | Content | Output directory |
-| --- | --- | --- |
-| `ipynb/data.ipynb` | OD demand, concentration and mobile activity | `results/figures/data/` |
-| `ipynb/simulazione.ipynb` | simulated profiles, network load and correction effect | `results/figures/simulazione/` |
-| `ipynb/validazione.ipynb` | Viasat distributions, ECDF/KS, penetration classes and maps | `results/figures/validazione/` |
+Not included in this repository:
 
-`tex/main.tex` now reads its refreshed validation panels from
-`results/figures/validazione/`. Other original panels are still available
-from `../paper/` while the related sections are progressively revised.
+* TIM mobile-phone OD tables and Viasat GPS data: proprietary, not redistributable;
+* MTS loop-detector counts: public (Regione Emilia-Romagna, CC BY), downloadable from the
+  regional open-data catalogue (dataset DS-1944);
+* ISTAT road-accident microdata: public, downloadable from istat.it (see
+  `research/datasets/scripts/`);
+* OpenStreetMap extracts: © OpenStreetMap contributors, ODbL (Geofabrik).
+
+Dashboard credentials are read from environment variables; see `dashboard/.env.example`.
+
+## Credits and licence
+
+The reconstruction framework, the simulator `minimocas` and the web platform were developed in
+the Physics of Complex Systems group of the University of Bologna (physycom) and at Mindicity.
+This repository is distributed under the GNU GPL v3 (`LICENSE`). The licensing of `minimocas`
+should be confirmed with its original authors before any public release.

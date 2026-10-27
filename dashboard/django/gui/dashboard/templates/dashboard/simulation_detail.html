@@ -1,0 +1,201 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+mov-er | simulation {{ sim.id }} details
+{% endblock title %}
+
+{% block header_script %}
+<!-- Bootstrap core JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+{% endblock header_script %}
+
+{% block main %}
+<div class="container-fluid">
+  <h1 class="mt-4">Simulation results</h1>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <span>Displaying results for simulation
+       <b><a href ="fluxes/{{sim.id}}">{{sim.id}}</a></b></span>
+       <!-- <a href="{{ sim.get_json_absolute_url }}" download class="btn btn-danger float-right mr-1">Download JSON</a> -->
+      <a id="download_csv" <a href="{{ sim.get_csv_absolute_url }}" download class="btn btn-danger float-right mr-3">Download CSV</a>
+    </div>
+  </div>
+
+  <div class="row mt-5 mb-5">
+    <div id="plotdiv" style="width: 40%; height: 600px;"></div>
+    <div id="mapdiv" style="width: 60%; height: 600px;"></div>
+  </div>
+
+
+</div>
+{% endblock main %}
+
+{% block script %}
+
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+<script>
+  // Call the dataTables jQuery plugin
+  $(document).ready(function() {
+    $('#dataTable').DataTable();
+  });
+</script>
+
+
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/spiritedaway.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/material.js"></script>
+
+<!-- coils plot code -->
+<script>
+  am4core.ready(function() {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    // Create chart instance
+    var chart = am4core.create("plotdiv", am4charts.XYChart);
+    //chart.dataDateFormat = "YYYY-MM-DD HH:mm:ss";
+    chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm:ss"
+
+    function timeConverter(UNIX_timestamp){
+      var a = new Date(UNIX_timestamp * 1000);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      // var hour = a.getHours();
+      // var min = a.getMinutes();
+      // var sec = a.getSeconds();
+      var hour = ("0" + a.getHours()).slice(-2);
+      var min = ("0" + a.getMinutes()).slice(-2);
+      var sec = ("0" + a.getSeconds()).slice(-2);
+      var time = month + ' ' + date + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+      time = new Date(time)
+      return time;
+    }
+
+    // Add data
+    times = {{ simres.times | safe }}
+    headers = {{ simres.headers | safe }}
+    data = {{ simres.data | safe }}
+    colors = {{ simres.colors | safe }}
+    chart.data = []
+    chart.scrollbarX = new am4charts.XYChartScrollbar();
+
+    // Create axes
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 50;
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+    // Create series
+    headers.forEach(function (header, i) {
+      var series = chart.series.push(new am4charts.LineSeries());
+      var values = [];
+      times.forEach(function (time, j) {
+        values.push({
+          time: timeConverter(time),
+          counter: data[j][i],
+        });
+      })
+      series.data = values
+      console.log(values)
+      series.dataFields.valueY = "counter";
+      series.dataFields.dateX = "time";
+      series.stroke = am4core.color(colors[i]);
+
+      series.strokeWidth = 2;
+      series.minBulletDistance = 10;
+      series.tooltipText = "{time} " + header + " cnt {valueY}";
+      series.tooltip.pointerOrientation = "vertical";
+      series.tooltip.background.cornerRadius = 20;
+      series.tooltip.getFillFromObject = false;
+      series.tooltip.background.fill = am4core.color(colors[i]);
+      series.tooltip.background.fillOpacity = 0.5;
+      series.tooltip.label.padding(12,12,12,12)
+
+      series.legendSettings.labelText = header;
+
+      chart.scrollbarX.series.push(series);
+    })
+
+    // Add cursor
+    chart.cursor = new am4charts.XYCursor();
+    chart.legend = new am4charts.Legend();
+
+  }); // end am4core.ready()
+</script>
+
+<!-- map plot code -->
+<script>
+  var southWest = L.latLng(43.748822, 9.201408),
+      northEast = L.latLng(45.127953, 12.749101),
+      bounds = L.latLngBounds(southWest, northEast);
+
+  var mymap = L.map('mapdiv', {
+    center: [45,11],
+  });
+  mymap.fitBounds(bounds);
+
+  // tile layers
+  var sat_tile = new L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution: "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.",
+      detectRetina: false, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false
+    }
+  );
+
+  var map_tile = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+  );
+  map_tile.addTo(mymap);
+
+  var tile_layers = {
+    Satellite:sat_tile,
+    OpenStreetMap:map_tile,
+  };
+
+  // vector layers
+  colors = {{ simres.colors | safe }}
+  headers = {{ simres.headers | safe }}
+  shapes = {{ simres.shapes | safe }}
+  carto = {{ simres.carto | safe }}
+
+  layers = {}
+  vec_layers = {}
+
+  var cartocol = 'red';
+  var cartolay = L.layerGroup().addTo(mymap);
+  carto.forEach(function (poly, i) {
+    var polyline = L.polyline(poly, {color: cartocol, weight:1}).bindPopup('poly ' + i).addTo(cartolay);
+  })
+  vec_layers['<span style="color:' + cartocol + ';">Road network</span>'] = cartolay
+
+  headers.forEach(function (header, i) {
+    var lay = L.layerGroup().addTo(mymap);
+    var polyline = L.polyline(shapes[i], {color: colors[i], weight:5}).bindPopup(headers[i]).addTo(lay);
+    vec_layers['<span style="color:' + colors[i] + ';">' + header + '</span>'] = lay
+  })
+
+  var opt_layers = {
+    collapsed: false,
+    autoZIndex: false,
+  }
+
+  L.control.layers(tile_layers, vec_layers, opt_layers).addTo(mymap);
+
+</script>
+
+{% endblock script %}

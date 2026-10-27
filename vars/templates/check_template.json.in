@@ -1,0 +1,24 @@
+{
+  "file_pro"          : "$ENV{WORKSPACE}/covid_hep/vars/carto/er-speed.pro",
+  "file_pnt"          : "$ENV{WORKSPACE}/covid_hep/vars/carto/er-speed.pnt",
+  "file_barrier"      : "$ENV{WORKSPACE}/covid_hep/vars/extra/er_barriers.csv",
+  "file_score_pop"    : "$ENV{WORKSPACE}/covid_hep/vars/extra/ace_score.csv",
+  "file_noturn"       : "$ENV{WORKSPACE}/covid_hep/vars/extra/noturn.csv",
+
+
+  "carto_cell_side"   : 10000,
+  "state_grid_cell_m" : 1000,
+
+  "enable_geojson"    : false,
+  "enable_iso_node"   : true,
+  "enable_cid_dump"   : false,
+  "enable_gui"        : true,
+  "frame_per_dt"      : 1,
+
+  "sampling_dt"       : 3600,
+  "sampling_graphics" : 20,
+  "dt"                : 10,
+
+  "enable_stats"      : true,
+  "enable_population" : true
+}

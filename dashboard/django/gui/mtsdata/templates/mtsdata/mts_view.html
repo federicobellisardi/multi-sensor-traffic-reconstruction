@@ -1,0 +1,166 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block header_script %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+{% endblock header_script %}
+
+{% block main %}
+<div class="container-fluid">
+  <h1 class="mt-4">MTS Database</h1>
+  <p>Coils data visualization</p>
+
+  <h3>Coils data visualization</h3>
+  <p>Coil <b>{{ coils.coil_id }}</b> aggregated vehicle counting per direction, in the period <b>{{coils.start_date}}</b> to <b>{{coils.stop_date}}</b>.</p>
+  <div id="plotdiv" style="width: 100%; height: 700px; max-width: 100%;"></div>
+
+  <h3>Map view of coil</h3>
+  <p>Map view of coil <b>{{ coils.coil_id }}</b>.</p>
+  <div id="mymap" class="mb-5" style="height: 500px;"></div>
+
+  <p>
+    Other coils links :
+    {% for c in coilid %}
+        <a href="{% url 'mtsdata:mts_view' %}?coil_id={{c}}">{{c}}</a>
+    {% endfor %}
+  </p>
+
+</div>
+{% endblock main %}
+
+{% block script %}
+<script src="{% static 'js/scripts.js' %}"></script>
+
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/spiritedaway.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/material.js"></script>
+
+<!-- coils plot code -->
+<script>
+  am4core.ready(function() {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    // Create chart instance
+    var chart = am4core.create("plotdiv", am4charts.XYChart);
+    //chart.dataDateFormat = "YYYY-MM-DD HH:mm:ss";
+    chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm:ss"
+
+    // Add data
+    chart.data = {{ coils.mtsseries | safe }}
+
+    // Create axes
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 50;
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+    // Create series
+    var series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "counter";
+    series.dataFields.dateX = "date";
+    series.stroke = am4core.color("#ff0000");
+    series.strokeWidth = 2;
+    series.minBulletDistance = 10;
+    series.tooltipText = "{date} {valueY}";
+    series.tooltip.pointerOrientation = "vertical";
+    series.tooltip.background.cornerRadius = 20;
+    series.tooltip.getFillFromObject = false;
+    series.tooltip.background.fill = am4core.color("#ff0000");
+    series.tooltip.background.fillOpacity = 0.5;
+    series.tooltip.label.padding(12,12,12,12)
+    series.legendSettings.labelText = "coil {{ mts_coil_id }} dir 0";
+
+    // Create series
+    var series1 = chart.series.push(new am4charts.LineSeries());
+    series1.dataFields.valueY = "counter1";
+    series1.dataFields.dateX = "date";
+    series1.stroke = am4core.color("#0000ff");
+    series1.strokeWidth = 2;
+    series1.minBulletDistance = 10;
+    series1.tooltipText = "{date} {valueY}";
+    series1.tooltip.pointerOrientation = "vertical";
+    series1.tooltip.background.cornerRadius = 20;
+    series1.tooltip.getFillFromObject = false;
+    series1.tooltip.background.fill = am4core.color("#0000ff");
+    series1.tooltip.background.fillOpacity = 0.5;
+    series1.tooltip.label.padding(12,12,12,12)
+    series1.legendSettings.labelText = "coil {{ mts_coil_id }} dir 1";
+
+    // Add scrollbar
+    chart.scrollbarX = new am4charts.XYChartScrollbar();
+    chart.scrollbarX.series.push(series);
+
+    // Add cursor
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.xAxis = dateAxis;
+    chart.legend = new am4charts.Legend();
+
+  }); // end am4core.ready()
+</script>
+
+<!-- map plot code -->
+<script>
+  var southWest = L.latLng(43.748822, 9.201408),
+      northEast = L.latLng(45.127953, 12.749101),
+      bounds = L.latLngBounds(southWest, northEast);
+
+  var mymap = L.map('mymap', {
+    center: [45,11],
+    //zoom: 9,
+  });
+  mymap.fitBounds(bounds);
+
+  // tile layers
+  var sat_tile = new L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution: "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.",
+      detectRetina: false, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false
+    }
+  );
+
+  var map_tile = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+  );
+  map_tile.addTo(mymap);
+
+  var tile_layers = {
+    Satellite:sat_tile,
+    OpenStreetMap:map_tile,
+  };
+
+  // vector layers
+  {% if geodata %}
+  var vecdata = {{ geodata.data | safe }}
+  {% endif %}
+
+  layers = {}
+  vec_layers = {}
+  for (const [key, value] of Object.entries(vecdata)) {
+    var lay = L.layerGroup().addTo(mymap);
+    //console.log(value.data)
+    value.data.forEach(function (item, index) {
+      var pt = L.circleMarker([item[0][0], item[0][1]], {color:value.color}).bindPopup(item[1]).addTo(lay);
+    })
+    vec_layers['<span style="color:' + value.color + ';">' + key + '</span>'] = lay
+  }
+
+  var opt_layers = {
+    collapsed: false,
+    autoZIndex: false,
+  }
+
+  L.control.layers(tile_layers, vec_layers, opt_layers).addTo(mymap);
+
+</script>
+{% endblock script %}
+

@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\caption{Profile error of the assimilated simulation against penetration-normalized Viasat profiles on all usable matched links, by campaign and penetration class $\eta$. MAE in percentage points (Eq.~\eqref{M-eq:profile_error}); $\varepsilon$ is the median relative error (Eq.~\eqref{M-eq:relative_error}); $r$ is the median Pearson correlation of the hourly shares. The $10^{-5}$ class (three links in 2020, two in 2021) is included in the totals only; the three-link upper class in 2021 is displayed for provenance.}
+\label{tab:validation_all}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+Campaign & Class & Links & Median MAE & IQR & 10th--90th pct. & $\varepsilon$ [\%] & $r$ \\
+\midrule
+2020 & all & 848 & 1.34 & 1.05--2.01 & 0.87--3.28 & 32 & 0.82 \\
+ & $10^{-1}$ & 17 & 0.94 & 0.91--0.97 & 0.79--1.12 & 23 & 0.91 \\
+ & $10^{-2}$ & 514 & 1.13 & 0.96--1.34 & 0.83--1.61 & 27 & 0.87 \\
+ & $10^{-3}$ & 275 & 2.13 & 1.66--2.82 & 1.43--3.65 & 51 & 0.66 \\
+ & $10^{-4}$ & 39 & 5.11 & 4.63--6.77 & 3.77--7.50 & 123 & 0.36 \\
+\midrule
+2021 & all & 845 & 1.49 & 1.15--2.12 & 0.98--3.48 & 36 & 0.76 \\
+ & $10^{-1}$ & 3 & 1.13 & -- & -- & 27 & 0.85 \\
+ & $10^{-2}$ & 518 & 1.24 & 1.03--1.51 & 0.89--1.86 & 30 & 0.83 \\
+ & $10^{-3}$ & 289 & 2.18 & 1.73--3.06 & 1.43--3.89 & 52 & 0.64 \\
+ & $10^{-4}$ & 33 & 5.75 & 4.86--6.82 & 4.67--7.64 & 138 & 0.27 \\
+\bottomrule
+\end{tabular}
+\end{table}

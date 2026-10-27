@@ -1,0 +1,52 @@
+# build image with with
+# > docker-compose build
+# create and run container with
+# > docker-compose up -d gui
+# > docker-compose up -d sim_ws
+
+version: '3.4'
+
+services:
+
+  sim_ws:
+    container_name: sim_ws_container_dev
+    build:
+      context: './fastapi'
+      dockerfile: Dockerfile
+    image: simws_image
+    environment:
+      - TZ=Europe/Rome
+      - WORKERS_PER_CORE=1
+      - MAX_WORKERS=3
+      - TIMEOUT=300
+      - HOST=0.0.0.0
+      - PORT=80
+    ports:
+      - 11001:80
+    volumes:
+      - ./fastapi/sim-ws.py:/app/main.py
+      - ../vars/data/fastapi:/data
+      - ../work_lavoro/dashboard/sync_simws:/output
+
+  gui:
+    container_name: gui_django_container_dev
+    build:
+      context: './django'
+      dockerfile: Dockerfile
+    image: gui_django_image
+    env_file:
+      - .env.dev
+    command: python manage.py runserver 0.0.0.0:8000 --insecure
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      #- DJANGO_DEBUG=True
+      - SIMWS_BASE_URL=sim_ws
+      - DJANGO_DATA_DIR=/data
+    ports:
+      - 11000:8000
+    volumes:
+      - ../vars/data/django:/data
+      - ../dashboard/sync_gui:/output
+
+    depends_on:
+      - sim_ws

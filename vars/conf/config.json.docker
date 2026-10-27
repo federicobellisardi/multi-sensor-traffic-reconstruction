@@ -1,0 +1,9 @@
+{
+  "start_date" : "2020-02-17 10:00:00",
+  "stop_date"  : "2020-02-17 12:00:00",
+  "coils_table_dir": "/data",
+  "od_average_dir": "/data",
+  "num_city": 50,
+  "wdir" : "/output",
+  "remove_local_output" : true
+}
