@@ -12,6 +12,7 @@
 \usepackage{tikz}
 \usepackage{hyperref}
 \usetikzlibrary{arrows.meta,positioning,shadows.blur,fit}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 
 \graphicspath{{./images/}}
 \geometry{a4paper,left=1.8cm,right=1.8cm,top=1.8cm,bottom=1.8cm}
@@ -26,11 +27,12 @@
 \author[1]{\fnm{Federico} \sur{Bellisardi}}
 \author[2]{\fnm{Chiara} \sur{Mizzi}}
 \author[2]{\fnm{Alessandro} \sur{Fabbri}}
-\author[4]{\fnm{Armando} \sur{Bazzani}}
+\author[3,4]{\fnm{Armando} \sur{Bazzani}}
 
 \affil[1]{\orgdiv{Instituto de F\'{\i}sica Interdisciplinar y Sistemas Complejos IFISC}, \orgname{(CSIC-UIB)}, \city{Campus UIB, 07122 Palma de Mallorca}, \country{Spain}}
-\affil[2]{\orgdiv{Mindicity}, \orgname{}, \city{}, \country{Italy}}
-\affil[4]{\orgdiv{Department of Physics}, \orgname{Universit\'a di Bologna}, \city{Bologna}, \country{Italy}}
+\affil[2]{\orgname{Mindicity}, \street{\todo{street address of Mindicity}}, \city{\todo{postcode and city}}, \country{Italy}}
+\affil[3]{\orgdiv{Department of Physics}, \orgname{Universit\`a di Bologna}, \street{\todo{full department name and street address}}, \city{Bologna}, \country{Italy}}
+\affil[4]{\orgname{INFN, Sezione di Bologna}, \street{Viale Carlo Berti Pichat 6/2}, \postcode{40127}, \city{Bologna}, \country{Italy}}
 
 \abstract{Mobile-phone data, traffic counters and GPS traces provide complementary but incomplete views of road mobility. Mobile-phone activity captures regional demand without identifying the exact roads used, traffic counters provide accurate local measurements, and GPS telemetry samples only a fraction of circulating vehicles.
 
