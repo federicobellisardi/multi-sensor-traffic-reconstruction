@@ -120,16 +120,15 @@ The simulation converts the OD demand into directional link flows. For each hour
   \centering
   \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig3.jpg}
   \caption{\textbf{Link-level reconstruction output.}
-  \textbf{(a)} Hourly simulated flow on the polyline associated with coil
-  282 compared with hourly aggregated coil observations on Monday
-  10 February 2020; $\Phi$ denotes vehicle flow.
+  \textbf{(a)} Raw and assimilated simulated flow on the polyline of coil
+  282 and hourly coil counts on Monday 10 February 2020, local time; $\Phi$ denotes vehicle flow.
   \textbf{(b)} Spatial distribution of simulated daily link flows over
   Emilia-Romagna, expressed through flow quantile classes; yellow segments
   carry the highest reconstructed flows and purple segments the lowest.}
   \label{fig:simulation}
 \end{figure*}
 
-The assimilation corrects the coil links themselves; how far the correction reaches is measured by a leave-one-out test on 10--17 February 2020. For each of the 149 coils with complete data on at least one day (610 coil-days), we remove the coil from the assimilation and from the set of polylines that stop the propagation, rerun the assimilation with the other coils, and compare the hourly counts on its link with the observation (Supplementary Section~S4). Summed over all coil-days, the absolute error on the held-out link is 59.8\% of the observed volume for the raw simulation and 56.7\% after assimilation; the median over coils goes from 46.2\% to 44.3\%. The propagation from neighbouring coils reaches 51\% of the held-out links, and the error decreases on 39\% of the coils and increases on 13\%. On the Viasat links the median profile error is 1.33~pp before and 1.34~pp after assimilation (Table~\ref{tab:baselines}). The assimilation therefore anchors the field at the instrumented sections and has a small effect a few links away from them.
+The assimilation corrects the coil links themselves; how far the correction reaches is measured by a leave-one-out test on 10--17 February 2020. For each of the 149 coils with complete data on at least one day (610 coil-days), we remove the coil from the assimilation and from the set of polylines that stop the propagation, rerun the assimilation with the other coils, and compare the hourly counts on its link with the observation (Supplementary Section~S4). Summed over all coil-days, the absolute error on the held-out link is 59.8\% of the observed volume for the raw simulation and 56.7\% after assimilation; the median over coils goes from 46.2\% to 44.3\%. The propagation from neighbouring coils reaches 51\% of the held-out links, and the error decreases on 39\% of the coils and increases on 13\%. On the Viasat links the median profile error defined in Section~\ref{sec:all_links} is 1.33~pp before and 1.34~pp after assimilation (Table~\ref{tab:baselines}). The assimilation therefore anchors the field at the instrumented sections and has a small effect a few links away from them.
 
 \subsection{Accident exposure}
 
@@ -215,6 +214,8 @@ The penetration spans four decades (Fig.~\ref{fig:viasat}b,e). In 2020 the media
 
 We compute $\mathrm{MAE}_i$ on every matched link with non-zero simulated and GPS totals, 848 of the 930 matched links in 2020 and 845 of 927 in 2021. Simulation and GPS cover the same days: eight in 2020 (six weekdays and the weekend of 15--16 February) and seven in 2021 (five weekdays and the weekend of 3--4 July), with weekend days simulated from the weekend OD matrix. Table~\ref{tab:validation_all} and Fig.~\ref{fig:validation_cdf} summarize the distributions.
 
+\input{tables/validation_all_links}
+
 The median MAE is 1.34~pp in 2020 and 1.49~pp in 2021, i.e.\ a relative error $\varepsilon$ of 32\% and 36\% of the mean hourly share. The error depends strongly on penetration. On the 514 links with $\eta\sim10^{-2}$ the 2020 median is 1.13~pp ($\varepsilon=27\%$), on the 275 links with $\eta\sim10^{-3}$ it is 2.13~pp ($\varepsilon=51\%$), and on the 39 links with $\eta\sim10^{-4}$ the GPS profile is dominated by counting noise ($\varepsilon=123\%$). The 2021 values are similar (Table~\ref{tab:validation_all}).
 
 Part of the error is a systematic lead of the simulation. Summed over all usable links, the simulated profile peaks at 17:00 and the Viasat profile at 18:00 in both campaigns, and the MAE of the two aggregate profiles is 0.69~pp (2020) and 0.82~pp (2021). Shifting the simulated profiles forward by one hour lowers the median link MAE to 1.29 and 1.34~pp. We do not apply this shift, since the simulator output and the Viasat tables both label each hour by its start; the possible origins of the lead are discussed in Section~\ref{sec:limitations}.
@@ -223,7 +224,6 @@ To judge these values we apply two fixed profiles to every link and compute the 
 
 \input{tables/baselines}
 
-\input{tables/validation_all_links}
 
 \begin{figure}[htbp]
   \centering
