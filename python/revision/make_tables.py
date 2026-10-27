@@ -117,7 +117,7 @@ def representatives_table():
             for r in sorted(c["representatives"], key=lambda r: r["cluster"])]
     (TAB / "representatives.tex").write_text(r"""\begin{table}[htbp]
 \centering
-\caption{Representative polylines of Fig.~9 in the main text. The last column is the percentage of the """ + str(S["2020"]["usable_links"]) + r""" usable 2020 links with a lower MAE. Minimum pairwise separation: """ + f(c["min_separation_km"], 1) + r"""~km.}
+\caption{Representative polylines of Fig.~\ref{M-fig:representatives} in the main text. The last column is the percentage of the """ + str(S["2020"]["usable_links"]) + r""" usable 2020 links with a lower MAE. Minimum pairwise separation: """ + f(c["min_separation_km"], 1) + r"""~km.}
 \label{tab:representatives}
 \begin{tabular}{@{}rrrrr@{}}
 \toprule

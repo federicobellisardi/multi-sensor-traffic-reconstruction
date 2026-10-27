@@ -8,7 +8,9 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{xcolor}
+\usepackage{xr-hyper}
 \usepackage{hyperref}
+\externaldocument[M-]{epjds_main_draft}
 
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 
@@ -20,6 +22,7 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\modelname}{\texttt{minimocas}}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.12}
 
@@ -32,12 +35,12 @@
 \maketitle
 
 \noindent This supplementary material documents the meaning of the data
-layers, model variables, data-assimilation logic, validation metrics and webserver architecture supporting the main manuscript. It deliberately avoids listing repository paths; the focus is on what each component represents, why it is needed, and how it enters the reconstruction workflow. Numerical choices are reported together with their interpretation. Some of them are inherited from the temporal resolution of the observations, some are computational choices that stabilize the simulator, and some are reporting thresholds used to choose clear representative examples for the paper figures.
+layers, model variables, data-assimilation logic, validation metrics and webserver architecture supporting the main manuscript. Numerical choices are reported with their interpretation: some follow from the temporal resolution of the observations, some stabilize the simulator, and one (the 40~km separation of the example links) only serves the figures. The scripts that produce the revised numbers are listed in Section~\ref{sec:reproducibility}.
 
 \section{Data Layers}
 \label{sec:data-layers}
 
-The reconstruction combines four observational layers and one derived road support. Their roles are distinct and are not interchangeable (Table~\ref{tab:data-layers}). The mobile-phone layer is the only one that describes regional demand at population scale, but it is too coarse to say which road was used. The road graph provides the missing physical support for route assignment. Coils provide accurate local counts, but only where a sensor exists. Viasat is spatially richer than coils, but it is a probe sample rather than a total-count system. The reconstructed link-flow table is therefore not a direct observation; it is the result of combining these partial views under the explicit model assumptions described below.
+The reconstruction combines four observational layers and one derived road support. Their roles are distinct and are not interchangeable (Table~\ref{tab:data-layers}). The mobile-phone layer is the only one that describes regional demand at population scale, but it is too coarse to say which road was used. The road graph provides the missing physical support for route assignment. Coils provide accurate local counts, but only where a sensor exists. Viasat is spatially richer than coils, but it is a probe sample rather than a total-count system. The reconstructed link-flow table combines these partial views under the model assumptions described below.
 
 \begin{longtable}{@{}p{0.23\linewidth}p{0.21\linewidth}p{0.45\linewidth}@{}}
 \caption{Meaning and role of the data layers.}
@@ -78,7 +81,7 @@ link-level reconstruction used for maps, validation and webserver delivery. \\
 
 \subsection{Demand Structure}
 
-The weekday and weekend OD matrices are highly concentrated. This motivates using the observed spatial demand instead of injecting uniform trips across the region. The total-flow values in Table~\ref{tab:od-structure} are the activity weights entering the demand generator after aggregation over the selected January 2020 period. They should be interpreted as relative mobility mass rather than as direct vehicle counts. Positive cells count municipality pairs with non-zero activity. The Gini coefficient and top-share columns quantify concentration: values close to 0.8 and a top-1\% share above 0.4 mean that a small number of OD relations dominate the signal. This is why the model uses observed high-demand centres explicitly and treats weakly observed endpoints through random classes instead of forcing unreliable low-count OD pairs into deterministic routes.
+The weekday and weekend OD matrices are highly concentrated. This motivates using the observed spatial demand instead of injecting uniform trips across the region. The total-flow values in Table~\ref{tab:od-structure} are the activity weights entering the demand generator after aggregation over the selected January 2020 period. They are relative mobility mass, not vehicle counts. Positive cells count municipality pairs with non-zero activity. The Gini coefficient and top-share columns quantify concentration: values close to 0.8 and a top-1\% share above 0.4 mean that a small number of OD relations dominate the signal. The model therefore uses the observed high-demand centres explicitly and assigns weakly observed endpoints to the random classes.
 
 \begin{table}[htbp]
 \centering
@@ -122,7 +125,7 @@ Rank & Municipality & Mean points & Rank & Municipality & Mean points \\
 
 \subsection{Sensor and Telemetry Coverage}
 
-Table~\ref{tab:data-volumes} reports data volume in terms of records, variables and physical interpretation. The 528 municipalities define the areal units of the demand layer. The 292 traffic stations are sparse compared with the road graph, so data assimilation has to be local and directional rather than a global rescaling of the whole network. The 5,760 rows of the 2020 coil table correspond to 60 days at 15-min resolution; each day contributes 96 samples per direction. The Viasat campaigns contain hundreds of thousands of hourly link observations, but the 4,186 matched road identifiers are still only a subset of the regional graph. This justifies using Viasat for temporal-profile validation and not as a complete observation layer.
+Table~\ref{tab:data-volumes} reports data volume in terms of records, variables and physical interpretation. The 528 municipalities define the areal units of the demand layer. The 292 traffic stations are sparse compared with the road graph, so the assimilation is local and directional. The 5,760 rows of the 2020 coil table correspond to 60 days at 15-min resolution; each day contributes 96 samples per direction. The Viasat campaigns contain hundreds of thousands of hourly link observations, but the 4,186 matched road identifiers are still only a subset of the regional graph. This justifies using Viasat for temporal-profile validation and not as a complete observation layer.
 
 \begin{table}[htbp]
 \centering
@@ -150,7 +153,7 @@ the same matched road universe. \\
 \section{Simulation Runs and Source Classes}
 \label{sec:simulation-runs}
 
-The final validation archive contains sixteen daily simulations, eight in February 2020 and eight in June--July 2021. The two periods were selected because independent Viasat validation campaigns are available for those dates. Viasat is not used to configure or assimilate the simulations; it provides the held-out probe layer against which simulated link profiles are compared. The periods are not intended to span all seasonal variability; they provide two well-defined weeks in which reconstructed link flows and GPS probe flows can be compared consistently.
+The final validation archive contains sixteen daily simulations, eight in February 2020 and eight in June--July 2021. The two periods were selected because independent Viasat validation campaigns are available for those dates. Viasat is not used to configure or assimilate the simulations; it provides the held-out probe layer against which simulated link profiles are compared. The two weeks do not span the seasonal variability of traffic.
 
 Every run uses a 10 s integration time step and writes hourly outputs. The 10 s step is short enough to move agents through short links without creating coarse jumps at intersections, while remaining computationally light for regional daily runs. Hourly output is used because both the mobile-phone demand profiles and the validation figures are expressed at hourly scale; it also reduces noise relative to 15-min sensor counts while preserving morning, midday and evening traffic structure. The source count changes by day because the OD generator activates only demand components present in the selected daily schedule.
 
@@ -212,7 +215,7 @@ The fixed municipality OD class dominates because it is the part of the demand w
 \label{sec:model-details}
 
 \modelname{} is an agent-based road simulator. Vehicles are represented by
-agents that move on directed polylines, choose a next node at junctions and accumulate link-level counts. The model state is summarized in Table~\ref{tab:pawn-vars}. The implementation is intentionally mesoscopic in spirit: agents are individual vehicles, but the objective is not to reproduce lane-changing details or second-by-second car-following trajectories. Instead, the model produces a directional link-by-time flow field that can be locally constrained by fixed counters and validated against held-out probe data.
+agents that move on directed polylines, choose a next node at junctions and accumulate link-level counts. The model state is summarized in Table~\ref{tab:pawn-vars}. Agents are individual vehicles, without lane changing or car-following dynamics; the output of interest is the directional link-by-time flow field.
 
 \begin{longtable}{@{}p{0.25\linewidth}p{0.18\linewidth}p{0.47\linewidth}@{}}
 \caption{Main vehicle-agent state variables.}
@@ -282,7 +285,7 @@ paper. \\
 \end{tabularx}
 \end{table}
 
-The values in Table~\ref{tab:parameters} reflect a compromise between temporal fidelity and reproducibility. A 10 s integration step is small relative to the one-hour saved output and keeps route progression smooth. The 3600 s sampling interval is chosen because the OD demand and Viasat validation are analysed hourly; using a finer output would mostly preserve sensor noise rather than add information to the paper figures. The 30 s source-activation interval spreads injected agents over each hour instead of creating a single burst at the hour boundary. The 5000 m state grid and 10000 m cartographic index are lookup scales used to organize regional graph operations; they are much larger than individual road links, so they do not define the resolution of the final traffic field. Setting the length routing weight to 1.0 and the speed routing weight to 0.0 makes route choice depend on path length in the archived runs. This choice avoids mixing route assignment with uncertain speed calibration when the main objective is to validate link-flow profiles. The 15--25 m s$^{-1}$ initial-speed range covers typical extra-urban speeds before density updates. The 5600 s random-endpoint time budget is a soft bound used when sampling residual trip endpoints: it allows trips longer than a one-hour commute but avoids generating unrealistic cross-region random journeys as the dominant residual class.
+The values in Table~\ref{tab:parameters} reflect a compromise between temporal fidelity and reproducibility. A 10 s integration step is small relative to the one-hour saved output and keeps route progression smooth. The 3600 s sampling interval is chosen because the OD demand and Viasat validation are analysed hourly; a finer output would mostly add sensor noise. The 30 s source-activation interval spreads injected agents over each hour instead of creating a single burst at the hour boundary. The 5000 m state grid and 10000 m cartographic index are lookup scales used to organize regional graph operations; they are much larger than individual road links, so they do not define the resolution of the final traffic field. Setting the length routing weight to 1.0 and the speed routing weight to 0.0 makes route choice depend on path length in the archived runs. This choice avoids mixing route assignment with uncertain speed calibration when the main objective is to validate link-flow profiles. The 15--25 m s$^{-1}$ initial-speed range covers typical extra-urban speeds before density updates. The 5600 s random-endpoint time budget is a soft bound used when sampling residual trip endpoints: it allows trips longer than a one-hour commute but avoids generating unrealistic cross-region random journeys as the dominant residual class.
 
 \section{Coil-based Data Assimilation}
 \label{sec:post-correction}
@@ -347,12 +350,12 @@ Direction & Fifteen-minute samples & Daily sum & Peak hourly count & Peak hour \
 \end{tabular}
 \end{table}
 
-Coil 282 is used in the main manuscript because both directions have complete 15-min coverage for the selected day. The daily sums are similar but not identical, indicating directional asymmetry rather than sensor failure. The opposite peak hours, 17:00 in direction 0 and 07:00 in direction 1, are consistent with a road segment that carries different dominant directions in the morning and afternoon. This makes the station useful as a compact example of why direction-aware matching is needed.
+Coil 282 is used in the main manuscript because both directions have complete 15-min coverage for the selected day. The daily sums are similar but not identical, as expected for a road with different dominant directions in the morning and in the afternoon. The opposite peak hours, 17:00 in direction 0 and 07:00 in direction 1, are consistent with a road segment that carries different dominant directions in the morning and afternoon. 
 
 \section{Validation Tables}
 \label{sec:validation-tables}
 
-Viasat telemetry is compared with the reconstruction after link-specific penetration scaling (main text, Eqs.~2--5). The penetration $\eta_i$ is the ratio between the Viasat probes and the simulated vehicles summed over the same days, so it is a daily sampling fraction of the road. It is estimated link by link because probe coverage depends on road type, fleet composition and local travel patterns. Table~\ref{tab:penetration-summary} shows that the 2021 campaign has a slightly lower penetration than the 2020 one; the Kolmogorov--Smirnov test rejects equal distributions at the 5\% level, so the two campaigns are analysed separately. Penetration classes are defined by rounding $\log_{10}\eta_i$ to the nearest integer, because $\eta_i$ spans four orders of magnitude; their shares are shown in Fig.~7 of the main text and their profile errors in Table~1 of the main text.
+Viasat telemetry is compared with the reconstruction after link-specific penetration scaling (main text, Eqs.~\ref{M-eq:penetration}--\ref{M-eq:relative_error}). The penetration $\eta_i$ is the ratio between the Viasat probes and the simulated vehicles summed over the same days, so it is a daily sampling fraction of the road. It is estimated link by link because probe coverage depends on road type, fleet composition and local travel patterns. Table~\ref{tab:penetration-summary} shows that the 2021 campaign has a slightly lower penetration than the 2020 one; the Kolmogorov--Smirnov test rejects equal distributions at the 5\% level, so the two campaigns are analysed separately. Penetration classes are defined by rounding $\log_{10}\eta_i$ to the nearest integer, because $\eta_i$ spans four orders of magnitude; their shares are shown in Fig.~\ref{M-fig:viasat} of the main text and their profile errors in Table~\ref{M-tab:validation_all} of the main text.
 
 \input{tables/penetration_summary}
 
@@ -361,11 +364,11 @@ The candidate set for the example links is the upper class of a three-class $k$-
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{S_subcluster_profiles.png}
-  \caption{Mean normalized simulated profile of the three subclusters of Fig.~8 of the main text (51, 78 and 358 links).}
+  \caption{Mean normalized simulated profile of the three subclusters of Fig.~\ref{M-fig:subclusters} of the main text (51, 78 and 358 links).}
   \label{fig:subcluster_profiles}
 \end{figure}
 
-The selection of the example links in Table~\ref{tab:representatives} follows three rules. The three roads belong to different subclusters. Polyline 104671 is fixed because its position near Forlimpopoli gives it a direct interpretation. In the other two subclusters, among the links with at least 300 simulated vehicles per day and 50 Viasat probes in the week (all 487 candidates), we take the pair with the lowest total MAE whose pairwise distances, including the distance to 104671, are at least 40~km. The two selected links are thus among the best of the candidate set, as the last column of Table~\ref{tab:representatives} shows; the full distribution is in Table~1 and Fig.~10 of the main text.
+The selection of the example links in Table~\ref{tab:representatives} follows three rules. The three roads belong to different subclusters. Polyline 104671 is fixed because its position near Forlimpopoli gives it a direct interpretation. In the other two subclusters, among the links with at least 300 simulated vehicles per day and 50 Viasat probes in the week (all 487 candidates), we take the pair with the lowest total MAE whose pairwise distances, including the distance to 104671, are at least 40~km. The two selected links are thus among the best of the candidate set, as the last column of Table~\ref{tab:representatives} shows; the full distribution is in Table~\ref{M-tab:validation_all} and Fig.~\ref{M-fig:validation_cdf} of the main text.
 
 \begin{table}[htbp]
 \centering
@@ -391,30 +394,16 @@ Displayed representative links & 3 & One illustrative link per temporal subclust
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{figsupp.png}
-  \caption{Supplementary overview of the accident data used for the
-  exposure-normalized road-safety screening. The panels summarize aggregate
-  accident totals, road-environment composition and seasonal shares. These
-  descriptors are used to contextualize the main-text exposure analysis; they
-  are not interpreted as geolocated single-event hotspots.}
+  \caption{Accident data used in the exposure analysis of the main text: (a) yearly accidents and deaths, (b) road environment, (c) seasonal shares of accidents and of simulated weekday exposure.}
   \label{fig:supp_accidents}
 \end{figure}
 
-Figure~\ref{fig:supp_accidents} summarizes the aggregate accident context used to interpret the exposure-based safety analyses presented in the main manuscript. The objective of this figure is not to identify geolocated crash hotspots, but to characterize the temporal and infrastructural structure of the regional accident dataset before combining it with reconstructed traffic exposure.
-
-Panel~\textbf{a} reports the total number of recorded accidents and deaths between 2022 and 2024. The total accident count remains relatively stable across years, while fatalities show a moderate decrease over the same period. This indicates that the exposure analysis is performed on a temporally consistent regional dataset without large interannual discontinuities.
-
-Panel~\textbf{b} shows the distribution of accidents across road environments. Urban roads account for the majority of events in all years, whereas highways and ramps contribute only a small fraction of the total recorded accidents. This imbalance is important when interpreting exposure-normalized hazard indicators because high-flow extra-urban corridors may carry substantial traffic volumes while still representing a limited share of total accidents.
-
-Panel~\textbf{c} compares the seasonal accident distribution with the reconstructed simulated exposure field. The observed accident share increases during summer and autumn, while the simulated weekday exposure is more concentrated in winter and spring. This mismatch suggests that accident occurrence cannot be explained solely by reconstructed traffic intensity and may also depend on seasonal behavioural, touristic or environmental factors.
-
-The aggregate descriptors shown in Fig.~\ref{fig:supp_accidents} therefore provide the statistical context for the hazard-weighted exposure analyses discussed in the main text and motivate the use of exposure-normalized indicators rather than raw accident counts alone.
-
-
+Panel~\textbf{a} reports the yearly numbers of accidents and deaths in 2022--2024: about 16,700 accidents per year, with 16,679, 16,808 and 16,757 in the three years. Panel~\textbf{b} shows the road environment: urban roads account for most accidents in every year, motorways and ramps for a small fraction. Panel~\textbf{c} compares the seasonal shares of accidents with those of the simulated weekday exposure. All exposure runs use the same January 2020 OD matrices, so the seasonal differences of the simulated exposure do not come from the demand, and the comparison with the accident seasonality is only descriptive. \todo{state whether the 2023 exposure runs were assimilated with the 2023 coil data}
 
 \section{Webserver Architecture}
 \label{sec:webserver}
 
-The project also implements the reconstruction as an operational web system. The webserver does not change the modelling equations; it wraps the same configuration generator, simulator and data-assimilation procedure into a service that users can launch from a browser. This distinction matters: the webserver is not an additional calibration method, but an operational layer that makes the validated workflow repeatable for users who need maps, tables and downloadable outputs rather than command-line execution.
+The project also implements the reconstruction as an operational web system. The webserver wraps the configuration generator, the simulator and the assimilation into a service that users launch from a browser; the modelling equations are unchanged, except for the assimilation rules listed in Table~\ref{tab:correction-rules}.
 
 \begin{table}[htbp]
 \centering
@@ -475,7 +464,7 @@ and download data-assimilated link-flow tables. \\
 \end{tabularx}
 \end{table}
 
-The workflow in Table~\ref{tab:web-workflow} mirrors the scientific pipeline of the main manuscript. User input defines the temporal window, the backend generates a model configuration, the simulator produces raw flows, the data-assimilation step applies coil information, and the final link-flow table is stored for visualization and export. The asynchronous status query is practical rather than methodological: a regional simulation can take longer than a normal HTTP request, so the interface polls progress instead of waiting for a blocking response.
+The workflow in Table~\ref{tab:web-workflow} mirrors the scientific pipeline of the main manuscript. User input defines the temporal window, the backend generates a model configuration, the simulator produces raw flows, the data-assimilation step applies coil information, and the final link-flow table is stored for visualization and export. A regional simulation takes longer than a normal HTTP request, so the interface polls the run status.
 
 \begin{table}[htbp]
 \centering
@@ -502,6 +491,6 @@ The conceptual API in Table~\ref{tab:web-api} exposes only operations needed by 
 \section{Reproducibility Notes}
 \label{sec:reproducibility}
 
-The tables above were derived from stored analysis outputs and source-code inspection. No new simulation run is required to reproduce the reported counts, validation summaries or dashboard architecture. The operational dashboard uses the same simulation and data-assimilation logic described in Sections~\ref{sec:model-details} and \ref{sec:post-correction}; it is therefore an interface to the reconstruction workflow rather than a separate model. Values such as the 10 s integration step, hourly output, five-link data-assimilation depth and 40 km separation threshold should therefore be interpreted in context. The first two define the numerical and observational time scales, the data-assimilation depth controls the spatial locality of sensor information, and the last one is a transparent criterion for choosing readable paper examples rather than hidden calibration parameters.
+The numbers of the revised manuscript are produced by the scripts in \code{article/python/revision/} of the project repository: \code{validation\_all\_links.py} (validation on all links, baselines, penetration classes, clustering and example links), \code{loo/run\_loo.py} (leave-one-out test, with the March 2023 assimilation code and cartography extracted from the project history), \code{loo/tz\_sensitivity.py} (coil clock), \code{incident\_risk.py} (accident exposure and bootstrap of the exponent), \code{coil\_282.py}, \code{make\_tables.py} and \code{compose\_figures.py}. They read the archived simulation outputs, the Viasat extracts and the MTS tables, and write summary files to \code{article/results/revision/}. No new traffic simulation was run; the assimilation was rerun only for the leave-one-out and clock tests. The mobile-phone and Viasat inputs are proprietary and are not in the repository.
 
 \end{document}
