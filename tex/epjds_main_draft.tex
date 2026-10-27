@@ -255,6 +255,10 @@ The median MAE is 1.34~pp in 2020 and 1.49~pp in 2021, i.e.\ a relative error $\
 
 Part of the error is a systematic lead of the simulation. Summed over all usable links, the simulated profile peaks at 17:00 and the Viasat profile at 18:00 in both campaigns, and the MAE of the two aggregate profiles is 0.69~pp (2020) and 0.82~pp (2021). Shifting the simulated profiles forward by one hour lowers the median link MAE to 1.29 and 1.34~pp. We do not apply this shift, since the simulator output and the Viasat tables both label each hour by its start; the possible origins of the lead are discussed in Section~\ref{sec:limitations}.
 
+To judge these values we apply two fixed profiles to every link and compute the same error (Table~\ref{tab:baselines}). The first is the hourly profile of the OD demand injected in the runs, summed over the same days; it measures what the network loading adds to the timing of the demand. The second is the mean normalized hourly profile of the MTS coils: the 82 coil directions with complete data on all eight days in 2020 and, since no observed coil table covers June--July 2021, the summer weekday averages of 471 coil directions from the 2022 archive. The reconstruction has a lower error than the OD profile on 74\% of the links in 2020 and 76\% in 2021, but the gain is small, from 1.40 to 1.34~pp and from 1.52 to 1.49~pp in median. The MTS mean profile does better than the reconstruction: its median MAE is 1.15~pp in 2020 and 1.21~pp in 2021, and its error is lower on 91\% and 87\% of the links. On the $\eta\sim10^{-2}$ class of 2020 the medians are 0.82~pp for the MTS profile and 1.13~pp for the reconstruction. A generic counter profile therefore describes the timing of traffic on the Viasat links better than the simulation, which takes its timing from the OD demand and anticipates the observed peaks by about one hour. What the reconstruction adds is a volume for every directed link and its spatial distribution, which no single profile provides; its hourly shape on unobserved links is its weakest component.
+
+\input{tables/baselines}
+
 \input{tables/validation_all_links}
 
 \begin{figure}[htbp]
