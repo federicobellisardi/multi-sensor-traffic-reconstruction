@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\caption{Median and interquartile range of the link MAE (pp) for the reconstruction and for two profiles applied identically to every link: the hourly profile of the injected OD demand and the mean normalized profile of the MTS coils (2020: the 82 coil directions with complete data on all eight validation days; 2021: summer weekday averages of 471 coil directions from the 2022 MTS archive). The last column gives the percentage of links on which the assimilated simulation has a lower MAE than the baseline.}
+\label{tab:baselines}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Campaign & Profile & Median MAE & IQR & Simulation better [\%] \\
+\midrule
+2020 & Simulation (assimilated) & 1.34 & 1.05--2.01 & -- \\
+ & Simulation (raw) & 1.33 & 1.02--1.99 & -- \\
+ & Simulation shifted by $+1$~h & 1.29 & 0.92--1.97 & -- \\
+ & OD demand profile & 1.40 & 1.10--2.03 & 74 \\
+ & MTS mean profile & 1.15 & 0.74--1.85 & 9 \\
+\midrule
+2021 & Simulation (assimilated) & 1.49 & 1.15--2.12 & -- \\
+ & Simulation (raw) & 1.39 & 1.09--2.05 & -- \\
+ & Simulation shifted by $+1$~h & 1.34 & 1.04--2.01 & -- \\
+ & OD demand profile & 1.52 & 1.21--2.18 & 76 \\
+ & MTS mean profile & 1.21 & 0.84--1.93 & 13 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -339,101 +339,11 @@ Coil 282 is used in the main manuscript because both directions have complete 15
 \section{Validation Tables}
 \label{sec:validation-tables}
 
-Viasat telemetry is used as an external validation layer for the simulation framework after link-specific penetration scaling. It is not used to generate demand, assimilate counter residuals or tune model parameters. The penetration summary in Table~\ref{tab:penetration-summary} shows that the GPS sampling fraction changes between campaigns. The penetration coefficient $\eta$ is not assumed to be a universal market share: it is estimated link by link because probe coverage depends on road type, fleet composition and local travel patterns. The Kolmogorov--Smirnov statistic compares the 2020 and 2021 penetration distributions and confirms that the two campaigns should not be pooled without accounting for campaign differences.
+Viasat telemetry is compared with the reconstruction after link-specific penetration scaling (main text, Eqs.~2--5). The penetration $\eta_i$ is the ratio between the Viasat probes and the simulated vehicles summed over the same days, so it is a daily sampling fraction of the road. It is estimated link by link because probe coverage depends on road type, fleet composition and local travel patterns. Table~\ref{tab:penetration-summary} shows that the 2021 campaign has a slightly lower penetration than the 2020 one; the Kolmogorov--Smirnov test rejects equal distributions at the 5\% level, so the two campaigns are analysed separately. Penetration classes are defined by rounding $\log_{10}\eta_i$ to the nearest integer, because $\eta_i$ spans four orders of magnitude; their shares are shown in Fig.~7 of the main text and their profile errors in Table~1 of the main text.
 
-\begin{table}[htbp]
-\centering
-\caption{Full-domain Viasat penetration statistics.}
-\label{tab:penetration-summary}
-\begin{tabular}{@{}lrrrrr@{}}
-\toprule
-Campaign & Segments & Median $\log_{10}\eta$ & Median $\eta$ [\%] &
-Mean $\eta$ [\%] & KS $D$ \\
-\midrule
-2020 & 848 & -1.396 & 4.016 & 6.277 & 0.109 \\
-2021 & 845 & -1.516 & 3.047 & 4.686 & 0.109 \\
-\bottomrule
-\multicolumn{6}{l}{\footnotesize Two-sample KS $p=8.3\times10^{-5}$ for the
-stored 2020--2021 comparison.}
-\end{tabular}
-\end{table}
-
-The decade classes in Table~\ref{tab:penetration-decades} are used because penetration spans orders of magnitude. Linear bins would hide the distinction between links where GPS represents a few percent of the simulated flow and links where it represents only a few per thousand. The ``other'' column collects rare links outside the three principal decades and is intentionally not used as a representative validation class.
-
-\begin{table}[htbp]
-\centering
-\caption{Shares of principal penetration decades.}
-\label{tab:penetration-decades}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Campaign & $\eta\sim10^{-1}$ & $\eta\sim10^{-2}$ &
-$\eta\sim10^{-3}$ & Other \\
-\midrule
-2020 & 56.60\% & 35.97\% & 6.25\% & 1.18\% \\
-2021 & 48.64\% & 45.09\% & 5.80\% & 0.47\% \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Table~\ref{tab:high-penetration-fit} is an aggregate diagnostic, not the main validation claim. High Pearson correlations and matching peak hours show that the simulator and penetration-normalized GPS data have compatible daily timing on the best-observed links. However, aggregate agreement can hide local failures; this is why the main text proceeds to subclusters and representative link-level comparisons.
-
-\begin{table}[htbp]
-\centering
-\caption{High-penetration aggregate-profile fit used to motivate the
-representative validation class.}
-\label{tab:high-penetration-fit}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Campaign & Segments & Pearson $r$ & MAE [pp] & Peak hour
-(simulation/GPS) \\
-\midrule
-2020 & 480 & 0.976 & 0.032 & 18 / 18 \\
-2021 & 411 & 0.960 & 0.035 & 18 / 18 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The global diagnostics in Table~\ref{tab:global-validation} summarize the
-full matched set after excluding links with unusable profiles. The global
-$\eta$ is smaller than the median link penetration because high-volume links
-can dominate the total-flow ratio. Median link correlations and median
-profile MAE values are therefore reported together with global quantities:
-they describe the typical road rather than the volume-weighted aggregate.
-
-\begin{table}[htbp]
-\centering
-\caption{Global validation diagnostics from archived validation tables.}
-\label{tab:global-validation}
-\begin{tabular}{@{}lrrrrrr@{}}
-\toprule
-Campaign & Common links & Valid links & Global $\eta$ &
-Pearson raw & Median link $r$ & Median MAE [pp] \\
-\midrule
-2020 & 930 & 827 & 0.00937 & 0.939 & 0.826 & 0.0859 \\
-2021 & 927 & 828 & 0.00778 & 0.908 & 0.766 & 0.0933 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The penetration classes in Table~\ref{tab:cluster-validation} explain why the paper focuses on representative high-quality strata. Links in the lowest penetration class have weaker correlations and larger MAE, as expected when the probe signal is sparse. Classes with higher median penetration provide more reliable temporal profiles and are therefore better suited for visual validation in the main figures.
+\input{tables/penetration_summary}
 
 Within the representative penetration stratum, the dendrogram in the main text is cut at Ward distance 15,000. This value is not a universal clustering constant; it is the graphical cut that separates the dominant hourly-profile families without fragmenting the validation set into many single-road groups. At lower cuts, several branches represent minor variations of the same daily shape and are not useful for a concise paper figure. At higher cuts, distinct morning/evening profile families begin to merge. The adopted cut therefore provides three interpretable subclusters, which is also the number of representative roads that can be shown clearly in the validation panel.
-
-\begin{table}[htbp]
-\centering
-\caption{Validation quality by penetration class in 2020.}
-\label{tab:cluster-validation}
-\begin{tabular}{@{}rrrrr@{}}
-\toprule
-Class & Links & Median $\eta$ & Median Pearson & Median MAE [pp] \\
-\midrule
--4 & 22 & 0.000232 & 0.437 & 0.290 \\
--3 & 274 & 0.001578 & 0.662 & 0.134 \\
--2 & 514 & 0.008860 & 0.868 & 0.073 \\
--1 & 17 & 0.037783 & 0.913 & 0.061 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 The representative-link selection in Table~\ref{tab:representatives} balances three constraints. First, the three roads must belong to different temporal subclusters so that the paper does not validate the same daily profile three times. Second, within each subcluster the link with the lowest MAE is preferred. Third, the selected roads must be at least 40 km apart whenever possible, so the map communicates spatial coverage rather than three neighbouring links. Polyline 104671 is kept fixed because its urban position near Forlimpopoli gives it a direct interpretation; the other two are then selected by the MAE and separation criteria.
 
@@ -446,8 +356,8 @@ The representative-link selection in Table~\ref{tab:representatives} balances th
 Selection stage & Links & Purpose \\
 \midrule
 Common simulated--Viasat links in 2020 & 930 & Initial matched comparison set. \\
-Valid hourly profiles & 827 & Exclude unusable or degenerate profiles. \\
-Representative high-penetration class & 17 & Candidate set for temporal subclustering. \\
+Usable hourly profiles & 848 & Non-zero simulated and GPS totals. \\
+Upper $k$-means class of $\log_{10}\eta_i$ & 487 & Candidate set for temporal subclustering ($\eta_i\ge0.40\%$). \\
 Displayed representative links & 3 & One illustrative link per temporal subcluster. \\
 \bottomrule
 \end{tabular}
