@@ -320,6 +320,19 @@ Negative counts & Clip negative assimilated counts to zero before delivery. \\
 
 The one-vehicle stopping rule in Table~\ref{tab:correction-rules} is a discreteness threshold: below one vehicle an increment has no meaning in an hourly count table. The depth limit keeps the correction local, so that a single coil cannot reshape a large part of the regional network, and stopping at other sensor links leaves each observed location under the control of its own counter. Two features of the implementation should be kept in mind when reading the results. In both versions the increment passed to the second and later outgoing branches of a node is multiplied by the weights of the branches already processed, so those branches receive less than their turning share. Furthermore, the MTS tables store UTC timestamps, which both versions compare with the local clock of the simulation without conversion; the effect of this offset on the validation is quantified in the main text.
 
+\subsection{Leave-one-out test}
+
+The leave-one-out test uses the assimilation code of the archived runs and the raw simulations of 10--17 February 2020. For every day and every coil with all 96 quarter-hours observed in both directions, the coil is removed from the list of assimilated coils and from the list of polylines at which the propagation stops, so that increments from neighbouring coils can reach its link. The assimilation is then rerun and the hourly counts $\tilde u(h)$ on the held-out link are compared with the hourly coil counts $c(h)$, in the same clock convention used by the assimilation. The error of a coil is $\sum|\tilde u(h)-c(h)|/\sum c(h)$ over hours, directions and days. Table~\ref{tab:loo} and Fig.~\ref{fig:loo} summarize the results. When the coil is kept in the assimilation the same error is 1.2\%, the residual coming from hours with no simulated vehicle or barrier crossing on the link, where the increment does not reproduce $c(h)$. Of the 76 coils reached by the propagation, the median error goes from 49.4\% to 44.7\%.
+
+\input{tables/loo}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{S_loo_coils.png}
+  \caption{Leave-one-out test: error on each held-out coil link before (raw simulation) and after assimilating the other coils, 10--17 February 2020. Red: coils whose link receives an increment from the propagation; grey: coils not reached.}
+  \label{fig:loo}
+\end{figure}
+
 \begin{table}[htbp]
 \centering
 \caption{Observed coil 282 data on Monday 10 February 2020 (local time).}

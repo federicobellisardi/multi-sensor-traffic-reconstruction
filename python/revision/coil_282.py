@@ -53,6 +53,11 @@ flow = sim.loc[sim.poly_cid == POLY, cols].sum()
 flow.index = pd.to_datetime(flow.index)
 hourly_coil = day.sum(axis=1).resample("h").sum()
 fig, ax = plt.subplots(figsize=(9.0, 5.0), constrained_layout=True)
+raw = pd.read_csv(str(SIM).replace(".corrected", ""), sep=";")
+raw_flow = raw.loc[raw.poly_cid == POLY, cols].sum()
+raw_flow.index = pd.to_datetime(raw_flow.index)
+ax.plot(raw_flow.index + pd.Timedelta(minutes=30), raw_flow.values, color="#2F2F2F", marker="^", ms=5, lw=2.0,
+        label="Simulation (raw)")
 ax.plot(flow.index + pd.Timedelta(minutes=30), flow.values, color="#8D8D8D", marker="o", ms=5, lw=2.4,
         label="Simulation (assimilated)")
 ax.plot(hourly_coil.index + pd.Timedelta(minutes=30), hourly_coil.values, color="#B0B0B0", marker="s", ms=5,
@@ -61,7 +66,7 @@ ax.set_xlabel("Local time")
 ax.set_ylabel(r"$\Phi$ (veh/h)")
 ax.xaxis.set_major_locator(mdates.HourLocator(interval=3))
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-ax.legend(loc="upper right", frameon=False)
+ax.legend(loc="upper left", frameon=False)
 save(fig, "4_poly_flow")
 
 hour = day.resample("h").sum()
@@ -72,3 +77,9 @@ out = ROOT / "article/results/revision"
 out.mkdir(parents=True, exist_ok=True)
 (out / "coil_282_summary.json").write_text(json.dumps(summary, indent=2))
 print(summary)
+
+corr = {"raw_vs_coil_pearson": float(raw_flow.reset_index(drop=True).corr(hourly_coil.reset_index(drop=True))),
+        "raw_daily": float(raw_flow.sum()), "assimilated_daily": float(flow.sum()), "coil_daily": float(hourly_coil.sum())}
+summary["comparison"] = corr
+(out / "coil_282_summary.json").write_text(json.dumps(summary, indent=2))
+print(corr)

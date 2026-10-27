@@ -10,5 +10,11 @@
     "daily_sum": 10397,
     "peak_hourly": 1143,
     "peak_hour": "07:00"
+  },
+  "comparison": {
+    "raw_vs_coil_pearson": 0.9488077216477925,
+    "raw_daily": 14804.0,
+    "assimilated_daily": 21791.0,
+    "coil_daily": 21935.0
   }
 }

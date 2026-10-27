@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering
+\caption{Leave-one-out test of the coil assimilation, 10--17 February 2020. For each coil with complete data on a given day, the coil is removed from the assimilation and from the set of polylines that stop the propagation; the error is $\sum_h|u(h)-c(h)|/\sum_h c(h)$ on the held-out coil link, summed over directions and days.}
+\label{tab:loo}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+ & Raw simulation & After assimilation \\
+\midrule
+Pooled relative error [\%] & 59.8 & 56.7 \\
+Median over coils [\%] & 46.2 & 44.3 \\
+Interquartile range [\%] & 33.2--62.2 & 32.3--62.0 \\
+\midrule
+Coils tested & \multicolumn{2}{r}{149} \\
+Coil-days & \multicolumn{2}{r}{610} \\
+Coils reached by the propagation [\%] & \multicolumn{2}{r}{51} \\
+Coils improved / worsened [\%] & \multicolumn{2}{r}{39 / 13} \\
+\bottomrule
+\end{tabular}
+\end{table}
