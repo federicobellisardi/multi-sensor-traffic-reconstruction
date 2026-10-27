@@ -86,7 +86,7 @@ The regional road traffic flow monitoring system (MTS) coils provide local vehic
 
 \begin{figure*}[htbp]
   \centering
-  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig1.png}
+  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig1.jpg}
   \caption{\textbf{Study domain and observational inputs.}
   \textbf{(a)} Regional road cartography used by the model on a CartoDB
   Positron basemap; the scale bar corresponds to 50~km.
@@ -95,8 +95,8 @@ The regional road traffic flow monitoring system (MTS) coils provide local vehic
   logarithmic scale.
   \textbf{(c)} Magnetic traffic-system coil locations over the regional
   road graph.
-  \textbf{(d)} Detailed location of coil 282 and complete 15-min
-  directional vehicle counts for Wednesday, 15 March 2020.}
+  \textbf{(d)} Location of coil 282 (inset) and complete 15-min
+  directional vehicle counts on Monday 10 February 2020, local time.}
   \label{fig:inputs}
 \end{figure*}
 
@@ -121,16 +121,16 @@ Figure~\ref{fig:demand}b,c shows the mobility components used to decompose agent
 
 \subsection{Network reconstruction and local counter control}
 
-The simulation converts the OD demand into directional link flows. For each hour, generated agents are placed on the directed road graph, routed toward their destination and counted on every traversed polyline. The output is a link-by-time matrix $\phi_i(h)$, where $i$ is a road polyline and $h$ is the hour. The comparison with coil 282 shows that the simulated road associated with the counter follows the same broad daily structure as the observed series on 10 February 2020 (Fig.~\ref{fig:simulation}a). The map of simulated daily flows highlights the high-volume regional corridors while retaining non-zero information on the secondary network (Fig.~\ref{fig:simulation}b). This microscopic-to-link aggregation follows the logic of agent-based traffic simulators, where individual vehicle trajectories are used to recover network-level flow fields
+The simulation converts the OD demand into directional link flows. For each hour, generated agents are placed on the directed road graph, routed toward their destination and counted on every traversed polyline. The output is a link-by-time matrix $\phi_i(h)$, where $i$ is a road polyline and $h$ is the hour. The comparison with coil 282 shows that the simulated road associated with the counter follows the same broad daily structure as the observed series on Monday 10 February 2020, a working day before the COVID-19 mobility restrictions (Fig.~\ref{fig:simulation}a). The map of simulated daily flows highlights the high-volume regional corridors while retaining non-zero information on the secondary network (Fig.~\ref{fig:simulation}b). This microscopic-to-link aggregation follows the logic of agent-based traffic simulators, where individual vehicle trajectories are used to recover network-level flow fields
 \cite{horni2016,lopez2018,treiber2013}.
 
 \begin{figure*}[htbp]
   \centering
-  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig3.png}
+  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig3.jpg}
   \caption{\textbf{Link-level reconstruction output.}
   \textbf{(a)} Hourly simulated flow on the polyline associated with coil
-  282 compared with hourly aggregated coil observations on 15 March
-  2020; $\Phi$ denotes vehicle flow.
+  282 compared with hourly aggregated coil observations on Monday
+  10 February 2020; $\Phi$ denotes vehicle flow.
   \textbf{(b)} Spatial distribution of simulated daily link flows over
   Emilia-Romagna, expressed through flow quantile classes; yellow segments
   carry the highest reconstructed flows and purple segments the lowest.}

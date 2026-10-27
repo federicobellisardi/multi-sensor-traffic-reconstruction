@@ -1,0 +1,14 @@
+{
+  "282_0": {
+    "samples": 96,
+    "daily_sum": 11538,
+    "peak_hourly": 1166,
+    "peak_hour": "17:00"
+  },
+  "282_1": {
+    "samples": 96,
+    "daily_sum": 10397,
+    "peak_hourly": 1143,
+    "peak_hour": "07:00"
+  }
+}
