@@ -343,9 +343,16 @@ Viasat telemetry is compared with the reconstruction after link-specific penetra
 
 \input{tables/penetration_summary}
 
-Within the representative penetration stratum, the dendrogram in the main text is cut at Ward distance 15,000. This value is not a universal clustering constant; it is the graphical cut that separates the dominant hourly-profile families without fragmenting the validation set into many single-road groups. At lower cuts, several branches represent minor variations of the same daily shape and are not useful for a concise paper figure. At higher cuts, distinct morning/evening profile families begin to merge. The adopted cut therefore provides three interpretable subclusters, which is also the number of representative roads that can be shown clearly in the validation panel.
+The candidate set for the example links is the upper class of a three-class $k$-means partition of the standardized $\log_{10}\eta_i$, which in 2020 contains the 487 links with $\eta_i\ge0.40\%$. Before clustering, each simulated profile is divided by its daily total, so that Ward linkage acts on the 24 hourly shares and not on volumes. On raw counts the Ward distance is dominated by volume: the three raw-count clusters used in the earlier version of this analysis (74, 112 and 301 links) are disjoint bands of daily traffic, 1,001--6,384, 6,597--15,446 and 14,638--55,856 simulated vehicles per day. The partition on shares has an adjusted Rand index of 0.18 with the raw-count partition, so the two groupings are largely different. The dendrogram is cut into three clusters, at Ward distance 0.15; three is also the number of example links that fit in one validation figure. Figure~\ref{fig:subcluster_profiles} shows the mean hourly shares of the three subclusters.
 
-The representative-link selection in Table~\ref{tab:representatives} balances three constraints. First, the three roads must belong to different temporal subclusters so that the paper does not validate the same daily profile three times. Second, within each subcluster the link with the lowest MAE is preferred. Third, the selected roads must be at least 40 km apart whenever possible, so the map communicates spatial coverage rather than three neighbouring links. Polyline 104671 is kept fixed because its urban position near Forlimpopoli gives it a direct interpretation; the other two are then selected by the MAE and separation criteria.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{S_subcluster_profiles.png}
+  \caption{Mean normalized simulated profile of the three subclusters of Fig.~8 of the main text (51, 78 and 358 links).}
+  \label{fig:subcluster_profiles}
+\end{figure}
+
+The selection of the example links in Table~\ref{tab:representatives} follows three rules. The three roads belong to different subclusters. Polyline 104671 is fixed because its position near Forlimpopoli gives it a direct interpretation. In the other two subclusters, among the links with at least 300 simulated vehicles per day and 50 Viasat probes in the week (all 487 candidates), we take the pair with the lowest total MAE whose pairwise distances, including the distance to 104671, are at least 40~km. The two selected links are thus among the best of the candidate set, as the last column of Table~\ref{tab:representatives} shows; the full distribution is in Table~1 and Fig.~10 of the main text.
 
 \begin{table}[htbp]
 \centering
@@ -363,22 +370,7 @@ Displayed representative links & 3 & One illustrative link per temporal subclust
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
-\centering
-\caption{Representative polylines shown in Fig.~6 of the main manuscript.}
-\label{tab:representatives}
-\begin{tabular}{@{}rlrl@{}}
-\toprule
-Subcluster & Polyline & MAE [pp] & Selection note \\
-\midrule
-1 & 104671 & 0.528 & Fixed urban representative near Forlimpopoli. \\
-2 & 187204 & 0.761 & Lowest MAE under the separation constraint. \\
-3 & 132443 & 0.611 & Lowest MAE under the separation constraint. \\
-\bottomrule
-\multicolumn{4}{l}{\footnotesize Minimum pairwise separation among the three
-selected links: 41.9~km.}
-\end{tabular}
-\end{table}
+\input{tables/representatives}
 
 \section{Aggregate Road-safety Context}
 \label{sec:aggregate-safety}

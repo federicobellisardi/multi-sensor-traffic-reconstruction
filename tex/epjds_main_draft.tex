@@ -270,34 +270,28 @@ To judge these values we apply two fixed profiles to every link and compute the 
 
 \subsection{Temporal subclusters and representative roads}
 
-The most informative penetration stratum is not temporally homogeneous. In 2020, the validation archive contains 930 common simulated--Viasat links, of which 827 have usable profiles after filtering; the representative high-penetration class contains 17 candidate links (Supplementary Section~S5). We therefore cluster the hourly simulated profiles of this candidate set using Ward agglomerative clustering. Cutting the dendrogram at a Ward distance of 15,000 yields three subclusters (Fig.~\ref{fig:subclusters}a). Their spatial distribution is distinct enough to support illustrative validation examples: each cluster contributes one representative road, and the selected roads are constrained to remain geographically separated (Fig.~\ref{fig:subclusters}b). This makes the final comparison a test of distinct temporal profiles rather than a repeated inspection of neighbouring links with nearly identical dynamics \cite{ward1963,murtagh2014}. The three links are not intended to be the only evidence of validation; the full matched-link statistics, candidate-filtering logic, penetration classes, mean profile discrepancies and selection outcomes are reported in Supplementary Section~S5.
+To show individual comparisons we take the 487 links of the upper class of a three-class $k$-means partition of $\log_{10}\eta_i$, which corresponds to $\eta_i\ge0.40\%$ in 2020. Their simulated profiles are normalized to hourly shares and clustered with Ward linkage and Euclidean distance \cite{ward1963,murtagh2014}; normalizing removes the volume of each road, so the clusters group links by the shape of their daily profile. Cutting the dendrogram into three clusters (Ward distance 0.15, Fig.~\ref{fig:subclusters}a) gives subclusters of 51, 78 and 358 links. Subcluster~1 has the sharpest morning peak (7.1\% of daily traffic at 07:00) and the fastest evening decline, subcluster~3 the flattest morning and the largest evening tail, and subcluster~2 lies in between (Supplementary Fig.~S2). The three subclusters are spread over the whole validation area (Fig.~\ref{fig:subclusters}b).
 
 \begin{figure*}[htbp]
   \centering
   \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig5.png}
-  \caption{\textbf{Subclustering of the representative GPS-penetration
-  stratum in 2020.}
-  \textbf{(a)} Ward dendrogram of hourly link-flow profiles; the dashed line
-  marks the adopted cut at 15,000.
-  \textbf{(b)} Spatial location of the three resulting subclusters, using
-  the same colours as the dendrogram.}
+  \caption{\textbf{Subclusters of the high-penetration links in 2020.}
+  \textbf{(a)} Ward dendrogram of the normalized hourly profiles of the 487 candidate links; the dashed line marks the three-cluster cut.
+  \textbf{(b)} Location of the three subclusters, with the number of links in parentheses.}
   \label{fig:subclusters}
 \end{figure*}
 
-Polyline 104671 is kept as the charcoal representative because it is close to the urbanized Forlimpopoli area and therefore has a clear geographical interpretation. The remaining two representatives are the links of the other clusters with the lowest MAE, subject to a minimum pairwise distance of 40~km, which prevents selecting three neighbouring roads. The resulting links are 187204 and 132443. Their MAE values are 0.53, 0.76 and 0.61~pp, respectively, and the minimum pairwise separation is 41.9~km (Fig.~\ref{fig:representatives}). The visual agreement of the daily profiles illustrates the reconstructed temporal shape on roads with different cluster membership and different positions in the validation area; broader validation distributions are reported in Supplementary Section~S5.
+One link per subcluster is shown in Fig.~\ref{fig:representatives}. Polyline 104671 is kept because it lies close to the urban area of Forlimpopoli. The other two are the links of subclusters~2 and~3 with the lowest MAE among those at least 40~km from the other representatives: polylines 134419 and 64544. They are therefore best cases. Their MAE is 0.81 and 0.72~pp ($\varepsilon=19\%$ and 17\%), lower than on 95\% and 99\% of the usable links, while polyline 104671 has MAE $=1.22$~pp ($\varepsilon=29\%$), close to the median of the $\eta\sim10^{-2}$ class (Supplementary Section~S5). On all three roads the simulated morning rise precedes the GPS one by about an hour, which is the lead discussed above.
 
 \begin{figure*}[htbp]
   \centering
   \includegraphics[width=\textwidth]{fig6.png}
-  \caption{\textbf{Validation on spatially distributed representative
-  polylines, 10--17 February 2020.}
-  \textbf{(a--c)} Mean simulated hourly flow and penetration-normalized Viasat profile,
-  with the hourly absolute share difference $|p_i(h)-q_i(h)|$ below.
-  \textbf{(a)} Polyline 104671, MAE $=0.53$~pp.
-  \textbf{(b)} Polyline 187204, MAE $=0.76$~pp.
-  \textbf{(c)} Polyline 132443, MAE $=0.61$~pp.
-  \textbf{(d)} CartoDB Positron map of the three selected polylines, coloured
-  as in Fig.~\ref{fig:subclusters}.}
+  \caption{\textbf{Representative links, 10--17 February 2020.}
+  \textbf{(a--c)} Mean simulated hourly flow and penetration-normalized Viasat profile (top) and hourly absolute share difference $|p_i(h)-q_i(h)|$ (bottom).
+  \textbf{(a)} Subcluster 1, polyline 104671, MAE $=1.22$~pp.
+  \textbf{(b)} Subcluster 2, polyline 134419, MAE $=0.81$~pp.
+  \textbf{(c)} Subcluster 3, polyline 64544, MAE $=0.72$~pp.
+  \textbf{(d)} Location of the three polylines on the road graph, coloured as in Fig.~\ref{fig:subclusters}.}
   \label{fig:representatives}
 \end{figure*}
 
@@ -422,7 +416,7 @@ where $E_i=\sum_h \phi_i(h)$ is total simulated link exposure and ranks are orie
 
 Validation uses Viasat only after matching GPS roads with simulated polylines. The GPS data are not used to generate demand, assimilate coil residuals, tune the simulation or select model parameters. They provide an external check of the temporal profiles produced by the reconstruction framework. For every matched road, the link-specific penetration coefficient in Eq.~\eqref{eq:penetration} rescales the GPS series so that total volume on that road is aligned before profile comparison. Because this scaling uses each road separately, it tests the temporal profile on that physical link rather than a region-wide sum or a universal market-penetration factor. The MAE of hourly shares in Eq.~\eqref{eq:profile_error} is used as the hourly validation diagnostic because absolute probe counts are not total traffic counts: Viasat observes a partial fleet, and its penetration varies across links. Normalization isolates whether the simulated and observed profiles rise, peak and decline at comparable hours, which is the validation target for the reconstructed temporal field. This is a conservative use of probe data: the GPS traces validate shape and timing after penetration adjustment, but they are not treated as complete traffic counts and are not merged back into the calibration or data-assimilation stages \cite{seo2015,seo2017,bellisardi2025}.
 
-To choose interpretable examples for the paper, links in the representative penetration class are clustered by their simulated hourly profiles using Ward linkage and Euclidean distance. The dendrogram is cut into three subclusters. Polyline 104671 is fixed as the charcoal representative because of its urban location near Forlimpopoli. Representatives from the other two subclusters are the links with the lowest MAE at least 40~km apart. This selection avoids visually redundant neighbouring examples and keeps one validation road for each temporal subcluster. The examples are illustrative representatives of temporal and geographical regimes, not the sole validation evidence. Extended validation tables, threshold rationale, candidate-link counts and representative-link metrics are reported in Supplementary Section~S5.
+The examples of Fig.~\ref{fig:representatives} are chosen as described in the Results: Ward clustering of the normalized simulated profiles of the high-penetration links, one link per subcluster, with polyline 104671 fixed and the other two selected by lowest MAE under a 40~km separation constraint. Supplementary Section~S5 lists the selection steps and the metrics of the selected links.
 
 \section{Discussion}
 
