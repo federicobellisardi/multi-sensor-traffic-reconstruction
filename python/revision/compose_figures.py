@@ -107,3 +107,16 @@ if __name__ == "__main__":
     compose([((INC / "8e_hazard_weighted_exposure_map.png", INC / "8f_weekday_holiday_hazard_difference.png"), "ab"),
              ((INC / "9a_risk_centrality.png", INC / "9d_high_risk_anomaly_map.png"), "ce")], "fig8", jpeg=True,
             extra_letters=[(0.30, 0.545, "d")])
+
+
+def resample_single(names=("fig2.png", "figsupp.png")):
+    """Bring the hand-made composites that are not rebuilt here to WIDTH pixels."""
+    for n in names:
+        im = Image.open(IMG / n).convert("RGB")
+        if im.width > WIDTH:
+            im = im.resize((WIDTH, round(im.height * WIDTH / im.width)), Image.LANCZOS)
+        im.save(IMG / n, dpi=(300, 300), optimize=True)
+
+
+if __name__ == "__main__":
+    resample_single()
