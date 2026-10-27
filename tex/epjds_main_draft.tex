@@ -155,8 +155,7 @@ relative risk is defined as
 This normalization separates hours with many accidents because many vehicles are present from hours where the accident share is high relative to the simulated exposure. The resulting profile shows higher relative risk during night-time hours and morning transitions, while central and evening periods with more stable traffic conditions tend to fall below the daily-average risk (Fig.~\ref{fig:temporal_risk}b). Clustering the hourly normalized-risk profiles identifies distinct temporal regimes rather than a single smooth daily curve (Fig.~\ref{fig:temporal_risk}c).
 
 Across hours, accident share scales sublinearly with simulated weekday
-exposure, $A \sim E^\alpha$, with $\alpha \simeq 0.72$ and
-$R^2 \simeq 0.85$ (Fig.~\ref{fig:temporal_risk}d). The exponent should not
+exposure, $A \sim E^\alpha$. A least-squares fit of $\log A$ against $\log E$ on the 24 hourly points gives $\alpha = 0.72$, with a 95\% bootstrap confidence interval of 0.58--0.88 (10,000 resamples of the 24 hours), and $R^2 = 0.85$ (Fig.~\ref{fig:temporal_risk}d). The exponent should not
 be read as a causal parameter. It indicates that exposure explains a large
 part of the temporal organization of accidents, but that accidents do not
 increase in direct proportion to traffic volume. This is consistent with the
@@ -176,7 +175,7 @@ conditions jointly shape aggregate risk.
   distinct temporal risk regimes; dashed line marks the daily-average risk.
   \textbf{(d)} Scaling relation between simulated weekday exposure and
   accident share across hours (log--log axes), showing sublinear behaviour
-  with elasticity $\alpha = 0.72$ and $R^2 = 0.85$.}
+  with $\alpha = 0.72$ (95\% bootstrap interval 0.58--0.88) and $R^2 = 0.85$ over the 24 hourly points.}
   \label{fig:temporal_risk}
 \end{figure*}
 
