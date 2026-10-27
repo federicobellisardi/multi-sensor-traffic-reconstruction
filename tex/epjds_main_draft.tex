@@ -139,66 +139,38 @@ The simulation converts the OD demand into directional link flows. For each hour
   \label{fig:simulation}
 \end{figure*}
 
-\subsection{Accident exposure and emergent road-risk structure}
+\subsection{Accident exposure}
 
-The reconstructed link-by-time traffic field is primarily a traffic product. As a downstream proof of concept, it also provides a dynamic exposure layer that can be reused for regional road-safety screening. Accident records available for Emilia-Romagna in 2022--2024 are aggregated and are not geolocated at the level of single events. For this reason, the analysis does not attempt to validate point hotspots or infer event-level causality. Instead, it asks whether the temporal and spatial structure of simulated exposure can organize aggregate accident information in a way that is useful for exposure normalization and prioritization.
-
-We first compare the hourly accident distribution with simulated exposure
-profiles for weekdays and weekends (Fig.~\ref{fig:temporal_risk}a). Let
-$A(h)$ be the share of daily accidents observed in hour $h$, and let $E(h)$
-be the corresponding share of simulated exposure. The exposure-normalized
-relative risk is defined as
+The reconstructed field can serve as an exposure denominator for aggregate accident statistics. The regional accident tables for 2022--2024 (16,679, 16,808 and 16,757 accidents) give counts by hour of the day and by road type, with no location. Let $A(h)$ be the share of accidents in hour $h$ and $E(h)$ the share of simulated vehicles on the whole network in the same hour (Fig.~\ref{fig:temporal_risk}a). We define the relative risk
 \begin{equation}
-  R(h) = \frac{A(h)}{E(h)} .
+  R(h) = \frac{A(h)/E(h)}{\frac{1}{24}\sum_{h'} A(h')/E(h')} ,
   \label{eq:hourly_risk}
 \end{equation}
-This normalization separates hours with many accidents because many vehicles are present from hours where the accident share is high relative to the simulated exposure. The resulting profile shows higher relative risk during night-time hours and morning transitions, while central and evening periods with more stable traffic conditions tend to fall below the daily-average risk (Fig.~\ref{fig:temporal_risk}b). Clustering the hourly normalized-risk profiles identifies distinct temporal regimes rather than a single smooth daily curve (Fig.~\ref{fig:temporal_risk}c).
+which equals one on average over the day. With weekday exposure, $R$ is 3.4 at 00:00 and 2.4 at 01:00, stays between 1.0 and 1.4 from 03:00 to 07:00, and is below 0.6 after 19:00 (Fig.~\ref{fig:temporal_risk}b). The night values rest on the simulated night exposure, the least reliable part of the simulated profile (Section~\ref{sec:limitations}). Ward clustering of the hourly risk and exposure values separates three regimes: night (21:00--06:00), morning (07:00--09:00) and day (10:00--20:00) (Fig.~\ref{fig:temporal_risk}c).
 
-Across hours, accident share scales sublinearly with simulated weekday
-exposure, $A \sim E^\alpha$. A least-squares fit of $\log A$ against $\log E$ on the 24 hourly points gives $\alpha = 0.72$, with a 95\% bootstrap confidence interval of 0.58--0.88 (10,000 resamples of the 24 hours), and $R^2 = 0.85$ (Fig.~\ref{fig:temporal_risk}d). The exponent should not
-be read as a causal parameter. It indicates that exposure explains a large
-part of the temporal organization of accidents, but that accidents do not
-increase in direct proportion to traffic volume. This is consistent with the
-idea that traffic amount, traffic regime, road environment and behavioural
-conditions jointly shape aggregate risk.
+A least-squares fit of $\log A$ against $\log E$ on the 24 hourly points gives $A \sim E^\alpha$ with $\alpha = 0.72$, 95\% bootstrap confidence interval 0.58--0.88 (10,000 resamples of the 24 hours), and $R^2 = 0.85$ (Fig.~\ref{fig:temporal_risk}d). Across hours, the accident share grows less than proportionally with the simulated exposure.
 
 \begin{figure*}[htbp]
   \centering
   \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig7.png}
-  \caption{\textbf{Temporal risk/exposure analysis.}
-  \textbf{(a)} Mean hourly accident share for 2022--2024 compared with
-  simulated weekday and weekend exposure profiles.
-  \textbf{(b)} Exposure-normalized hourly accident intensity for weekday
-  (grey) and weekend (orange) exposure; the dashed line marks the
-  daily-average risk.
-  \textbf{(c)} Clustering of hourly normalized-risk profiles into three
-  distinct temporal risk regimes; dashed line marks the daily-average risk.
-  \textbf{(d)} Scaling relation between simulated weekday exposure and
-  accident share across hours (log--log axes), showing sublinear behaviour
-  with $\alpha = 0.72$ (95\% bootstrap interval 0.58--0.88) and $R^2 = 0.85$ over the 24 hourly points.}
+  \caption{\textbf{Accidents and simulated exposure by hour.}
+  \textbf{(a)} Hourly accident share (mean of 2022--2024) and simulated weekday and weekend exposure shares.
+  \textbf{(b)} Relative risk $R(h)$, Eq.~\eqref{eq:hourly_risk}, with weekday (grey) and weekend (orange) exposure; the dashed line marks $R=1$.
+  \textbf{(c)} Three hourly regimes from Ward clustering of risk and exposure values.
+  \textbf{(d)} Accident share against simulated weekday exposure share for the 24 hours (log--log axes) and fit $A\sim E^{\alpha}$, $\alpha = 0.72$ (95\% bootstrap interval 0.58--0.88), $R^2 = 0.85$.}
   \label{fig:temporal_risk}
 \end{figure*}
 
-The same risk profile can be projected back onto the simulated road network as hazard-weighted exposure (Fig.~\ref{fig:spatial_risk}a). This produces a link-level screening layer that highlights where large simulated flows coincide with hours of elevated relative risk. The weekday--weekend comparison emphasizes how the same physical network can carry different hazard-weighted exposure patterns under different demand regimes (Fig.~\ref{fig:spatial_risk}b). Ranking links by their share of total hazard-weighted exposure defines a risk centrality; the highest-ranked links are geolocated on the road map to make their spatial interpretation explicit (Fig.~\ref{fig:spatial_risk}c), and their relative shares are shown as a compact bar ranking (Fig.~\ref{fig:spatial_risk}d). Comparing hazard rank with exposure rank then identifies segments whose hazard is anomalously high relative to their simulated exposure (Fig.~\ref{fig:spatial_risk}e). These maps are intended for stakeholder prioritization and exploratory screening, not as evidence that specific accidents occurred on the highlighted links. Additional descriptive statistics on accident totals, road environment and seasonal shares are reported in Supplementary Fig.~S1.
+$R(h)$ is a regional profile and is the same for every link. The hazard-weighted exposure $H_i$ of a link (Eq.~\eqref{eq:hazard_weighted_exposure}, Fig.~\ref{fig:spatial_risk}a) is therefore its simulated volume weighted by the hourly composition of its traffic, and the rank difference $S_i$ (Eq.~\eqref{eq:hazard_anomaly}, Fig.~\ref{fig:spatial_risk}e) picks out links that carry a larger share of their traffic in high-$R$ hours. The risk centrality $C_i$ (Fig.~\ref{fig:spatial_risk}c,d) and the weekday--weekend contrast $D_i$ (Fig.~\ref{fig:spatial_risk}b) follow the same logic. These maps show where simulated traffic coincides with hours of high regional risk; they carry no information on where accidents occur. Supplementary Fig.~S3 gives the yearly totals, road types and seasonal shares of the accident data.
 
 \begin{figure*}[htbp]
   \centering
-  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig8.png}
-  \caption{\textbf{Spatial organization of hazard-weighted simulated exposure.}
-  \textbf{(a)} Hazard-weighted exposure on the simulated regional road
-  network, obtained by weighting link-level simulated traffic with the hourly
-  accident-risk profile.
-  \textbf{(b)} Relative weekday--weekend difference in hazard-weighted
-  exposure; positive values indicate links with higher weekday hazard.
-  \textbf{(c)} Geolocated highest-risk-centrality links; annotated polyline
-  identifiers correspond to the top-ranked segments visible on the map.
-  \textbf{(d)} Bar ranking of links by share of total hazard-weighted
-  exposure; risk centrality is the fraction of regional hazard-weighted
-  traffic carried by each link.
-  \textbf{(e)} Road links with anomalously high hazard relative to their
-  simulated exposure, identified by comparing hazard rank and exposure rank.
-  Panels (a--e) represent simulated exposure weighted by aggregate temporal
-  accident risk, not geolocated crash events.}
+  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig8.jpg}
+  \caption{\textbf{Simulated weekday exposure weighted by the regional risk profile.}
+  \textbf{(a)} Hazard-weighted exposure $H_i$, Eq.~\eqref{eq:hazard_weighted_exposure}.
+  \textbf{(b)} Weekday--weekend contrast $D_i$, Eq.~\eqref{eq:weekday_weekend_hazard_difference}; positive values mark links with larger weekday $H_i$.
+  \textbf{(c)} Location of the links with the highest risk centrality $C_i$, Eq.~\eqref{eq:risk_centrality}, and \textbf{(d)} their share of the total hazard-weighted exposure.
+  \textbf{(e)} Links in the top 5\% of the rank difference $S_i$, Eq.~\eqref{eq:hazard_anomaly}.}
   \label{fig:spatial_risk}
 \end{figure*}
 
@@ -367,7 +339,7 @@ where the sum runs over the admissible outgoing links; when their simulated coun
 
 \subsection{Accident exposure and hazard-weighted traffic}
 
-The road-safety analysis uses regional accident records for 2022--2024 as aggregated counts. The records are suitable for describing temporal distributions and broad road-environment composition, but they are not used as geolocated single-event points. Consequently, the method does not geolocate individual crashes, predict individual accidents or calibrate observed crash hotspots. It combines aggregate accident timing with the simulated traffic field to construct exposure-normalized and hazard-weighted screening indicators.
+The accident data are the hourly tables of road accidents with injuries in Emilia-Romagna for 2022, 2023 and 2024, averaged over the three years; they pool all days of the week. Exposure comes from twelve weekday runs, one in each month of 2023, and eleven Sunday runs of the same year, all driven by the OD matrices of Section~\ref{sec:data_preprocessing}.
 
 Let $\phi_i(h)$ be the simulated flow on link $i$ during hour $h$. Hourly exposure is obtained by summing simulated traffic over the road network,
 \begin{equation}
@@ -383,33 +355,31 @@ so that $E(h)$ is a daily share. Accident counts are normalized in the same way,
        {\sum_{h'} a(h')} ,
   \label{eq:accident_share}
 \end{equation}
-where $a(h)$ is the number of accidents in hour $h$. The exposure-normalized hourly risk is then Eq.~\eqref{eq:hourly_risk}. Separate weekday and weekend exposure profiles can be used in the denominator when the goal is to compare temporal regimes.
+where $a(h)$ is the mean number of accidents in hour $h$, and $R(h)$ follows from Eq.~\eqref{eq:hourly_risk}. Weekday and weekend exposure give two versions of $R(h)$; the link indicators below use the weekday one.
 
-For spatial screening, the hourly risk profile is projected onto each link through hazard-weighted exposure,
+The hazard-weighted exposure of link $i$ is
 \begin{equation}
   H_i = \sum_h \phi_i(h) R(h) .
   \label{eq:hazard_weighted_exposure}
 \end{equation}
-This quantity is high when a link carries large simulated traffic during hours with elevated aggregate relative risk. The weekday--weekend contrast is computed as
+and the weekday--weekend contrast is
 \begin{equation}
   D_i =
   \frac{H_i^{\mathrm{weekday}} - H_i^{\mathrm{weekend}}}
        {H_i^{\mathrm{weekday}} + H_i^{\mathrm{weekend}}} ,
   \label{eq:weekday_weekend_hazard_difference}
 \end{equation}
-with the denominator evaluated only where the total hazard-weighted exposure is positive. Link risk centrality is
+evaluated where the denominator is positive. The risk centrality
 \begin{equation}
   C_i = \frac{H_i}{\sum_j H_j} ,
   \label{eq:risk_centrality}
 \end{equation}
-and measures the share of total hazard-weighted exposure carried by link
-$i$. Finally, anomalous hazard relative to exposure is screened by comparing
-ranks,
+is the share of the total hazard-weighted exposure carried by link $i$, and the rank difference
 \begin{equation}
   S_i = \operatorname{rank}(H_i) - \operatorname{rank}(E_i),
   \label{eq:hazard_anomaly}
 \end{equation}
-where $E_i=\sum_h \phi_i(h)$ is total simulated link exposure and ranks are oriented so that larger values correspond to higher hazard or exposure. Large positive deviations indicate links whose hazard-weighted exposure rank is high compared with their baseline exposure rank. These indicators support screening and prioritization, but they are not interpreted as proof of causal risk or as geolocation of individual accidents.
+compares the percentile rank of $H_i$ with that of the total simulated exposure $E_i=\sum_h \phi_i(h)$ among the links with $E_i>0$. Figure~\ref{fig:spatial_risk}e highlights the links in the top 5\% of $S_i$.
 
 \subsection{GPS validation and clustering}
 
@@ -427,9 +397,7 @@ The validation results show that the simulation framework can produce reconstruc
 The practical value of the workflow is that it produces a road-level traffic representation from data sources that are normally used separately. This output can be used to identify corridors with high reconstructed flows, compare weekday and weekend demand scenarios, inspect the temporal profile of specific roads, support local traffic-management decisions and provide an exposure layer for downstream analyses such as emissions, noise, road-safety screening or infrastructure stress. Because the reconstructed quantity is indexed by road polyline and time, it can also be aggregated after the fact to municipalities, provinces, corridors or user-defined areas without re-running the model. This is the type of intermediate mobility layer needed by data-driven planning tools, accessibility studies and urban digital-twin applications
 \cite{iacono2008,cheng2013,liu2020,batty2013,peldon2024}.
 
-The accident analysis illustrates a downstream use of the reconstructed field rather than a second calibration target. The available 2022--2024 accident data are aggregate observations, so the paper does not geolocate individual crashes, interpret the maps as observed crash hotspots or claim to predict individual accidents. Instead, simulated traffic is used as a dynamic exposure denominator. Normalizing accidents by exposure reveals temporal risk regimes that are not visible from accident counts alone: night-time and transition hours can have elevated relative risk even when their absolute counts are moderate, whereas high-volume central hours can have lower relative risk because exposure is also high.
-
-The observed scaling $A \sim E^{0.72}$ reinforces the same interpretation. Exposure accounts for a large fraction of the temporal accident structure, but the sublinear exponent indicates that accident share does not rise proportionally with simulated traffic share. Road environment, speed regime, visibility, behavioural conditions and reporting processes may all contribute to the remaining variation. The spatial hazard-weighted maps should therefore be read as screening and prioritization tools: they identify links whose simulated traffic occurs during more hazardous hours, and links whose hazard rank is high relative to their exposure rank, but they do not establish causal mechanisms or event-level accident locations.
+The accident analysis uses the reconstructed field as an exposure denominator. With aggregate tables, normalization changes the reading of the hourly counts: the hours around midnight have few accidents but an even smaller simulated exposure, and therefore the highest $R(h)$, while the busy day hours fall below one. The exponent $\alpha=0.72$ (0.58--0.88) means that across hours the accident share grows less than proportionally with exposure. Speed regime, visibility, road environment and reporting can all contribute \cite{elvik2005,aarts2006}, and the present data cannot separate them. Because $R(h)$ is regional, the link maps rank roads by the hourly composition of their simulated traffic; geolocated accident records would be needed to test whether the highlighted links are more dangerous.
 
 The webserver implementation is important because it operationalizes the validated reconstruction workflow without changing its scientific assumptions. It turns the offline chain into a repeatable service: a user can choose a time window, launch the simulation, monitor progress, download data-assimilated flows and visualize the result on the road graph. This makes the workflow suitable for reproducible scenario analysis, operational reporting and communication with stakeholders who need interpretable traffic fields as maps and tables rather than source code. The dashboard also keeps the MTS monitoring layer close to the simulation layer, allowing counter data quality, anomalies and data-assimilation behaviour to be inspected in the same environment. The detailed service architecture is summarized in Supplementary Section~S7.
 
@@ -445,7 +413,7 @@ This work presents a regional-scale workflow for reconstructing road traffic flo
 
 Held-out Viasat telemetry validates the simulation framework by showing strong consistency between reconstructed and GPS-derived hourly profiles on representative roads from different temporal mobility regimes after link-specific penetration normalization. This should be interpreted as a validation of reconstructed temporal dynamics rather than as a claim of complete absolute calibration across the entire network. The results nevertheless show that large-scale mobility patterns can be reconstructed with sufficient temporal and spatial coherence to support downstream operational analyses.
 
-A central result of the study is that the reconstructed traffic field can also be reused as a dynamic exposure layer for regional road-safety assessment. By combining simulated road exposure with aggregate accident statistics, the framework makes it possible to distinguish highly trafficked corridors from road segments exhibiting disproportionately high hazard relative to their estimated exposure. The analysis reveals marked temporal risk heterogeneity across the day and highlights the existence of road segments whose accident intensity cannot be explained solely by traffic volume. This transforms the reconstructed mobility field into a practical screening tool for identifying potentially critical infrastructures and prioritizing monitoring or intervention strategies.
+The same field can serve as an exposure layer for aggregate accident statistics. Normalized by simulated exposure, the hourly accident share of 2022--2024 gives a relative risk that peaks around midnight and stays below one after 19:00, and across hours the accident share scales as $E^{0.72}$. The link maps derived from this regional profile rank roads by the hourly composition of their traffic, and can indicate where geolocated accident data or local counts should be collected first.
 
 Beyond scientific analysis, the workflow was designed with stakeholder-oriented applications in mind. The dashboard implementation supports simulation management, monitoring, visualization and export of reconstructed flows, enabling regional analysts to inspect mobility scenarios without directly interacting with the modelling pipeline. Potential applications include congestion screening, infrastructure stress assessment, environmental-impact analysis, exposure-based safety prioritization and digital-twin support for regional mobility management.
 
