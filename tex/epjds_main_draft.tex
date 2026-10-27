@@ -57,7 +57,7 @@ Each observational layer has a different failure mode. Mobile-phone OD data prov
 \cite{herrera2010,seo2015,seo2017}. Treating these layers as interchangeable counts can produce non-physical aggregate validations, for example by summing
 flows on roads that do not represent the same traffic stream. The same issue appears more generally in heterogeneous urban data, where missing values, sampling mechanisms and data governance shape what can be inferred \cite{aste2015,little2019,kitchin2016}.
 
-This paper proposes an operational link-level reconstruction workflow that preserves the role of each data source. The contribution is not a new route-choice model, but a physically interpretable multi-layer reconstruction framework. The novelty is the integration of areal mobile-phone demand, a routable road graph, sparse fixed counters and independent GPS telemetry into a single decision-support chain while keeping their measurement meanings distinct. Mobile-phone OD activity is used to generate time-dependent demand. A directed road graph built from OpenStreetMap \cite{osm,boeing2017} provides the routing support, using shortest-path logic derived from Dijkstra's algorithm \cite{dijkstra1959} and the traffic-assignment tradition \cite{wardrop1952,sheffi1985}. Magnetic coils locally assimilate the simulated link counts where direct observations exist. Viasat GPS telemetry is kept outside the reconstruction and data-assimilation steps; it is used only as an independent validation layer for the simulation framework after estimating a link-specific penetration coefficient, so that the comparison evaluates temporal-profile consistency rather than absolute GPS fleet size. The validation links are then clustered using Ward hierarchical clustering
+This paper proposes an operational link-level reconstruction workflow that preserves the role of each data source. The contribution is not a new route-choice model, but a physically interpretable multi-layer reconstruction framework. The novelty is the integration of areal mobile-phone demand, a routable road graph, sparse fixed counters and independent GPS telemetry into a single decision-support chain while keeping their measurement meanings distinct. Mobile-phone OD activity is used to generate time-dependent demand. A directed road graph built from OpenStreetMap \cite{osm,boeing2017} provides the routing support, using shortest-path logic derived from Dijkstra's algorithm \cite{dijkstra1959} and the traffic-assignment tradition \cite{wardrop1952,sheffi1985}. Inductive loop detectors of the regional traffic monitoring system (MTS), which we call coils below, locally assimilate the simulated link counts where direct observations exist. Viasat GPS telemetry is kept outside the reconstruction and data-assimilation steps; it is used only as an independent validation layer for the simulation framework after estimating a link-specific penetration coefficient, so that the comparison evaluates temporal-profile consistency rather than absolute GPS fleet size. The validation links are then clustered using Ward hierarchical clustering
 \cite{ward1963,murtagh2014} to distinguish different temporal road profiles. The same reconstructed field is exposed through a dashboard/webserver so that
 simulation runs, data-assimilated flows, monitoring views and exports can be used by analysts without reproducing the full modelling chain in code. This operational layer is important for digital-twin and smart-city applications, where reconstructed network fields must be inspected, shared and reused for downstream questions such as traffic management and safety screening \cite{batty2013,cheng2013,liu2020,peldon2024}.
 
@@ -95,7 +95,7 @@ The regional road traffic flow monitoring system (MTS) coils provide local vehic
   \textbf{(b)} Weekday mobile-phone OD activity over Emilia-Romagna
   municipalities in January 2020; colour encodes activity $N$ on a
   logarithmic scale.
-  \textbf{(c)} Magnetic traffic-system coil locations over the regional
+  \textbf{(c)} Locations of the MTS inductive loop detectors (coils) over the regional
   road graph.
   \textbf{(d)} Location of coil 282 (inset) and complete 15-min
   directional vehicle counts on Monday 10 February 2020, local time.}
@@ -144,7 +144,7 @@ The simulation converts the OD demand into directional link flows. For each hour
 The reconstructed link-by-time traffic field is primarily a traffic product. As a downstream proof of concept, it also provides a dynamic exposure layer that can be reused for regional road-safety screening. Accident records available for Emilia-Romagna in 2022--2024 are aggregated and are not geolocated at the level of single events. For this reason, the analysis does not attempt to validate point hotspots or infer event-level causality. Instead, it asks whether the temporal and spatial structure of simulated exposure can organize aggregate accident information in a way that is useful for exposure normalization and prioritization.
 
 We first compare the hourly accident distribution with simulated exposure
-profiles for weekdays and holidays (Fig.~\ref{fig:temporal_risk}a). Let
+profiles for weekdays and weekends (Fig.~\ref{fig:temporal_risk}a). Let
 $A(h)$ be the share of daily accidents observed in hour $h$, and let $E(h)$
 be the corresponding share of simulated exposure. The exposure-normalized
 relative risk is defined as
@@ -168,9 +168,9 @@ conditions jointly shape aggregate risk.
   \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig7.png}
   \caption{\textbf{Temporal risk/exposure analysis.}
   \textbf{(a)} Mean hourly accident share for 2022--2024 compared with
-  simulated weekday and holiday exposure profiles.
+  simulated weekday and weekend exposure profiles.
   \textbf{(b)} Exposure-normalized hourly accident intensity for weekday
-  (grey) and holiday (orange) exposure; the dashed line marks the
+  (grey) and weekend (orange) exposure; the dashed line marks the
   daily-average risk.
   \textbf{(c)} Clustering of hourly normalized-risk profiles into three
   distinct temporal risk regimes; dashed line marks the daily-average risk.
@@ -180,7 +180,7 @@ conditions jointly shape aggregate risk.
   \label{fig:temporal_risk}
 \end{figure*}
 
-The same risk profile can be projected back onto the simulated road network as hazard-weighted exposure (Fig.~\ref{fig:spatial_risk}a). This produces a link-level screening layer that highlights where large simulated flows coincide with hours of elevated relative risk. The weekday--holiday comparison emphasizes how the same physical network can carry different hazard-weighted exposure patterns under different demand regimes (Fig.~\ref{fig:spatial_risk}b). Ranking links by their share of total hazard-weighted exposure defines a risk centrality; the highest-ranked links are geolocated on the road map to make their spatial interpretation explicit (Fig.~\ref{fig:spatial_risk}c), and their relative shares are shown as a compact bar ranking (Fig.~\ref{fig:spatial_risk}d). Comparing hazard rank with exposure rank then identifies segments whose hazard is anomalously high relative to their simulated exposure (Fig.~\ref{fig:spatial_risk}e). These maps are intended for stakeholder prioritization and exploratory screening, not as evidence that specific accidents occurred on the highlighted links. Additional descriptive statistics on accident totals, road environment and seasonal shares are reported in Supplementary Fig.~S1.
+The same risk profile can be projected back onto the simulated road network as hazard-weighted exposure (Fig.~\ref{fig:spatial_risk}a). This produces a link-level screening layer that highlights where large simulated flows coincide with hours of elevated relative risk. The weekday--weekend comparison emphasizes how the same physical network can carry different hazard-weighted exposure patterns under different demand regimes (Fig.~\ref{fig:spatial_risk}b). Ranking links by their share of total hazard-weighted exposure defines a risk centrality; the highest-ranked links are geolocated on the road map to make their spatial interpretation explicit (Fig.~\ref{fig:spatial_risk}c), and their relative shares are shown as a compact bar ranking (Fig.~\ref{fig:spatial_risk}d). Comparing hazard rank with exposure rank then identifies segments whose hazard is anomalously high relative to their simulated exposure (Fig.~\ref{fig:spatial_risk}e). These maps are intended for stakeholder prioritization and exploratory screening, not as evidence that specific accidents occurred on the highlighted links. Additional descriptive statistics on accident totals, road environment and seasonal shares are reported in Supplementary Fig.~S1.
 
 \begin{figure*}[htbp]
   \centering
@@ -189,7 +189,7 @@ The same risk profile can be projected back onto the simulated road network as h
   \textbf{(a)} Hazard-weighted exposure on the simulated regional road
   network, obtained by weighting link-level simulated traffic with the hourly
   accident-risk profile.
-  \textbf{(b)} Relative weekday--holiday difference in hazard-weighted
+  \textbf{(b)} Relative weekday--weekend difference in hazard-weighted
   exposure; positive values indicate links with higher weekday hazard.
   \textbf{(c)} Geolocated highest-risk-centrality links; annotated polyline
   identifiers correspond to the top-ranked segments visible on the map.
@@ -211,10 +211,10 @@ Viasat GPS observations provide an independent test of the temporal profiles pro
   \frac{\sum_h \psi_i(h)}{\sum_h \phi_i(h)},
   \label{eq:penetration}
 \end{equation}
-where $\psi_i(h)$ is the raw Viasat probe count and $\phi_i(h)$ is the simulated flow. The incremented GPS profile used for validation is
+where $\psi_i(h)$ is the raw Viasat probe count and $\phi_i(h)$ is the simulated flow. The penetration-normalized GPS profile used for validation is
 \begin{equation}
   \widetilde{\psi}_i(h) = \frac{\psi_i(h)}{\eta_i}.
-  \label{eq:incremented}
+  \label{eq:normalized_gps}
 \end{equation}
 This scaling aligns total volumes on each road and preserves the hourly shape of the GPS signal. Absolute GPS counts are not directly comparable with total simulated traffic because Viasat is partial-fleet telemetry and penetration varies spatially. The validation therefore evaluates whether the reconstructed daily profile is consistent with the independent probe profile after normalization, which isolates temporal consistency from fleet-size differences. It is not a validation of absolute fleet size, nor an estimate of a universal GPS market penetration. This link-specific adjustment is important when probe-vehicle coverage varies strongly across the network
 \cite{herrera2010,seo2015,seo2017}, and avoids treating raw GPS probe counts as complete traffic observations.
@@ -271,7 +271,7 @@ Polyline 104671 is kept as the charcoal representative because it is close to th
   \includegraphics[width=\textwidth]{fig6.png}
   \caption{\textbf{Validation on spatially distributed representative
   polylines, 10--17 February 2020.}
-  \textbf{(a--c)} Mean simulated hourly flow and incremented Viasat profile,
+  \textbf{(a--c)} Mean simulated hourly flow and penetration-normalized Viasat profile,
   with the hourly absolute share difference $|p_i(h)-q_i(h)|$ below.
   \textbf{(a)} Polyline 104671, MAE $=0.53$~pp.
   \textbf{(b)} Polyline 187204, MAE $=0.76$~pp.
@@ -297,7 +297,7 @@ This implementation makes three practical outputs available to non-developer use
 The road support is a routable regional graph derived from OpenStreetMap cartography. Road polylines are represented by local and cartographic identifiers, front and tail nodes, length and direction metadata. A preprocessed cartography file defines the node--polyline adjacency used both by the simulator and by the data-assimilation algorithm. The preprocessing follows standard graph-based principles for converting detailed cartography into a transport network that is simple enough to simulate while preserving the topological relations relevant to routing
 \cite{osm,boeing2017,mackaness1993,mackaness1995,thomson1999,huynh2020,pung2022}.
 
-Mobile-phone mobility is aggregated to municipality-level OD activity. The January 2020 records are separated into weekdays and weekend days and into four generation classes: observed source--observed destination (\texttt{src-dest}), observed source--random destination (\texttt{src-rnd}), random source--observed destination (\texttt{rnd-dest}) and random source--random destination (\texttt{rnd-rnd}). These classes determine how origins and destinations are sampled when demand is injected into the simulation. The construction keeps the empirical OD component explicit and uses distance-aware random endpoints only for residual demand that cannot be assigned to two observed municipalities. The random-endpoint classes therefore act as a controlled residual mobility mechanism: they regularize sparse OD mass, preserve coverage of the regional graph and avoid forcing weakly observed flows into deterministic routes with spurious precision. This reflects the sensitivity of trip-distribution models to spatial support and missing observations
+Mobile-phone mobility is aggregated to municipality-level OD activity. The January 2020 records are separated into weekdays (Monday--Friday) and weekend days (Saturday--Sunday), with the public holidays of 1 and 6 January counted as weekdays, and into four generation classes: observed source--observed destination (\texttt{src-dest}), observed source--random destination (\texttt{src-rnd}), random source--observed destination (\texttt{rnd-dest}) and random source--random destination (\texttt{rnd-rnd}). These classes determine how origins and destinations are sampled when demand is injected into the simulation. The construction keeps the empirical OD component explicit and uses distance-aware random endpoints only for residual demand that cannot be assigned to two observed municipalities. The random-endpoint classes therefore act as a controlled residual mobility mechanism: they regularize sparse OD mass, preserve coverage of the regional graph and avoid forcing weakly observed flows into deterministic routes with spurious precision. This reflects the sensitivity of trip-distribution models to spatial support and missing observations
 \cite{zahavi1974,halas2014,lenormand2016,aste2015,little2019}.
 
 MTS coil data are matched to road polylines through barrier metadata. A direction-pivot table maps registry directions to cartographic directions (\texttt{IN}/\texttt{OUT}). In the archived 2020 runs, short gaps in the observed coil series are filled by linear interpolation in time; for the 2021 runs no observed table in the project archive covers the simulated days, and the code falls back to weekday-specific seasonal average profiles. Viasat GPS data are independently map-matched to road polylines and are used only to validate the simulation framework; they are not used to assimilate or tune simulated flows. The meaning, scale and role of each data layer are summarized in Supplementary Section~S1.
@@ -370,19 +370,19 @@ so that $E(h)$ is a daily share. Accident counts are normalized in the same way,
        {\sum_{h'} a(h')} ,
   \label{eq:accident_share}
 \end{equation}
-where $a(h)$ is the number of accidents in hour $h$. The exposure-normalized hourly risk is then Eq.~\eqref{eq:hourly_risk}. Separate weekday and holiday exposure profiles can be used in the denominator when the goal is to compare temporal regimes.
+where $a(h)$ is the number of accidents in hour $h$. The exposure-normalized hourly risk is then Eq.~\eqref{eq:hourly_risk}. Separate weekday and weekend exposure profiles can be used in the denominator when the goal is to compare temporal regimes.
 
 For spatial screening, the hourly risk profile is projected onto each link through hazard-weighted exposure,
 \begin{equation}
   H_i = \sum_h \phi_i(h) R(h) .
   \label{eq:hazard_weighted_exposure}
 \end{equation}
-This quantity is high when a link carries large simulated traffic during hours with elevated aggregate relative risk. The weekday--holiday contrast is computed as
+This quantity is high when a link carries large simulated traffic during hours with elevated aggregate relative risk. The weekday--weekend contrast is computed as
 \begin{equation}
   D_i =
-  \frac{H_i^{\mathrm{weekday}} - H_i^{\mathrm{holiday}}}
-       {H_i^{\mathrm{weekday}} + H_i^{\mathrm{holiday}}} ,
-  \label{eq:weekday_holiday_hazard_difference}
+  \frac{H_i^{\mathrm{weekday}} - H_i^{\mathrm{weekend}}}
+       {H_i^{\mathrm{weekday}} + H_i^{\mathrm{weekend}}} ,
+  \label{eq:weekday_weekend_hazard_difference}
 \end{equation}
 with the denominator evaluated only where the total hazard-weighted exposure is positive. Link risk centrality is
 \begin{equation}
@@ -409,7 +409,7 @@ To choose interpretable examples for the paper, links in the representative pene
 The main methodological contribution is the construction of an operational reconstruction chain in which heterogeneous mobility sensors keep explicit semantic roles. Mobile-phone records define the regional demand signal; the road graph and simulator perform the network assignment; coils provide local data assimilation where direct counts exist; and Viasat is reserved for independent temporal-profile validation of the simulation framework. Each observational layer preserves its original measurement meaning, and the workflow explicitly separates demand generation, routing, data assimilation and validation. This separation is important because each layer has a different sampling mechanism and a different spatial support. It also follows a central lesson of urban analytics: large mobility data sets are powerful when their observation process is kept visible, not when they are treated as complete observations
 \cite{zheng2014,kitchin2014,kitchin2016,kandt2021}.
 
-The validation results show that the simulation framework can produce reconstructed daily profiles consistent with held-out, incremented GPS profiles on illustrative roads from three temporal subclusters. At the same time, the penetration maps and supplementary validation tables make clear that validation strength is not uniform over the entire cartography. The workflow is therefore best interpreted as a transparent data-fusion and validation pipeline, not as proof that every low-penetration road is reconstructed with the same accuracy. This validation focuses on temporal-profile consistency after penetration normalization, rather than on absolute fleet-size estimation. The latter would require additional assumptions and data sources, such as fleet composition, vehicle-kilometres travelled, fuel sales or regional population. The current strategy is more conservative: it tests whether the temporal dynamics produced by the reconstruction framework are consistent with an independent probe-vehicle sample after link-specific normalization, but it does not estimate a universal GPS market share or claim absolute calibration of all links.
+The validation results show that the simulation framework can produce reconstructed daily profiles consistent with held-out, penetration-normalized GPS profiles on illustrative roads from three temporal subclusters. At the same time, the penetration maps and supplementary validation tables make clear that validation strength is not uniform over the entire cartography. The workflow is therefore best interpreted as a transparent data-fusion and validation pipeline, not as proof that every low-penetration road is reconstructed with the same accuracy. This validation focuses on temporal-profile consistency after penetration normalization, rather than on absolute fleet-size estimation. The latter would require additional assumptions and data sources, such as fleet composition, vehicle-kilometres travelled, fuel sales or regional population. The current strategy is more conservative: it tests whether the temporal dynamics produced by the reconstruction framework are consistent with an independent probe-vehicle sample after link-specific normalization, but it does not estimate a universal GPS market share or claim absolute calibration of all links.
 
 The practical value of the workflow is that it produces a road-level traffic representation from data sources that are normally used separately. This output can be used to identify corridors with high reconstructed flows, compare weekday and weekend demand scenarios, inspect the temporal profile of specific roads, support local traffic-management decisions and provide an exposure layer for downstream analyses such as emissions, noise, road-safety screening or infrastructure stress. Because the reconstructed quantity is indexed by road polyline and time, it can also be aggregated after the fact to municipalities, provinces, corridors or user-defined areas without re-running the model. This is the type of intermediate mobility layer needed by data-driven planning tools, accessibility studies and urban digital-twin applications
 \cite{iacono2008,cheng2013,liu2020,batty2013,peldon2024}.

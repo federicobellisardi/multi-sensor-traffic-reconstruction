@@ -106,4 +106,4 @@ if __name__ == "__main__":
              ((INC / "9c_hourly_risk_clusters.png", INC / "9b_exposure_elasticity.png"), "cd")], "fig7")
     compose([((INC / "8e_hazard_weighted_exposure_map.png", INC / "8f_weekday_holiday_hazard_difference.png"), "ab"),
              ((INC / "9a_risk_centrality.png", INC / "9d_high_risk_anomaly_map.png"), "ce")], "fig8", jpeg=True,
-            extra_letters=[(0.30, 0.47, "d")])
+            extra_letters=[(0.30, 0.545, "d")])

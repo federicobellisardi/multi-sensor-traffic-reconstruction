@@ -61,7 +61,7 @@ Road graph &
 Directed polylines and nodes &
 Physical support on which demand is assigned. It stores connectivity,
 directionality, segment length and turn constraints. \\
-MTS magnetic coils &
+MTS inductive loop detectors (coils) &
 Fixed points, 15-min counts &
 Local direct traffic measurements. They anchor the simulation and drive the
 data assimilation where observed counts are available. \\
@@ -78,18 +78,18 @@ link-level reconstruction used for maps, validation and webserver delivery. \\
 
 \subsection{Demand Structure}
 
-The weekday and holiday OD matrices are highly concentrated. This motivates using the observed spatial demand instead of injecting uniform trips across the region. The total-flow values in Table~\ref{tab:od-structure} are the activity weights entering the demand generator after aggregation over the selected January 2020 period. They should be interpreted as relative mobility mass rather than as direct vehicle counts. Positive cells count municipality pairs with non-zero activity. The Gini coefficient and top-share columns quantify concentration: values close to 0.8 and a top-1\% share above 0.4 mean that a small number of OD relations dominate the signal. This is why the model uses observed high-demand centres explicitly and treats weakly observed endpoints through random classes instead of forcing unreliable low-count OD pairs into deterministic routes.
+The weekday and weekend OD matrices are highly concentrated. This motivates using the observed spatial demand instead of injecting uniform trips across the region. The total-flow values in Table~\ref{tab:od-structure} are the activity weights entering the demand generator after aggregation over the selected January 2020 period. They should be interpreted as relative mobility mass rather than as direct vehicle counts. Positive cells count municipality pairs with non-zero activity. The Gini coefficient and top-share columns quantify concentration: values close to 0.8 and a top-1\% share above 0.4 mean that a small number of OD relations dominate the signal. This is why the model uses observed high-demand centres explicitly and treats weakly observed endpoints through random classes instead of forcing unreliable low-count OD pairs into deterministic routes.
 
 \begin{table}[htbp]
 \centering
-\caption{Structure of the weekday and holiday OD matrices.}
+\caption{Structure of the weekday and weekend (Saturday--Sunday) OD matrices.}
 \label{tab:od-structure}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
 Period & Total flow & Positive cells & Gini & Top 10\% share & Top 1\% share \\
 \midrule
 Weekdays & 2,665,186 & 87,212 & 0.788 & 0.708 & 0.448 \\
-Holidays & 2,198,516 & 87,447 & 0.777 & 0.690 & 0.432 \\
+Weekends & 2,198,516 & 87,447 & 0.777 & 0.690 & 0.432 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -186,7 +186,7 @@ Date & Sources & Output support \\
 2021-07-05 & 763 & Hourly directed links \\
 \end{longtable}
 
-The slightly larger source counts on Sundays arise from the way residual holiday mobility is represented: when the observed OD structure is less dominated by commuting pairs, more source components are needed to preserve regional coverage. This does not mean that Sunday traffic is necessarily larger than weekday traffic; it means that the demand generator uses a larger set of active source definitions to represent a more diffuse mobility pattern.
+The slightly larger source counts on Sundays arise from the way residual weekend mobility is represented: when the observed OD structure is less dominated by commuting pairs, more source components are needed to preserve regional coverage. This does not mean that Sunday traffic is necessarily larger than weekday traffic; it means that the demand generator uses a larger set of active source definitions to represent a more diffuse mobility pattern.
 
 \begin{table}[htbp]
 \centering
@@ -375,7 +375,7 @@ $\eta\sim10^{-3}$ & Other \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:high-penetration-fit} is an aggregate diagnostic, not the main validation claim. High Pearson correlations and matching peak hours show that the simulator and incremented GPS data have compatible daily timing on the best-observed links. However, aggregate agreement can hide local failures; this is why the main text proceeds to subclusters and representative link-level comparisons.
+Table~\ref{tab:high-penetration-fit} is an aggregate diagnostic, not the main validation claim. High Pearson correlations and matching peak hours show that the simulator and penetration-normalized GPS data have compatible daily timing on the best-observed links. However, aggregate agreement can hide local failures; this is why the main text proceeds to subclusters and representative link-level comparisons.
 
 \begin{table}[htbp]
 \centering
