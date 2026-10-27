@@ -1,0 +1,32 @@
+# proprietary or bulky inputs (mobile-phone OD, Viasat GPS, simulation archives)
+data/
+cache/
+vars/
+results/*
+!results/revision/
+results/revision/link_metrics_*.csv
+python/cache/
+python/*.html
+ipynb/od.ipynb
+ipynb/stat_test.ipynb
+ipynb/track_viasat.ipynb
+ipynb/regenerate_figures_04_clustering_executed.ipynb
+ipynb/figures_incident_risk/*.pdf
+ipynb/figures_incident_risk/high_risk_anomaly_links.csv
+# LaTeX build products
+tex/*.aux
+tex/*.bbl
+tex/*.blg
+tex/*.fdb_latexmk
+tex/*.fls
+tex/*.log
+tex/*.out
+tex/*.synctex.gz
+tex/mover_*.pdf
+tex/sn-article-template/
+tex/images/*.pdf
+!tex/images/model_scheme.pdf
+tex/images/incidents_2020/
+tex/images/validation_20*/
+__pycache__/
+python/revision/loo/work/
