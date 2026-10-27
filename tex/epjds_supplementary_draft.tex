@@ -386,7 +386,7 @@ representative validation class.}
 \label{tab:high-penetration-fit}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
-Campaign & Segments & Pearson $r$ & L2 distance & Peak hour
+Campaign & Segments & Pearson $r$ & MAE [pp] & Peak hour
 (simulation/GPS) \\
 \midrule
 2020 & 480 & 0.976 & 0.032 & 18 / 18 \\
@@ -399,7 +399,7 @@ The global diagnostics in Table~\ref{tab:global-validation} summarize the
 full matched set after excluding links with unusable profiles. The global
 $\eta$ is smaller than the median link penetration because high-volume links
 can dominate the total-flow ratio. Median link correlations and median
-profile L2 distances are therefore reported together with global quantities:
+profile MAE values are therefore reported together with global quantities:
 they describe the typical road rather than the volume-weighted aggregate.
 
 \begin{table}[htbp]
@@ -409,7 +409,7 @@ they describe the typical road rather than the volume-weighted aggregate.
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Campaign & Common links & Valid links & Global $\eta$ &
-Pearson raw & Median link $r$ & Median profile L2 \\
+Pearson raw & Median link $r$ & Median MAE [pp] \\
 \midrule
 2020 & 930 & 827 & 0.00937 & 0.939 & 0.826 & 0.0859 \\
 2021 & 927 & 828 & 0.00778 & 0.908 & 0.766 & 0.0933 \\
@@ -417,7 +417,7 @@ Pearson raw & Median link $r$ & Median profile L2 \\
 \end{tabular}
 \end{table}
 
-The penetration classes in Table~\ref{tab:cluster-validation} explain why the paper focuses on representative high-quality strata. Links in the lowest penetration class have weaker correlations and larger L2 distances, as expected when the probe signal is sparse. Classes with higher median penetration provide more reliable temporal profiles and are therefore better suited for visual validation in the main figures.
+The penetration classes in Table~\ref{tab:cluster-validation} explain why the paper focuses on representative high-quality strata. Links in the lowest penetration class have weaker correlations and larger MAE, as expected when the probe signal is sparse. Classes with higher median penetration provide more reliable temporal profiles and are therefore better suited for visual validation in the main figures.
 
 Within the representative penetration stratum, the dendrogram in the main text is cut at Ward distance 15,000. This value is not a universal clustering constant; it is the graphical cut that separates the dominant hourly-profile families without fragmenting the validation set into many single-road groups. At lower cuts, several branches represent minor variations of the same daily shape and are not useful for a concise paper figure. At higher cuts, distinct morning/evening profile families begin to merge. The adopted cut therefore provides three interpretable subclusters, which is also the number of representative roads that can be shown clearly in the validation panel.
 
@@ -427,7 +427,7 @@ Within the representative penetration stratum, the dendrogram in the main text i
 \label{tab:cluster-validation}
 \begin{tabular}{@{}rrrrr@{}}
 \toprule
-Class & Links & Median $\eta$ & Median Pearson & Median L2 \\
+Class & Links & Median $\eta$ & Median Pearson & Median MAE [pp] \\
 \midrule
 -4 & 22 & 0.000232 & 0.437 & 0.290 \\
 -3 & 274 & 0.001578 & 0.662 & 0.134 \\
@@ -437,7 +437,7 @@ Class & Links & Median $\eta$ & Median Pearson & Median L2 \\
 \end{tabular}
 \end{table}
 
-The representative-link selection in Table~\ref{tab:representatives} balances three constraints. First, the three roads must belong to different temporal subclusters so that the paper does not validate the same daily profile three times. Second, the mean normalized-profile error must remain below 0.80\%, which keeps the selected examples within a clear sub-percent discrepancy range while still allowing enough candidates. Third, the selected roads must be at least 40 km apart whenever possible, so the map communicates spatial coverage rather than three neighbouring links. Polyline 104671 is kept fixed because its urban position near Forlimpopoli gives it a direct interpretation; the other two are then selected to satisfy the error and separation criteria.
+The representative-link selection in Table~\ref{tab:representatives} balances three constraints. First, the three roads must belong to different temporal subclusters so that the paper does not validate the same daily profile three times. Second, within each subcluster the link with the lowest MAE is preferred. Third, the selected roads must be at least 40 km apart whenever possible, so the map communicates spatial coverage rather than three neighbouring links. Polyline 104671 is kept fixed because its urban position near Forlimpopoli gives it a direct interpretation; the other two are then selected by the MAE and separation criteria.
 
 \begin{table}[htbp]
 \centering
@@ -461,11 +461,11 @@ Displayed representative links & 3 & One illustrative link per temporal subclust
 \label{tab:representatives}
 \begin{tabular}{@{}rlrl@{}}
 \toprule
-Subcluster & Polyline & Mean error [\%] & Selection note \\
+Subcluster & Polyline & MAE [pp] & Selection note \\
 \midrule
 1 & 104671 & 0.528 & Fixed urban representative near Forlimpopoli. \\
-2 & 187204 & 0.761 & Selected under error and separation constraints. \\
-3 & 132443 & 0.611 & Selected under error and separation constraints. \\
+2 & 187204 & 0.761 & Lowest MAE under the separation constraint. \\
+3 & 132443 & 0.611 & Lowest MAE under the separation constraint. \\
 \bottomrule
 \multicolumn{4}{l}{\footnotesize Minimum pairwise separation among the three
 selected links: 41.9~km.}
@@ -589,6 +589,6 @@ The conceptual API in Table~\ref{tab:web-api} exposes only operations needed by 
 \section{Reproducibility Notes}
 \label{sec:reproducibility}
 
-The tables above were derived from stored analysis outputs and source-code inspection. No new simulation run is required to reproduce the reported counts, validation summaries or dashboard architecture. The operational dashboard uses the same simulation and data-assimilation logic described in Sections~\ref{sec:model-details} and \ref{sec:post-correction}; it is therefore an interface to the reconstruction workflow rather than a separate model. Values such as the 10 s integration step, hourly output, five-link data-assimilation depth, 0.80\% representative-error threshold and 40 km separation threshold should therefore be interpreted in context. The first two define the numerical and observational time scales, the data-assimilation depth controls the spatial locality of sensor information, and the last two are transparent criteria for choosing readable paper examples rather than hidden calibration parameters.
+The tables above were derived from stored analysis outputs and source-code inspection. No new simulation run is required to reproduce the reported counts, validation summaries or dashboard architecture. The operational dashboard uses the same simulation and data-assimilation logic described in Sections~\ref{sec:model-details} and \ref{sec:post-correction}; it is therefore an interface to the reconstruction workflow rather than a separate model. Values such as the 10 s integration step, hourly output, five-link data-assimilation depth and 40 km separation threshold should therefore be interpreted in context. The first two define the numerical and observational time scales, the data-assimilation depth controls the spatial locality of sensor information, and the last one is a transparent criterion for choosing readable paper examples rather than hidden calibration parameters.
 
 \end{document}

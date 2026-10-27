@@ -250,18 +250,19 @@ The most informative penetration stratum is not temporally homogeneous. In 2020,
   \label{fig:subclusters}
 \end{figure*}
 
-For each selected link, validation compares normalized hourly profiles:
+Validation compares the hourly shares $p_i(h)=\phi_i(h)/\sum_{h'}\phi_i(h')$ and $q_i(h)=\widetilde{\psi}_i(h)/\sum_{h'}\widetilde{\psi}_i(h')$, which do not depend on $\eta_i$. The profile error of link $i$ is the mean absolute error over the 24 hours, in percentage points (pp),
 \begin{equation}
-  \epsilon_i(h) =
-  100\left|
-  \frac{\phi_i(h)}{\sum_h \phi_i(h)}
-  -
-  \frac{\widetilde{\psi}_i(h)}
-       {\sum_h \widetilde{\psi}_i(h)}
-  \right|.
+  \mathrm{MAE}_i = \frac{100}{24}\sum_{h=0}^{23}
+  \bigl| p_i(h) - q_i(h) \bigr| ,
   \label{eq:profile_error}
 \end{equation}
-Polyline 104671 is kept as the charcoal representative because it is close to the urbanized Forlimpopoli area and therefore has a clear geographical interpretation. The remaining two representatives are selected algorithmically from the other clusters by minimizing the mean normalized-profile discrepancy subject to a maximum mean error of 0.80\% and a minimum pairwise distance of 40~km. These thresholds are reporting constraints rather than fitted parameters or optimization targets: the error limit keeps the examples within the sub-percent validation regime, whereas the distance limit prevents selecting three visually redundant neighbouring roads. The resulting links are 187204 and 132443. Their mean discrepancies are 0.53\%, 0.76\% and 0.61\%, respectively, and the minimum pairwise separation is 41.9~km (Fig.~\ref{fig:representatives}). The visual agreement of the daily profiles illustrates the reconstructed temporal shape on roads with different cluster membership and different positions in the validation area; broader validation distributions are reported in Supplementary Section~S5.
+and we also report it relative to the mean hourly share $100/24 \simeq 4.17$~pp,
+\begin{equation}
+  \varepsilon_i = \frac{\mathrm{MAE}_i}{100/24} = \sum_{h=0}^{23} \bigl| p_i(h) - q_i(h) \bigr| ,
+  \label{eq:relative_error}
+\end{equation}
+which is the $L^1$ distance between the two daily distributions: $\varepsilon_i=0$ for identical profiles and $\varepsilon_i=2$ for profiles with disjoint support.
+Polyline 104671 is kept as the charcoal representative because it is close to the urbanized Forlimpopoli area and therefore has a clear geographical interpretation. The remaining two representatives are the links of the other clusters with the lowest MAE, subject to a minimum pairwise distance of 40~km, which prevents selecting three neighbouring roads. The resulting links are 187204 and 132443. Their MAE values are 0.53, 0.76 and 0.61~pp, respectively, and the minimum pairwise separation is 41.9~km (Fig.~\ref{fig:representatives}). The visual agreement of the daily profiles illustrates the reconstructed temporal shape on roads with different cluster membership and different positions in the validation area; broader validation distributions are reported in Supplementary Section~S5.
 
 \begin{figure*}[htbp]
   \centering
@@ -269,10 +270,10 @@ Polyline 104671 is kept as the charcoal representative because it is close to th
   \caption{\textbf{Validation on spatially distributed representative
   polylines, 10--17 February 2020.}
   \textbf{(a--c)} Mean simulated hourly flow and incremented Viasat profile,
-  with normalized-profile discrepancy below.
-  \textbf{(a)} Polyline 104671, mean error $0.53\%$.
-  \textbf{(b)} Polyline 187204, mean error $0.76\%$.
-  \textbf{(c)} Polyline 132443, mean error $0.61\%$.
+  with the hourly absolute share difference $|p_i(h)-q_i(h)|$ below.
+  \textbf{(a)} Polyline 104671, MAE $=0.53$~pp.
+  \textbf{(b)} Polyline 187204, MAE $=0.76$~pp.
+  \textbf{(c)} Polyline 132443, MAE $=0.61$~pp.
   \textbf{(d)} CartoDB Positron map of the three selected polylines, coloured
   as in Fig.~\ref{fig:subclusters}.}
   \label{fig:representatives}
@@ -400,9 +401,9 @@ where $E_i=\sum_h \phi_i(h)$ is total simulated link exposure and ranks are orie
 
 \subsection{GPS validation and clustering}
 
-Validation uses Viasat only after matching GPS roads with simulated polylines. The GPS data are not used to generate demand, assimilate coil residuals, tune the simulation or select model parameters. They provide an external check of the temporal profiles produced by the reconstruction framework. For every matched road, the link-specific penetration coefficient in Eq.~\eqref{eq:penetration} rescales the GPS series so that total volume on that road is aligned before profile comparison. Because this scaling uses each road separately, it tests the temporal profile on that physical link rather than a region-wide sum or a universal market-penetration factor. The normalized-profile discrepancy in Eq.~\eqref{eq:profile_error} is used as the hourly validation diagnostic because absolute probe counts are not total traffic counts: Viasat observes a partial fleet, and its penetration varies across links. Normalization isolates whether the simulated and observed profiles rise, peak and decline at comparable hours, which is the validation target for the reconstructed temporal field. This is a conservative use of probe data: the GPS traces validate shape and timing after penetration adjustment, but they are not treated as complete traffic counts and are not merged back into the calibration or data-assimilation stages \cite{seo2015,seo2017,bellisardi2025}.
+Validation uses Viasat only after matching GPS roads with simulated polylines. The GPS data are not used to generate demand, assimilate coil residuals, tune the simulation or select model parameters. They provide an external check of the temporal profiles produced by the reconstruction framework. For every matched road, the link-specific penetration coefficient in Eq.~\eqref{eq:penetration} rescales the GPS series so that total volume on that road is aligned before profile comparison. Because this scaling uses each road separately, it tests the temporal profile on that physical link rather than a region-wide sum or a universal market-penetration factor. The MAE of hourly shares in Eq.~\eqref{eq:profile_error} is used as the hourly validation diagnostic because absolute probe counts are not total traffic counts: Viasat observes a partial fleet, and its penetration varies across links. Normalization isolates whether the simulated and observed profiles rise, peak and decline at comparable hours, which is the validation target for the reconstructed temporal field. This is a conservative use of probe data: the GPS traces validate shape and timing after penetration adjustment, but they are not treated as complete traffic counts and are not merged back into the calibration or data-assimilation stages \cite{seo2015,seo2017,bellisardi2025}.
 
-To choose interpretable examples for the paper, links in the representative penetration class are clustered by their simulated hourly profiles using Ward linkage and Euclidean distance. The dendrogram is cut into three subclusters. Polyline 104671 is fixed as the charcoal representative because of its urban location near Forlimpopoli. Representatives from the other two subclusters are selected by minimizing mean normalized-profile error while enforcing a maximum mean error of 0.80\% and a minimum inter-link separation of 40~km. This selection avoids visually redundant neighbouring examples and keeps one validation road for each temporal subcluster. The examples are illustrative representatives of temporal and geographical regimes, not the sole validation evidence. Extended validation tables, threshold rationale, candidate-link counts and representative-link metrics are reported in Supplementary Section~S5.
+To choose interpretable examples for the paper, links in the representative penetration class are clustered by their simulated hourly profiles using Ward linkage and Euclidean distance. The dendrogram is cut into three subclusters. Polyline 104671 is fixed as the charcoal representative because of its urban location near Forlimpopoli. Representatives from the other two subclusters are the links with the lowest MAE at least 40~km apart. This selection avoids visually redundant neighbouring examples and keeps one validation road for each temporal subcluster. The examples are illustrative representatives of temporal and geographical regimes, not the sole validation evidence. Extended validation tables, threshold rationale, candidate-link counts and representative-link metrics are reported in Supplementary Section~S5.
 
 \section{Discussion}
 
