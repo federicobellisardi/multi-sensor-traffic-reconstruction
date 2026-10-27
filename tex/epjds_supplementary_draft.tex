@@ -288,8 +288,7 @@ The values in Table~\ref{tab:parameters} reflect a compromise between temporal f
 \label{sec:post-correction}
 
 The data-assimilation step adjusts simulated unique-link counts using MTS coil residuals. Directional coil columns are mapped to cartographic
-\code{IN}/\code{OUT} directions. If observed values are missing for the
-requested interval, seasonal weekday averages are used to fill the signal. This imputation is deliberately conservative: data assimilation needs a reasonable local reference, but missing sensor values should not generate sharp artificial anomalies. The use of weekday averages preserves the typical hourly structure of the corresponding day type while avoiding a global adjustment based on unrelated stations.
+\code{IN}/\code{OUT} directions. The archived validation runs were assimilated with the version of the code dated 30 March 2023; rerunning that version on the stored inputs reproduces the archived 10 February 2020 table to machine precision. In that version, gaps in an observed coil table are filled by linear interpolation in time, and when no observed table covers the simulated day (the 2021 runs) the weekday-specific seasonal average of each coil is used. The operational code now in the webserver fills missing values with seasonal weekday averages that combine the most recent year and earlier years with inverse standard-deviation weights.
 
 For a coil-associated directed link $i$, let $u_i(h)$ be the unique-link count, $b_i(h)$ the simulated virtual-barrier count and $c_i(h)$ the measured coil count. The data-assimilation step estimates a barrier-to-unique relation and a local relative residual,
 \begin{equation}
@@ -297,7 +296,7 @@ r_i(h)=\frac{b_i(h)}{\max(u_i(h),1)}, \qquad
 \Delta_i(h)=
 \frac{c_i(h)r_i(h)-b_i(h)}{\max(b_i(h),1)}.
 \end{equation}
-This residual becomes an additive assimilation increment on the local directed link and is propagated to neighbouring links according to simulated turning shares. The ratio $r_i(h)$ is needed because a virtual barrier crossing and a unique-link occupancy count are not the same measurement. The former counts passages through a point-like section, whereas the latter counts distinct agents present on the whole directed polyline during the output interval. Using $r_i(h)$ converts the coil residual into the same scale as the simulated barrier before it is applied to the unique-link table. The denominator thresholds $\max(u_i(h),1)$ and $\max(b_i(h),1)$ prevent division by zero in night-time or low-flow hours; they do not add vehicles to the output, but only regularize the residual calculation.
+This residual becomes the additive increment $\delta_i(h)=u_i(h)\Delta_i(h)$ on the local directed link, so that the assimilated count equals $c_i(h)$ whenever $u_i,b_i\ge1$, and is propagated to neighbouring links according to simulated turning shares. The ratio $r_i(h)$ is needed because a virtual barrier crossing and a unique-link occupancy count are not the same measurement. The former counts passages through a point-like section, whereas the latter counts distinct agents present on the whole directed polyline during the output interval. Using $r_i(h)$ converts the coil residual into the same scale as the simulated barrier before it is applied to the unique-link table. The denominator thresholds $\max(u_i(h),1)$ and $\max(b_i(h),1)$ prevent division by zero in night-time or low-flow hours; they do not add vehicles to the output, but only regularize the residual calculation.
 
 \begin{table}[htbp]
 \centering
@@ -309,9 +308,8 @@ Rule & Implementation \\
 \midrule
 Minimum propagated increment & Stop if the absolute assimilation increment is below one
 vehicle. \\
-Maximum graph depth & Stop after five propagated links. \\
-Other sensor links & Do not propagate through another coil-associated
-polyline. \\
+Maximum graph depth & Archived runs: stop once more than three links have been visited from the same coil (the counter is shared by all branches). Webserver version: five links. \\
+Other sensor links & Archived runs: stop at a node as soon as one of its outgoing links is a coil polyline. Webserver version: skip only that link. \\
 Forbidden turns & Do not propagate through transitions forbidden in the road
 graph. \\
 Closed or patched roads & Do not propagate through excluded polylines. \\
@@ -320,7 +318,7 @@ Negative counts & Clip negative assimilated counts to zero before delivery. \\
 \end{tabularx}
 \end{table}
 
-The one-vehicle stopping rule in Table~\ref{tab:correction-rules} is a natural discreteness threshold: below one vehicle, the propagated assimilation increment has no operational meaning in an hourly count table. The five-link depth limit keeps data assimilation local. It allows information to pass through a few adjacent roads around a sensor, but prevents a single coil from reshaping a large portion of the regional network. Stopping at other sensor links is also important: once another direct count is reached, that location should be controlled by its own observation rather than by a propagated residual from a neighbouring station.
+The one-vehicle stopping rule in Table~\ref{tab:correction-rules} is a discreteness threshold: below one vehicle an increment has no meaning in an hourly count table. The depth limit keeps the correction local, so that a single coil cannot reshape a large part of the regional network, and stopping at other sensor links leaves each observed location under the control of its own counter. Two features of the implementation should be kept in mind when reading the results. In both versions the increment passed to the second and later outgoing branches of a node is multiplied by the weights of the branches already processed, so those branches receive less than their turning share. Furthermore, the MTS tables store UTC timestamps, which both versions compare with the local clock of the simulation without conversion; the effect of this offset on the validation is quantified in the main text.
 
 \begin{table}[htbp]
 \centering

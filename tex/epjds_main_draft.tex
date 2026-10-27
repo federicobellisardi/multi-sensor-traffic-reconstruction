@@ -298,7 +298,7 @@ The road support is a routable regional graph derived from OpenStreetMap cartogr
 Mobile-phone mobility is aggregated to municipality-level OD activity. The January 2020 records are separated into weekdays and weekend days and into four generation classes: observed source--observed destination (\texttt{src-dest}), observed source--random destination (\texttt{src-rnd}), random source--observed destination (\texttt{rnd-dest}) and random source--random destination (\texttt{rnd-rnd}). These classes determine how origins and destinations are sampled when demand is injected into the simulation. The construction keeps the empirical OD component explicit and uses distance-aware random endpoints only for residual demand that cannot be assigned to two observed municipalities. The random-endpoint classes therefore act as a controlled residual mobility mechanism: they regularize sparse OD mass, preserve coverage of the regional graph and avoid forcing weakly observed flows into deterministic routes with spurious precision. This reflects the sensitivity of trip-distribution models to spatial support and missing observations
 \cite{zahavi1974,halas2014,lenormand2016,aste2015,little2019}.
 
-MTS coil data are matched to road polylines through barrier metadata. A direction-pivot table maps registry directions to cartographic directions (\texttt{IN}/\texttt{OUT}). When direct coil observations are missing for the simulation interval, the data-assimilation code fills them using seasonal weekday averages, combining the most recent year and previous years with inverse standard-deviation weights. Viasat GPS data are independently map-matched to road polylines and are used only to validate the simulation framework; they are not used to assimilate or tune simulated flows. The meaning, scale and role of each data layer are summarized in Supplementary Section~S1.
+MTS coil data are matched to road polylines through barrier metadata. A direction-pivot table maps registry directions to cartographic directions (\texttt{IN}/\texttt{OUT}). In the archived 2020 runs, short gaps in the observed coil series are filled by linear interpolation in time; for the 2021 runs no observed table in the project archive covers the simulated days, and the code falls back to weekday-specific seasonal average profiles. Viasat GPS data are independently map-matched to road polylines and are used only to validate the simulation framework; they are not used to assimilate or tune simulated flows. The meaning, scale and role of each data layer are summarized in Supplementary Section~S1.
 
 \subsection{The \texttt{minimocas} traffic model}
 
@@ -334,24 +334,21 @@ and computes a relative residual in barrier space,
        {\max(b_i(h),1)} .
   \label{eq:coil_residual}
 \end{equation}
-This residual is converted into an additive assimilation increment on the corresponding directed road count. Negative assimilated counts are clipped to zero in the final output. The procedure is a local data-assimilation step: fixed counters constrain the simulated field where observations are available, while the simulation supplies the spatial structure needed to propagate information to nearby unobserved links
-\cite{herrera2010,seo2017}. It should not be interpreted as a full dynamic traffic-assignment calibration of the entire network.
+The residual is turned into an additive increment on the directed coil link,
+\begin{equation}
+  \delta_i(h) = u_i(h)\,\Delta_i(h), \qquad
+  \tilde u_i(h) = u_i(h) + \delta_i(h) ,
+  \label{eq:assimilation_increment}
+\end{equation}
+which is applied only when $\tilde u_i(h)>0$. Whenever $u_i(h)\ge 1$ and $b_i(h)\ge 1$, Eqs.~\eqref{eq:barrier_unique_ratio}--\eqref{eq:assimilation_increment} give $\tilde u_i(h)=c_i(h)$: on the coil link the assimilated count equals the observation. Negative counts produced by the propagation are clipped to zero. Fixed counters therefore constrain the simulated field where they exist, and the simulation supplies the spatial structure used to pass this information to nearby links \cite{herrera2010,seo2017}; this is a local correction, not a calibration of the whole network.
 
-The assimilation increment is not applied only at the coil polyline. It is propagated
-recursively through adjacent directed links using turning weights inferred
-from the simulated unique counts. For an incoming directed link
-$(n_1,n_2)$ and an outgoing neighbour $(n_2,n)$, the forward weight is the
-share of simulated flow continuing toward $n$ among all admissible outgoing
-links. If the outgoing simulated counts are missing, the weight is replaced
-by a uniform split across admissible alternatives. A symmetric backward
-recursion distributes the same local assimilation increment upstream. The recursion stops
-when the absolute propagated increment falls below one vehicle, when depth
-exceeds five links, when another coil polyline is reached, or when a no-turn
-or patched-closed polyline would be crossed. The data-assimilated table is written
-in the same directional unique-polyline format as the simulator output.
-The propagation depth, one-vehicle stopping threshold and fallback uniform turning weights are operational parameters used to keep the data assimilation local and stable when simulated turning counts are sparse. Poorly instrumented areas therefore remain more uncertain than roads close to reliable counters. Supplementary Section~S4 reports the data-assimilation rules, including the
-rationale for the one-vehicle stopping threshold and five-link recursion
-limit, and the coil-282 summary used for the local comparison.
+The increment is propagated recursively through adjacent directed links with turning weights taken from the simulated unique counts. For an incoming link $(n_1,n_2)$ and an admissible outgoing link $(n_2,n)$,
+\begin{equation}
+  \delta_{(n_2,n)}(h) = w_{(n_1,n_2)\to n}(h)\,\delta_{(n_1,n_2)}(h), \qquad
+  w_{(n_1,n_2)\to n}(h) = \frac{u_{(n_2,n)}(h)}{\sum_{m} u_{(n_2,m)}(h)} ,
+  \label{eq:propagation}
+\end{equation}
+where the sum runs over the admissible outgoing links; when their simulated counts are missing the split is uniform. A backward recursion with the analogous upstream weights distributes the same increment to the incoming links. In the runs analysed here the recursion stops when the propagated increment falls below one vehicle, after three links, when the next node gives access to another coil polyline, or when a forbidden turn or a closed polyline would be crossed. The assimilated table keeps the directional unique-polyline format of the simulator output. Areas far from reliable counters receive no correction and remain as uncertain as the raw simulation. Supplementary Section~S4 lists the stopping rules and the differences between the archived implementation and the one now running in the webserver.
 
 \subsection{Accident exposure and hazard-weighted traffic}
 
