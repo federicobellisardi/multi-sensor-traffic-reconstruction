@@ -30,9 +30,14 @@ ROOT = A1.parent
 OUT = Path("/home/fede/sim_runs/routing")
 RES = A1 / "results/routing"
 CONF = ROOT / "article/python/revision/rerun/work/conf_fixed"
-ENGINE = ROOT / "bin/sim_engine"
+ENGINE = ROOT / "minimocas/bin/sim_engine"  # patched add_bpmatrix (identical output on baseline)
 VARIANTS = {"V0_default_distance": ("default", 1.0, 0.0), "V1_gps_distance": ("gps", 1.0, 0.0),
-            "V2_gps_time": ("gps", 0.0, 1.0), "V3_gps_mixed": ("gps", 0.5, 0.5)}
+            "V2_gps_time": ("gps", 0.0, 1.0), "V3_gps_mixed": ("gps", 0.5, 0.5),
+            "V4_gps_time_classweights": ("gps", 0.0, 1.0), "V5_gps_time_classweights_sqrt": ("gps", 0.0, 1.0),
+            "V6_gps_usage_classweights": ("gps", 0.5, 0.0)}  # cost = length*(0.5 + 0.5*low-usage penalty from file_cnt)
+# transition weights of the random-walk agents (minimocas file_cnt): exponent applied to the
+# median daily GPS count per link of each road class (Forli-Cesena, Feb 2020)
+CLASS_WEIGHT_EXP = {"V4_gps_time_classweights": 1.0, "V5_gps_time_classweights_sqrt": 0.5, "V6_gps_usage_classweights": 1.0}
 PRO_COLS = ["poly_cid", "nF", "nT", "length", "lvl_ps", "a", "b", "c", "speed", "oneway", "name"]
 
 
@@ -40,15 +45,43 @@ def class_speeds():
     sp = pd.read_csv(A1 / "results/private/gps_link_speeds_202002.csv")
     rc = pd.read_csv(A1 / "results/road_class.csv")
     d = sp.merge(rc, on="poly_cid")
-    d = d[(d.n_points >= 50) & d.v_offpeak_median.notna()]
+    d = d[(d.n_points >= 50) & d.v_offpeak_median.notna() & (d.road_class != "unmatched")]
     t = d.groupby("road_class").agg(links=("poly_cid", "size"), v_kmh=("v_offpeak_median", "median"),
                                     v_kmh_iqr_low=("v_offpeak_median", lambda s: s.quantile(.25)),
                                     v_kmh_iqr_high=("v_offpeak_median", lambda s: s.quantile(.75)))
     return t
 
 
+def class_gps_weights():
+    """Median daily GPS count per link (both directions) of each OSM road class, Feb 2020."""
+    keep = set(pd.read_csv(A1 / "results/private/gps_links_unchanged.csv", index_col=0).query("hausdorff_m <= 1").index)
+    v = pd.read_csv(ROOT / "work_viasat/viasat_20200210_20200218_timed_fluxes.csv", sep=";", parse_dates=["time"])
+    v = v[v.cid.isin(keep)]
+    days = v.time.dt.date.nunique()
+    g = v.groupby("cid").total_fluxes.sum() / days
+    g = g[g > 0]  # links inside the probe coverage (Forli-Cesena)
+    rc = pd.read_csv(A1 / "results/road_class.csv").set_index("poly_cid").road_class
+    t = g.groupby(rc.reindex(g.index)).agg(["size", "median"])
+    t.columns = ["links", "median_daily_gps"]
+    return t
+
+
 def prepare():
     RES.mkdir(parents=True, exist_ok=True)
+    w = class_gps_weights()
+    w.to_csv(RES / "class_gps_weights.csv")
+    print(w)
+    rcl = pd.read_csv(A1 / "results/road_class.csv").set_index("poly_cid").road_class
+    pro = pd.read_csv(ROOT / "vars/carto/er-speed.pro", sep=r"\s+", header=None, skiprows=1, usecols=[0], names=["cid"])
+    base = w.median_daily_gps.drop("unmatched", errors="ignore")
+    for v, e in CLASS_WEIGHT_EXP.items():
+        ww = (base / base.min()) ** e
+        rows = ["lid cid cntFT cntTF"]
+        for lid, cid in enumerate(pro.cid):
+            k = max(1, int(round(10 * ww.get(rcl.get(cid, "unclassified"), 1.0))))
+            rows.append(f"{lid} {cid} {k} {k}")
+        (OUT / v).mkdir(parents=True, exist_ok=True)
+        (OUT / v / "link_weights.cnt").write_text("\n".join(rows) + "\n")
     t = class_speeds()
     t.to_csv(RES / "class_speeds.csv")
     print(t)
@@ -60,8 +93,7 @@ def prepare():
     for ln in body:
         tok = ln.split()
         cls = rc.get(int(tok[0]), "unmatched")
-        v = t.v_kmh.get(cls, fallback) / 3.6
-        tok[8] = f"{v:.1f}"
+        tok[8] = f"{t.v_kmh.get(cls, fallback):.1f}"  # minimocas reads km/h (carto.cpp: speed * kmh_to_ms)
         new.append(" ".join(tok))
     for v, (speeds, *_rest) in VARIANTS.items():
         d = OUT / v / "carto"
@@ -85,6 +117,8 @@ def run_one(variant, day):
         for p in s.get("pawns", {}).values():
             p["alpha_we"], p["alpha_speed"] = a_we, a_s
     c.update(enable_gui=False, dump_state_dt=-1)
+    if variant in CLASS_WEIGHT_EXP:
+        c["file_cnt"] = str(OUT / variant / "link_weights.cnt")
     tag = day.replace("-", "")[2:]
     c["state_basename"] = str(OUT / variant / f"sim_{tag}")
     cfg = OUT / variant / f"sim_{tag}.json"
@@ -128,7 +162,7 @@ def evaluate(day):
             if all(c in obs for c in cc) and len(obs) == 96 and obs[cc].notna().all().all():
                 coil.append((tag, reg.get(tag, ""), obs[cc].sum().sum(), by_lid.get(lid, 0)))
         coil = pd.DataFrame(coil, columns=["tag", "prov", "obs", "sim"])
-        out = coil[coil.prov != "FC"]
+        out = coil[coil.prov != "FO"]
         lr = np.log10(out.sim.clip(lower=1) / out.obs)
         share_main = by_cid[rc.reindex(by_cid.index).isin(["motorway", "trunk", "primary"])].sum() / by_cid.sum()
         rows.append(dict(variant=variant, day=day,
@@ -150,7 +184,8 @@ def main():
         prepare()
     elif step == "run":
         with ThreadPoolExecutor(4) as ex:
-            for res in ex.map(lambda v: run_one(v, day), [v for v in VARIANTS if v != "V0_default_distance"]):
+            todo = sys.argv[3].split(",") if len(sys.argv) > 3 else [v for v in VARIANTS if v != "V0_default_distance"]
+            for res in ex.map(lambda v: run_one(v, day), todo):
                 print(*res, flush=True)
     elif step == "evaluate":
         evaluate(day)

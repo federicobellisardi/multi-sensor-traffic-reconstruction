@@ -1,0 +1,7 @@
+road_class,links,v_kmh,v_kmh_iqr_low,v_kmh_iqr_high
+motorway,44,123.0,120.375,124.0
+primary,151,55.0,45.5,64.0
+secondary,245,51.0,46.0,60.0
+tertiary,193,52.5,43.0,59.0
+trunk,75,83.0,75.75,94.5
+unclassified,42,49.0,36.0,54.125
