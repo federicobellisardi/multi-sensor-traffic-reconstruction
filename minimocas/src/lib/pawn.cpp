@@ -104,7 +104,7 @@ void pawn::pick_next_bp(cart *c, const node_it &node)
     double miss = rnd_01(generator);
     if (miss >= beta_bp)
     {
-      next_node = c->bpmatrix[tag].at(current_dest)[node->lid];
+      next_node = c->next_hop(tag, current_dest, node->lid);
     }
     else
     {

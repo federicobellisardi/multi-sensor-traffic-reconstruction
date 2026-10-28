@@ -62,6 +62,7 @@ int main(int argc, char** argv)
     s.dump_poly_uniq();
     c.dump_poly_geojson("er-carto");
     s.grid.dump_geojson("er-grid.geojson");
+    cout << "[sim_engine] route fallbacks to distance matrix : " << c.route_fallbacks << endl;
     cout << "[sim_engine] simulation done, iter " << s.iter << endl;
   }
   catch (exception &e)

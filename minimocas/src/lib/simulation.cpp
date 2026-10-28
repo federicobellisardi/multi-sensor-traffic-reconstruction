@@ -1426,7 +1426,7 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           pw.lifetime = idletime;
           pw.TLB = TLB;
           pw.last_node = start_node;
-          pw.next_node = c->bpmatrix[pw.tag][first_dest][start_node];
+          pw.next_node = c->next_hop(pw.tag, first_dest, start_node);
           if (pw.next_node == NO_ROUTE)
           {
             // std::cout << "Last Node: " << pw.last_node<< " Next Node: " << pw.next_node << std::endl;
@@ -1490,7 +1490,7 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           }
 
           pw.last_node = sn;
-          pw.next_node = c->bpmatrix[pw.tag][dn][sn];
+          pw.next_node = c->next_hop(pw.tag, dn, sn);
           pw.dest = std::list<int>(0);
           pw.current_dest = dn;
           auto sp = c->node2poly(sn, c->bpmatrix[pw.tag][dn][sn])->lid;
@@ -1593,7 +1593,7 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
             throw std::runtime_error("ERROR orig-random make_pawns : no front no tail");
           }
           pw.last_node = sn;
-          pw.next_node = c->bpmatrix[pw.tag][first_dest][sn];
+          pw.next_node = c->next_hop(pw.tag, first_dest, sn);
           pw.current_poly = sp;
 
           pw.current_s = ss;
@@ -1664,7 +1664,7 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           }
 
           pw.last_node = start_node;
-          pw.next_node = c->bpmatrix[pw.tag][dn][start_node];
+          pw.next_node = c->next_hop(pw.tag, dn, start_node);
           pw.current_poly = sp;
           pw.current_s = ss;
           pw.speed *= speedsign;
@@ -1728,7 +1728,7 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           }
 
           pw.last_node = sn;
-          pw.next_node = c->bpmatrix[pw.tag][dn][sn];
+          pw.next_node = c->next_hop(pw.tag, dn, sn);
           pw.current_poly = sp;
           pw.current_s = ss;
           pw.speed *= speedsign;

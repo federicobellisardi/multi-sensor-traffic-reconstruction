@@ -455,6 +455,21 @@ struct cart
   std::map<std::string, std::map<int, std::map<int, double>>> bpweight;       // map < user_type, < node_lid, node_lid, weight >>>
   std::unordered_map<int, std::unordered_map<int, double>> trans;             // < poly_lid, poly_lid, weight >
   std::map<std::string, std::unordered_map<int, std::vector<int>>> bpmatrix;  // map <user_type, < node_lid dest, [ node_lid ] >>
+  long route_fallbacks = 0;  // next hops taken from the "locals" (distance) matrix because the user-type matrix has no route
+  int next_hop(const std::string &tag, int dest, int node_lid)
+  {
+    int nn = bpmatrix[tag][dest][node_lid];
+    if (nn == NO_ROUTE && tag != "locals" && bpmatrix.count("locals") && bpmatrix["locals"].count(dest))
+    {
+      nn = bpmatrix["locals"][dest][node_lid];
+      if (nn != NO_ROUTE)
+      {
+        #pragma omp atomic
+        ++route_fallbacks;
+      }
+    }
+    return nn;
+  }
   void update_weight(std::map<std::string, pawn_param> pawn_types);
   void update_weight_lvlps(std::string user_tag, const double alpha_we_tag, const double height_tag, const double alpha_s_tag);
   void add_bpmatrix(const std::set<int> &nodedest);

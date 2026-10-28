@@ -1101,26 +1101,24 @@ void cart::update_weight_lvlps(std::string user_tag, double alpha_we_tag, const 
 
 void cart::add_bpmatrix(const std::set<int> &nodedest)
 {
-  std::vector<int> nodes;
-  for (const auto &n : nodedest)
-  {
-    if (bpmatrix.begin()->second.find(n) == bpmatrix.begin()->second.end())
-      nodes.emplace_back(n);
-  }
-  if (nodes.size())
+  // a destination may already be known to one user type but not to another (user types with
+  // different link costs): check every type separately
+  std::vector<std::pair<std::string, int>> todo;
+  for (const auto &i : bpmatrix)
+    for (const auto &n : nodedest)
+      if (i.second.find(n) == i.second.end())
+        todo.emplace_back(i.first, n);
+  if (todo.size())
   {
     #ifdef _OPENMP
     if (n_thread == all_thread_option) n_thread = omp_get_max_threads();
     #pragma omp parallel for num_threads(n_thread)
     #endif
-    for (int n=0; n < int(nodes.size()); ++n)
+    for (int k=0; k < int(todo.size()); ++k)
     {
-      for (auto &i : bpmatrix)
-      {
-        auto res = dijkstra_explore(nodes[n], bpweight[i.first]);
-        #pragma omp critical
-        bpmatrix[i.first][nodes[n]] = res;
-      }
+      auto res = dijkstra_explore(todo[k].second, bpweight[todo[k].first]);
+      #pragma omp critical
+      bpmatrix[todo[k].first][todo[k].second] = res;
     }
   }
 }
