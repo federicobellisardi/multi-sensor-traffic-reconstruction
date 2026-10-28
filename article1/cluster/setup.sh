@@ -8,7 +8,8 @@ MOVER=${MOVER:-$(dirname "$REPO")}
 [ "$(basename "$REPO")" = covid_hep ] || { echo "the clone must be named covid_hep"; exit 1; }
 
 # simulator (Release build; Boost from the system)
-cmake -S "$REPO/minimocas" -B "$MOVER/build_minimocas" -DCMAKE_BUILD_TYPE=Release
+cmake -S "$REPO/minimocas" -B "$MOVER/build_minimocas" -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_MODULE_PATH="$REPO/minimocas/cmake/Modules"
 cmake --build "$MOVER/build_minimocas" --target sim_engine --parallel 4
 mkdir -p "$REPO/minimocas/bin"
 ln -sf "$MOVER/build_minimocas/sim_engine" "$REPO/minimocas/bin/sim_engine"
