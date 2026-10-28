@@ -5,6 +5,7 @@ bootstrap over detectors (5,000 resamples, seed 20261028).
 Output: article1/results/corrected/routing_comparison.json
 """
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -14,8 +15,9 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import volume_check as V  # noqa: E402
 
-BASE = "/home/fede/sim_runs/carto2024"
-GPS = "/home/fede/sim_runs/routing/V6_gps_usage_classweights"
+RUNS = Path(os.environ.get("SIM_RUNS", "/home/fede/sim_runs"))  # simulation outputs (outside the repository)
+BASE = str(RUNS / "demand/V0_scaled")
+GPS = str(RUNS / "demand/V6_scaled")
 OUT = Path(__file__).resolve().parents[1] / "results/corrected/routing_comparison.json"
 
 

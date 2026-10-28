@@ -27,10 +27,10 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 A1 = HERE.parent
 ROOT = A1.parent
-SIM = Path(os.environ.get("SIM_DIR", "/home/fede/sim_runs/routing/V6_gps_usage_classweights"))  # final configuration
-COILS = Path(os.environ.get("COIL_DIR", "/home/fede/sim_runs/coils"))
+SIM = Path(os.environ.get("SIM_DIR", Path(os.environ.get("SIM_RUNS", "/home/fede/sim_runs")) / "demand/V6_scaled"))  # final configuration (demand_scaling.py)
+COILS = Path(os.environ.get("COIL_DIR", Path(os.environ.get("SIM_RUNS", "/home/fede/sim_runs")) / "coils"))
 WS = ROOT.parent  # WORKSPACE/covid_hep/vars = project cartography (commit a059fb0)
-OUT = A1 / "results/corrected"
+OUT = Path(os.environ.get("OUT_DIR", A1 / "results/corrected"))
 PRIV = A1 / "results/private"
 H = pd.Index(range(24), name="hour")
 CAMPAIGNS = {2020: "viasat_20200210_20200218_timed_fluxes.csv",
@@ -202,21 +202,22 @@ def loo_one(base):
     year = day.year
     obs = coil_table_local(year)
     obs = obs[(obs.index >= day) & (obs.index < day + pd.Timedelta(days=1))]
-    mapped = sorted(set(int(v) for v in sim.poly2coil.values()))
+    mapped = sorted(set(int(c.split("_")[0]) for c in sim.dfc.columns))
     complete = [c for c in mapped if all(f"{c}_{k}" in obs.columns for k in (0, 1))
                 and len(obs) == 96 and obs[[f"{c}_0", f"{c}_1"]].notna().all().all()]
     base_p2c, tags = dict(sim.poly2coil), list(sim.dfb.tag.values)
 
-    def run(excluded):
-        sim.poly2coil = {k: v for k, v in base_p2c.items() if v != excluded}
+    def run(pcid):
+        # every coil on the held-out link is removed (co-located detectors would leak its count)
+        sim.poly2coil = {k: v for k, v in base_p2c.items() if k != pcid}
         with contextlib.redirect_stdout(io.StringIO()):
-            f = sim.correct([t for t in tags if t != excluded])
+            f = sim.correct([t for t in tags if sim.coil2poly[t] != pcid], suffix="loo")
         return pd.read_csv(f, sep=";")
 
     rows = []
     for c in complete:
         pcid = sim.coil2poly[c]
-        loo = run(c)
+        loo = run(pcid)
         for dcarto, ow in [("IN", "FT"), ("OUT", "TF")]:
             key = f"{c}_{dcarto}"
             if key not in sim.dfc.columns:
@@ -227,6 +228,7 @@ def loo_one(base):
             rows.append(dict(day=str(day.date()), coil=c, poly_cid=pcid, direction=dcarto,
                              present_raw=len(r) == 24, present_loo=len(a) == 24,
                              obs_total=o.sum(), raw_total=r.sum() if len(r) == 24 else np.nan,
+                             loo_total=a.sum() if len(a) == 24 else np.nan,
                              raw_abs=np.abs(r - o).sum() if len(r) == 24 else np.nan,
                              loo_abs=np.abs(a - o).sum() if len(a) == 24 else np.nan,
                              changed=bool(len(a) == 24 and len(r) == 24 and np.any(np.abs(a - r) > 0.5))))
@@ -235,7 +237,7 @@ def loo_one(base):
 
 
 def loo():
-    with ProcessPoolExecutor(4) as ex:
+    with ProcessPoolExecutor(int(os.environ.get("NPROC", 6))) as ex:
         rows = [r for rs in ex.map(loo_one, basenames()) for r in rs]
     d = pd.DataFrame(rows)
     d.to_csv(OUT / "loo_detectors.csv", index=False)
@@ -258,7 +260,11 @@ def loo():
                      "share_worse": float(((by.loo_abs > by.raw_abs + 1e-9)).mean()),
                      "raw_to_observed_volume_ratio": float(z.raw_total.sum() / z.obs_total.sum()),
                      "log_volume_ratio_median": float(np.median(np.log10(by.assign(r=z.groupby("coil").raw_total.sum()).r / by.obs_total))),
-                     "volume_spearman": float(pd.Series(z.groupby("coil").raw_total.sum()).corr(by.obs_total, method="spearman"))}
+                     "volume_spearman": float(pd.Series(z.groupby("coil").raw_total.sum()).corr(by.obs_total, method="spearman")),
+                     "loo_volume_spearman": float(pd.Series(z.groupby("coil").loo_total.sum()).corr(by.obs_total, method="spearman")),
+                     "loo_to_observed_volume_ratio": float(z.loo_total.sum() / z.obs_total.sum()),
+                     "median_abs_log10_ratio_raw": float(np.median(np.abs(np.log10(z.groupby("coil").raw_total.sum().clip(lower=1) / by.obs_total)))),
+                     "median_abs_log10_ratio_loo": float(np.median(np.abs(np.log10(z.groupby("coil").loo_total.sum().clip(lower=1) / by.obs_total))))}
     (OUT / "loo_summary.json").write_text(json.dumps(rep, indent=2) + "\n")
     print(json.dumps(rep, indent=1))
 
@@ -268,7 +274,7 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     prepare_coils()
     if step in ("assimilate", "all"):
-        with ProcessPoolExecutor(4) as ex:
+        with ProcessPoolExecutor(int(os.environ.get("NPROC", 6))) as ex:
             for b, f in ex.map(assimilate_one, basenames()):
                 print("assimilated", Path(f).name, flush=True)
     if step in ("validate", "all"):

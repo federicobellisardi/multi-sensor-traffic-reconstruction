@@ -32,14 +32,16 @@ def one_day(base):
     day = pd.to_datetime(cols[0]).normalize()
     obs = P.coil_table_local(day.year)
     obs = obs[(obs.index >= day) & (obs.index < day + pd.Timedelta(days=1))]
-    mapped = sorted(set(int(v) for v in sim.poly2coil.values()))
+    mapped = sorted(set(int(c.split("_")[0]) for c in sim.dfc.columns))
     complete = [c for c in mapped if all(f"{c}_{k}" in obs.columns for k in (0, 1))
                 and len(obs) == 96 and obs[[f"{c}_0", f"{c}_1"]].notna().all().all()]
     rng = np.random.default_rng(SEED)
     perm = list(rng.permutation(complete))
     ntest = max(1, round(0.2 * len(perm)))
-    test, pool = perm[:ntest], perm[ntest:]
-    others = [t for t in sim.dfb.tag.values if t not in complete]  # detectors without complete data stay as in the full run
+    test = perm[:ntest]
+    test_links = {sim.coil2poly[c] for c in test}  # co-located detectors are held out with the test coil
+    pool = [c for c in perm[ntest:] if sim.coil2poly[c] not in test_links]
+    others = [t for t in sim.dfb.tag.values if t not in complete and sim.coil2poly[t] not in test_links]  # detectors without complete data stay as in the full run
     base_p2c = dict(sim.poly2coil)
     rows = []
     for frac, depth, draw in itertools.product(FRACS, DEPTHS, range(DRAWS)):
@@ -48,9 +50,9 @@ def one_day(base):
         k = max(1, round(frac * len(pool)))
         train = list(np.random.default_rng(SEED + draw).permutation(pool)[:k])
         sim.recursion_max_depth = depth
-        sim.poly2coil = {p: c for p, c in base_p2c.items() if c not in test}
+        sim.poly2coil = {p: c for p, c in base_p2c.items() if p not in test_links}
         with contextlib.redirect_stdout(io.StringIO()):
-            out = pd.read_csv(sim.correct(train + others), sep=";")
+            out = pd.read_csv(sim.correct(train + others, suffix="sensitivity"), sep=";")
         err_raw = err = tot = 0.0
         for c in test:
             pc = sim.coil2poly[c]

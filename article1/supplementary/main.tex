@@ -48,33 +48,48 @@ Layer & Content & Role & Period \\\midrule
 Mobile-phone OD (TIM) & hourly device movements between census areas, aggregated to municipalities and provinces & demand & January 2020 \\
 Road graph & 3,925 directed polylines, 2,548 nodes, turn restrictions, derived from OpenStreetMap & network & -- \\
 OSM road classes & motorway to unclassified, nearest ways within 30~m & route-choice parameters & extract of 26/10/2026 \\
-MTS loop detectors & 15-min counts per station and direction & local correction; volume validation & Feb 2020, Jun--Jul 2021 \\
+MTS loop detectors & 15-min counts per station and direction & demand scale (half of the coils of 10/02/2020); local correction; volume validation & Feb 2020, Jun--Jul 2021 \\
 Viasat GPS, link counts & hourly probes per matched link & profile validation & 10--17/02/2020, 28/06--04/07/2021 \\
 Viasat GPS, raw traces & private-vehicle fixes in Forl\`i--Cesena & speeds and class usage for route choice & same periods \\
 \bottomrule\end{tabularx}
 \end{table}
 
-The OD tables are hourly. Their labels refer to the start of the hour in local time: the weekday OD profile of 10--14 February 2020 and the mean profile of the 90 detectors complete on those days have correlation 0.96 at zero lag, 0.94 with the OD profile shifted one hour earlier and 0.74 with it shifted one hour later. Demand is generated in four classes: observed source and destination (\code{src-dest}, municipalities, and \code{scr\_dest\_prov}, provinces), observed source and random destination (\code{src-rnd}), random source and observed destination (\code{rnd-dest}) and random source and destination (\code{rnd-rnd}). On a weekday, the random-endpoint classes account for 66\% of the generated agents (\code{rnd-rnd} 33\%, \code{src-rnd} 22\%, \code{rnd-dest} 12\%).
+The OD tables are hourly. Their labels refer to the start of the hour in local time: the weekday OD profile of 10--14 February 2020 and the mean profile of the 90 detectors complete on those days have correlation 0.96 at zero lag, 0.94 with the OD profile shifted one hour earlier and 0.74 with it shifted one hour later. Demand is generated in five classes: observed source and destination between the 50 most active municipalities (\code{src-dest}, 27\% of the agents on a weekday) or between them and the provinces of neighbouring regions (8\%), observed source and random destination (\code{src-rnd}, 22\%), random source and observed destination (\code{rnd-dest}, 11\%) and random source and destination (\code{rnd-rnd}, 32\%), which represents the activity not attributed to the selected relations. The random-endpoint classes therefore account for 66\% of the 2.29 million agents generated on a weekday (2.23 million on a weekend day; Fig.~\ref{M-fig:demand}).
 
 MTS counts of 2021 were obtained from the monthly open-data files of Regione Emilia-Romagna (dataset DS-1944, CC BY), summing all vehicle classes. The open-data time labels are in local time; converted to UTC they reproduce the counts of the February 2020 archive used for 2020 (ratio of totals 0.995 on 12 February 2020).
 
-\section{Simulation model}
-\label{sec:model}
+\section{Demand scale}
+\label{sec:scale}
 
-Agents move with the speed of their link, $v_i$, reduced linearly with density $\rho_i$ below the critical density and set to a critical speed above it. Link speeds are read in km/h from the cartography and assigned by road class from GPS (main text, Table~\ref{M-tab:classes}). Random-endpoint agents have a trip-time budget of 5,600~s; source--destination agents follow the best-path matrix of their type. When the turn-restricted best-path search finds no feasible next node for the cost of their type, the agent uses the shortest-distance path matrix; this happened for 50 next-node decisions in two of the fifteen simulated days. The simulator is deterministic (fixed random seed). A simulated day takes 9--12 minutes on an 8-core workstation running four days in parallel.
+The configuration generator inherited from the operational platform rescaled individual source--destination pairs with the ratio between observed and simulated counts at detectors associated with them (59 municipal and 18 provincial pairs on 10 February 2020; factors up to 221). In 2020 these ratios came from the counts of the simulated day itself, so the resulting simulation was not independent of the detectors. Here this rescaling is switched off and the whole demand is multiplied by a common factor $k$ (main text, Methods).
 
-\section{Route-choice variants}
+Figure~\ref{fig:scan} and Table~\ref{tab:scan} report the scan of 10 February 2020. The simulated volume grows almost linearly with $k$ up to $k=3$ (ratio 0.61 at $k=1$, 1.76 at $k=3$ on the 61 complete coils), so congestion does not cap the level in the useful range. On the calibration half the pooled ratio crosses one at $k^*=1.57$. On the test half the median absolute $\log_{10}$ ratio falls from 0.27 at $k=1$ to 0.10 at $k=1.6$ and the share of coils within a factor of two rises from 64\% to 71\%, while the Spearman correlation decreases from 0.46 to 0.30: more agents produce more congestion, which redistributes traffic between parallel roads. The pair-level rescaling is worse than any common factor on every measure (test half: ratio 0.35, median $|\log_{10}|$ 0.59, 14\% within a factor of two, Spearman 0.24): by inflating a subset of relations it concentrated agents on the same corridors, slowed them and lowered the traffic processed by the network.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{S_demand_scan.pdf}
+\caption{Scan of the common demand factor $k$ on 10 February 2020. Calibration and test halves of the complete coils (stratified by province); dashed line, chosen $k^*$; dotted lines, historic pair-level rescaling.}
+\label{fig:scan}
+\end{figure}
+
+\input{tables/demand_scan}
+
+A factor per demand class was also tested. Each class was simulated alone for each day of the week, and the factors were fitted by non-negative least squares on the daily counts of February 2020. The fit set both source--destination classes to zero and inflated the random-endpoint classes, which is not a credible demand. Link volumes are not additive in the classes: on the coil links of 10 February 2020 the joint simulation carries 64\% of the sum of the class simulations with the same agents, because congestion slows the agents and random-endpoint agents travel within a fixed time budget. The per-class model was therefore discarded.
+
+\section{Simulation model and route-choice variants}
 \label{sec:routing}
 
-Table~\ref{tab:routing} lists the variants simulated for 10 February 2020. Speeds alone (V1--V3) do not change the distribution of traffic over road classes, because two thirds of the agents follow transition probabilities rather than best paths. Transition weights by road class (V4--V6) raise the share of main roads and the agreement with GPS counts in the calibration area. The selected variant combines the usage cost of Eq.~\eqref{M-eq:route_cost} with class transition weights. Correlations with the detectors of a single day (53 coils) are noisy and were not used for selection; the comparison over full campaigns is in the main text. Table~\ref{tab:routing_shape} shows that route choice hardly changes the hourly profiles.
+Agents move with the speed of their link, $v_i$, reduced linearly with density $\rho_i$ below the critical density and set to a critical speed above it. Link speeds are read in km/h from the cartography and assigned by road class from GPS (main text, Table~\ref{M-tab:classes}). Random-endpoint agents have a trip-time budget of 5,600~s; source--destination agents follow the best-path matrix of their type. When the turn-restricted best-path search finds no feasible next node for the cost of their type, the agent uses the shortest-distance path matrix. The simulator is deterministic (fixed random seed).
+
+Table~\ref{tab:routing} lists the variants simulated for 10 February 2020. They were simulated with the demand of the historic generator, before the demand scale was revised; the selection uses only GPS counts in Forl\`i--Cesena and was not repeated. Speeds alone (V1--V3) do not change the distribution of traffic over road classes, because two thirds of the agents follow transition probabilities rather than best paths. Transition weights by road class (V4--V6) raise the share of main roads and the agreement with GPS counts in the calibration area. The selected variant combines the usage cost of Eq.~\eqref{M-eq:route_cost} with class transition weights. Table~\ref{tab:routing_volumes} compares shortest-distance and GPS-informed route choice over the full campaigns with the scaled demand, and Table~\ref{tab:routing_shape} shows that route choice hardly changes the hourly profiles.
 
 \input{tables/routing_variants}
+\input{tables/routing_volumes}
 \input{tables/routing_shape}
 
 \section{Detector correction}
 \label{sec:correction}
 
-The correction starts from the residual of Eq.~\eqref{M-eq:coil_residual} on each coil link and hour. The ratio $r_i(h)$ converts the coil count, a count of passages at a section, into the scale of the simulated unique-link count, which counts distinct agents present on the whole polyline during the hour. Downstream, the increment of a link is passed to each admissible outgoing link multiplied by that link's share of the simulated outgoing counts; upstream, the same rule is applied to incoming links. Each branch carries its own increment and its own path length. Propagation stops when the increment is below one vehicle, after three polylines along the path, at another coil link, at a forbidden turn or at a closed polyline. Every directed polyline of the raw simulation is kept in the output, and the hours of the observed table are aligned with the local-time hours of the simulation.
+The correction starts from the increment of Eq.~\eqref{M-eq:coil_residual} on each coil link and hour. The simulated count on a link is the number of distinct agents present on the polyline during the hour, while the coil counts passages at a section; the two coincide for agents that traverse the whole link within the hour, and the barrier count $b_i(h)$ is used only to exclude hours in which no simulated agent crosses the coil section. Two pairs of detectors (404 and 680; 503 and 685) lie on the same polyline; their observations are averaged before the increment is computed. Downstream, the increment of a link is passed to each admissible outgoing link multiplied by that link's share of the simulated outgoing counts at the node; upstream, the same rule is applied to incoming links. Each branch carries its own increment and its own path length. Propagation skips other coil links, which receive their own increment, and stops when the increment is below one vehicle, after three polylines along the path, at a forbidden turn or at a closed polyline. Every directed polyline of the raw simulation is kept in the output, and the hours of the observed table are aligned with the local-time hours of the simulation. In the leave-one-detector-out and depth experiments all detectors on the withheld polyline are removed together, so that a co-located detector cannot reproduce the withheld count.
 
 Table~\ref{tab:loo} summarizes the leave-one-detector-out test, Table~\ref{tab:depth} the dependence on the propagation depth and Table~\ref{tab:distance} the effect of the correction on the hourly profiles of GPS links by network distance from the nearest coil.
 
@@ -97,12 +112,12 @@ All results are produced by the scripts in \code{article1/analysis} of the code 
 \item \code{od\_clock\_check.py}: hour convention of the OD tables;
 \item \code{carto\_geojson.py}, \code{osm\_road\_class.py}, \code{gps\_link\_speeds.py}: geometry, road classes and GPS link speeds;
 \item \code{routing\_variants.py prepare|run|evaluate}: route-choice variants and selection;
-\item \code{run\_corrected\_sims.py}: simulations of the validation days;
 \item \code{build\_coils\_table.py}: 2021 detector table from the open-data files;
+\item \code{demand\_scaling.py configs|scan}, \code{demand\_scan\_eval.py}: demand configurations without pair-level rescaling, scan of $k$ and choice of $k^*$; \code{demand\_scaling.py classes|fit}: rejected per-class alternative; \code{demand\_scaling.py final}: simulations of the fifteen validation days;
 \item \code{reconstruct\_and\_validate.py assimilate|validate|loo}: correction, GPS validation, leave-one-out;
 \item \code{volume\_check.py}, \code{compare\_routing.py}, \code{distance\_to\_detector.py}, \code{sensitivity\_fixed.py}: volume tests, routing comparison, reach of the correction, depth sensitivity;
-\item \code{make\_figures.py}, \code{make\_supp\_tables.py}: figures and tables.
+\item \code{make\_input\_figures.py}, \code{make\_figures.py}, \code{make\_supp\_tables.py}: figures and tables.
 \end{enumerate}
-Proprietary inputs (mobile-phone OD tables, Viasat link counts and traces) are required for steps 1--6 and are not distributed.
+Long simulations are run detached from the terminal (\code{setsid nohup}). Proprietary inputs (mobile-phone OD tables, Viasat link counts and traces) are required for steps 1--7 and are not distributed. A simulated day takes 10--30 minutes on an 8-core workstation, depending on the demand factor and on the number of days run in parallel.
 
 \end{document}

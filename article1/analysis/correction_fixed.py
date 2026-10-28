@@ -1,5 +1,5 @@
 # Corrected coil assimilation used by Article 1. Derived from the 2023-03-30 implementation
-# (article/python/revision/loo/correction_2023.py) with four corrections:
+# (article/python/revision/loo/correction_2023.py) with the following corrections:
 #  1. MTS coil tables (UTC) are converted to Europe/Rome before comparison with the
 #     local-time simulation;
 #  2. each downstream/upstream branch receives delta * its own turning weight
@@ -7,6 +7,10 @@
 #  3. the depth limit counts links along each propagation path separately;
 #  4. every directed link of the raw simulation is kept in the output.
 #  5. the coil window includes the four quarter-hours of the last simulated hour.
+#  6. propagation skips other coil links instead of abandoning the whole node when one of
+#     the adjacent links (including the parent link) carries a coil;
+#  7. the reference simulated count of every coil is taken from its own link, also when it
+#     shares the link with another coil (whose observations are then averaged).
 #!/usr/bin/env python3
 
 from collections import defaultdict
@@ -182,7 +186,8 @@ class SimPostCorrection():
     dfc.columns.name = 'coils'
     dfc.index = pd.to_datetime(dfc.index, utc=True).tz_convert('Europe/Rome')
     dfc = dfc.tz_localize(None)
-    dfc = dfc[ (dfc.index >= dfs.index[0]) & (dfc.index < pd.to_datetime(dfs.index[-1]) + pd.Timedelta(hours=1)) ]
+    step = pd.to_datetime(dfs.index[1]) - pd.to_datetime(dfs.index[0])  # simulation sampling (1 h or 15 min)
+    dfc = dfc[ (dfc.index >= dfs.index[0]) & (dfc.index < pd.to_datetime(dfs.index[-1]) + step) ]
     dfc = dfc.interpolate()
     # print(dfc['678_IN'])
 
@@ -249,10 +254,10 @@ class SimPostCorrection():
     dfs = dfs.astype('float')
     ## enforce same time sampling
     if len(dfc) > len(dfs):
-      dfc = dfc.resample('1h').sum() # @TODO: change hardcoded 1h to computed dt from dfs
-      dfc_overrated = dfc_overrated.resample('1h').sum()
+      dfc = dfc.resample(step).sum()
+      dfc_overrated = dfc_overrated.resample(step).sum()
       dfc_overrated = dfc_overrated.loc[:, (dfc_overrated != 0).any(axis=0)]
-      dfc_underrated = dfc_underrated.resample('1h').sum()
+      dfc_underrated = dfc_underrated.resample(step).sum()
       dfc_underrated = dfc_underrated.loc[:, (dfc_underrated != 0).any(axis=0)]
     dfs = dfs.set_index(dfc.index)
 
@@ -277,7 +282,7 @@ class SimPostCorrection():
     self.noturn_dict = noturn_dict
     self.patched_list = patched_list
     
-  def correct(self, sel_coil = []):
+  def correct(self, sel_coil = [], suffix = 'corrected'):
     # load stuff
     dfs = self.dfs
     dfc = self.dfc
@@ -288,7 +293,6 @@ class SimPostCorrection():
     poly_c2l = self.poly_c2l
     node_adlist = self.node_adlist
     polymap = self.polymap
-    p2c = self.poly2coil
 
     # filter selected coils
     if len(sel_coil) == 0:
@@ -298,12 +302,10 @@ class SimPostCorrection():
     dfs = dfs[[ c for s in sel_coil for c in dfs.columns if c.startswith(f'{s}_') ]]
     dfc = dfc[[ c for s in sel_coil for c in dfc.columns if c.startswith(f'{s}_') ]]
 
-    dfuc = dfu.copy()
-    dfuc['coil'] = dfuc['poly_cid'].map(p2c)
-    dfuc = dfuc.loc[dfuc['coil'].notnull()]
-    dfuc['coil'] = dfuc['coil'].astype(int).astype(str) + '_' + dfuc['direction']
-    dfuc = dfuc.pivot(index='datetime', columns = "coil", values = "counter")
-    dfuc = dfuc.reindex(columns=[ c for s in sel_coil for c in dfs.columns if c.startswith(f'{s}_') ], fill_value=0)  # coil links with no simulated agent
+    # simulated count on each coil's own link (coil2poly: several coils can share a link,
+    # poly2coil keeps only one of them)
+    dfuc = dfu.pivot(index='datetime', columns='poly_dir', values='counter')
+    dfuc = pd.DataFrame({ c: dfuc.get(f'{self.coil2poly[int(c.split("_")[0])]}_{c.split("_")[1]}', 0) for c in dfs.columns }, index=dfuc.index)
 # compute relative delta
     dfr = dfs / dfuc.replace(0,1)
     dfd = (dfc * dfr - dfs) / dfs.replace(0,1)
@@ -316,6 +318,8 @@ class SimPostCorrection():
     dfd['n1'] = [ poly_list[poly_l2c[p]][0] if d == 'IN' else poly_list[poly_l2c[p]][1] for p,d in dfd[['poly_lid', 'direction']].values ]
     dfd['n2'] = [ poly_list[poly_l2c[p]][1] if d == 'IN' else poly_list[poly_l2c[p]][0] for p,d in dfd[['poly_lid', 'direction']].values ]
     dfd.datetime = pd.to_datetime(dfd.datetime)
+    # coils on the same directed link measure the same flow: average them
+    dfd = dfd.groupby(['datetime', 'n1', 'n2'], as_index=False).agg({'counter':'mean', 'coil_id':'first', 'poly_lid':'first'})
 
     if len(self.global_time_debug):
       dfd = dfd[ dfd['datetime'].isin(self.global_time_debug)]
@@ -441,7 +445,7 @@ class SimPostCorrection():
     df['poly_lid'] = [ poly_c2l[p] for p in df.poly_cid.values ]
     df = df[['poly_lid', 'poly_cid', 'oneway'] + sorted([ c for c in df.columns if not isinstance(c, str) ])]
     df = df.sort_values(by=['oneway', 'poly_cid']).fillna(0)
-    corrected_file = f'{self.unique_file}.corrected'
+    corrected_file = f'{self.unique_file}.{suffix}'
     # print(df.loc[df.poly_lid == 2107])
     df.to_csv(corrected_file, sep=';', index=False)
 
@@ -656,9 +660,9 @@ class SimPostCorrection():
     if abs(newdelta) < self.recursion_threshold: return
     if len(polyvisited) >= self.recursion_max_depth: return
     for p, n in self.node_adlist[n2]:
-      if p in list(self.poly2coil.keys()): return
       poly_sit = self.polymap[n1][n2] 
       if n == n1: continue
+      if p in self.poly2coil: continue  # other coil links keep their own correction
       if p in polyvisited: continue
       if poly_sit in self.noturn_dict and p in self.noturn_dict[poly_sit] : continue 
       if p in self.patched_list: continue
@@ -671,9 +675,9 @@ class SimPostCorrection():
     if abs(newdelta) < self.recursion_threshold: return
     if len(polyvisited) >= self.recursion_max_depth: return
     for p, n in self.node_adlist[n1]:
-      if p in list(self.poly2coil.keys()): return
       poly_sit = self.polymap[n1][n2] 
       if n == n2: continue
+      if p in self.poly2coil: continue  # other coil links keep their own correction
       if p in polyvisited: continue
       if poly_sit in self.noturn_dict and p in self.noturn_dict[poly_sit] : continue
       if p in self.patched_list: continue

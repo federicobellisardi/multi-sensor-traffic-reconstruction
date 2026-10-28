@@ -39,13 +39,15 @@ def main():
     for y, d in loo.items():
         rows.append((y, d["coils"], d["coil_days"], f"{d['pooled_raw_error_pct']:.1f}", f"{d['pooled_loo_error_pct']:.1f}",
                      f"{d['median_coil_raw_pct']:.1f}", f"{d['median_coil_loo_pct']:.1f}",
-                     f"{100*d['share_reached']:.0f}", f"{100*d['share_improved']:.0f}", f"{100*d['share_worse']:.0f}"))
+                     f"{100*d['share_reached']:.0f}", f"{100*d['share_improved']:.0f}", f"{100*d['share_worse']:.0f}",
+                     f"{d['volume_spearman']:.2f}", f"{d['loo_volume_spearman']:.2f}"))
     table("loo.tex",
           "Leave-one-detector-out test. Errors are $\\sum|\\tilde u-c|/\\sum c$ in percent of the observed volume, "
           "pooled over coils or as the median over coils; reached: share of withheld coils whose link is modified by "
-          "the propagation from other coils; improved/worse: share with lower/higher error than the raw reconstruction.",
-          "tab:loo", "Year & Coils & Coil-days & Pooled raw & Pooled LOO & Median raw & Median LOO & Reached (\\%) & Improved (\\%) & Worse (\\%)",
-          rows, "lrrrrrrrrr")
+          "the propagation from other coils; improved/worse: share with lower/higher error than the simulation before correction; "
+          "$\\rho_s$: Spearman correlation of daily volumes with the observed ones before correction and with the detector withheld.",
+          "tab:loo", "Year & Coils & Coil-days & Pooled raw & Pooled LOO & Median raw & Median LOO & Reached (\\%) & Improved (\\%) & Worse (\\%) & $\\rho_s$ raw & $\\rho_s$ LOO",
+          rows, "lrrrrrrrrrrr")
     s = pd.read_csv(RES / "corrected/sensitivity_coverage_depth_summary.csv")
     s = s[s.frac == 1.0]
     table("depth.tex",
@@ -75,12 +77,37 @@ def main():
     for y in ("2020", "2021"):
         for lab, src in [("shortest distance", base), ("GPS-informed", val)]:
             d = src[y]["day_types"]["all"]
-            rows.append((y, lab, d["links"], f"{d['mae_pp_raw']['median']:.2f}", f"{d['mae_pp']['median']:.2f}",
-                         f"{d['pearson']['median']:.2f}"))
+            rows.append((y, lab, d["links"], f"{d['mae_pp_raw']['median']:.2f}"))
     table("routing_shape.tex",
-          "Median hourly-share MAE (pp) and hourly correlation on all usable GPS links with shortest-distance and "
-          "GPS-informed route choice.", "tab:routing_shape",
-          "Campaign & Route choice & Links & Raw & Assimilated & Correlation", rows, "llrrrr")
+          "Median hourly-share MAE (pp) of the simulation before detector correction on all usable GPS links, with "
+          "shortest-distance and GPS-informed route choice.", "tab:routing_shape",
+          "Campaign & Route choice & Links & MAE (pp)", rows, "llrr")
+    cmp = json.load(open(RES / "corrected/routing_comparison.json"))
+    rows = []
+    for y, d in cmp.items():
+        lo, hi = d["diff_ci95"]
+        rows.append((y, d["detectors"], f"{d['spearman_base']:.2f}", f"{d['spearman_gps']:.2f}",
+                     f"{d['diff']:.2f} [{lo:.2f}, {hi:.2f}]", f"{d['median_abs_log10_ratio_base']:.2f}",
+                     f"{d['median_abs_log10_ratio_gps']:.2f}"))
+    table("routing_volumes.tex",
+          "Daily volumes of the simulation before detector correction at the coils outside Forl\\`i--Cesena: Spearman "
+          "correlation with the observed volumes for shortest-distance and GPS-informed route choice, paired bootstrap "
+          "difference with 95\\% interval (5,000 resamples of coils), and median absolute $\\log_{10}$ ratio of "
+          "simulated to observed volume.", "tab:routing_volumes",
+          "Campaign & Coils & $\\rho_s$ distance & $\\rho_s$ GPS & Difference & $|\\log_{10}|$ distance & $|\\log_{10}|$ GPS",
+          rows, "lrrrlrr")
+    sc = pd.read_csv(RES / "demand/scan_summary.csv")
+    sc = sc[sc.part != "all"]
+    rows = []
+    for (run, part), d in sc.groupby(["run", "part"], sort=False):
+        d = d.iloc[0]
+        rows.append((run if run.startswith("per") else f"$k={float(run):.1f}$", part, int(d.n), f"{d.ratio:.2f}",
+                     f"{d.spearman:.2f}", f"{d.median_abs_log10:.2f}", f"{100 * d.within_factor2:.0f}"))
+    table("demand_scan.tex",
+          "Daily volumes on the complete coils of 10 February 2020 for the historic pair-level rescaling and for common "
+          "demand factors $k$: pooled simulated/observed ratio, Spearman correlation, median absolute $\\log_{10}$ ratio "
+          "and share of coils within a factor of two, on the calibration and test halves.", "tab:scan",
+          "Demand & Coils & $n$ & Ratio & $\\rho_s$ & $|\\log_{10}|$ & Within $\\times2$ (\\%)", rows, "llrrrrr")
     print("tables written")
 
 
