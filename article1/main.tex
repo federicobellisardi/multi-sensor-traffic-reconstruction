@@ -34,201 +34,212 @@
 \affil[3]{\orgdiv{Department of Physics}, \orgname{Universit\`a di Bologna}, \street{\todo{full department name and street address}}, \city{Bologna}, \country{Italy}}
 \affil[4]{\orgname{INFN, Sezione di Bologna}, \street{Viale Carlo Berti Pichat 6/2}, \postcode{40127}, \city{Bologna}, \country{Italy}}
 
-\abstract{Regional traffic reconstruction must combine observations that differ in spatial support, sampling and independence from the model. We assess a workflow for Emilia-Romagna, Italy, in which mobile-phone origin--destination activity drives an agent-based simulation on an OpenStreetMap road graph and inductive loop detectors correct the simulated counts locally. GPS probes, kept out of the reconstruction, test the hourly profiles of all matched links in two campaigns, one before and one after the COVID-19 restrictions. Because the probe counts are rescaled by the simulated volumes, this comparison tests the temporal shape of traffic only; volumes are tested by withholding each loop detector in turn. The reconstructed profiles are only marginally closer to the GPS profiles than the injected demand profile, less accurate than a mean detector profile, and worse on weekends. Assimilating the neighbouring detectors reduces the error on a withheld detector by about three percentage points, while more than half of its observed volume remains unexplained. Part of the discrepancy is traced to an approximately one-hour simulated lead, missing late-night demand and a detector clock mismatch. The results delimit what heterogeneous regional observations support: network-wide coverage by a modelled field, weak transfer of local count information, and no demonstrated advantage over simple temporal baselines.}
 
-\keywords{traffic reconstruction, mobile-phone demand, inductive loop detectors, GPS validation, agent-based simulation, sparse observations}
+\abstract{Regional traffic reconstruction must combine observations that differ in spatial support, sampling and independence from the model. We reconstruct hourly link flows on the road network of Emilia-Romagna, Italy, by driving an agent-based simulation with mobile-phone origin--destination activity, informing route choice with GPS-derived speeds and road-class usage, and correcting the simulated counts locally with inductive loop detectors. The reconstruction is assessed with three independent tests: hourly profiles against GPS probes on all matched links of two campaigns, before and after the COVID-19 restrictions; daily volumes against loop detectors not used to calibrate route choice; and detectors withheld from the correction. Simulated and observed traffic peak at the same hours, and the reconstructed profiles have a median error of about one third of the mean hourly share, but they are less accurate than the injected demand profile and a mean detector profile. GPS-informed route choice, calibrated in one province, improves the rank agreement of link volumes with detectors in the rest of the region in both campaigns, while the absolute volume level remains about half of the observed one. The detector correction improves hourly profiles up to a few links away but does not transfer volumes to withheld detectors. The results identify which properties of a regional traffic field heterogeneous observations can support and which require further data.}
+
+\keywords{traffic reconstruction, mobile-phone demand, inductive loop detectors, GPS probes, route choice, agent-based simulation}
 
 \begin{document}
 \maketitle
 \doublespacing
 
-\noindent\textcolor{red}{Working research draft, 27 October 2026. Archived implementation assessed; corrected-clock experiments and author confirmations remain outstanding.}
-
 \section{Introduction}
 
-Mobile-phone records provide a geographically broad view of travel demand. Their regularities in space and time \cite{gonzalez2008} have been used to estimate origin--destination (OD) matrices by time of day and trip purpose \cite{calabrese2011,iqbal2014,alexander2015}, and passively collected data are increasingly part of transport modelling practice \cite{zheng2014,chen2016,anda2017}. Converting activity between areas into traffic on roads, however, requires assumptions about vehicle use, trip endpoints and routing, and phone-based samples carry their own ownership and activity biases \cite{wesolowski2013}. Previous studies have combined mobile-phone demand with road networks and assignment models to estimate road usage and congestion \cite{wang2012,toole2015,colak2016}, building on the equilibrium-assignment tradition \cite{wardrop1952}. Our group has studied GPS and mobile-device mobility in Italian cities, including Bologna and Rimini in Emilia-Romagna \cite{bazzani2010,gallotti2016,mizzi2018,mizzi2022,mizzi2023,bellisardi2025}. The remaining question for a regional application is what can be established independently about the resulting link counts and their variation through the day.
+Mobile-phone records provide a geographically broad view of travel demand. Their regularities in space and time \cite{gonzalez2008} have been used to estimate origin--destination (OD) matrices by time of day and trip purpose \cite{calabrese2011,iqbal2014,alexander2015}, and passively collected data are increasingly part of transport modelling practice \cite{zheng2014,chen2016,anda2017}. Converting activity between areas into traffic on roads, however, requires assumptions about vehicle use, trip endpoints and routing, and phone-based samples carry their own ownership and activity biases \cite{wesolowski2013}. Previous studies have combined mobile-phone demand with road networks and assignment models to estimate road usage and congestion \cite{wang2012,toole2015,colak2016}, building on the equilibrium-assignment tradition \cite{wardrop1952}. Our group has studied GPS and mobile-device mobility in Italian cities, including Bologna and Rimini in Emilia-Romagna \cite{bazzani2010,gallotti2016,mizzi2018,mizzi2022,mizzi2023,bellisardi2025}. The open question for a regional application is what can be established independently about the resulting link counts and their variation through the day.
 
 Fixed detectors and vehicle probes address different parts of this question. Detectors measure passages at a small set of road sections and have long been used to constrain OD estimation \cite{cascetta1984,yang1992,antoniou2016} and to calibrate the demand of agent-based simulations \cite{flotterod2011}. GPS observations cover additional roads but sample a fleet whose inclusion probability need not be constant between links or hours \cite{herrera2010,jenelius2013,patire2015,seo2015}. Traffic-state estimation and multi-sensor fusion therefore depend on both the physical model and the observation process \cite{wang2005,work2010,elfaouzi2011,bachmann2013,nantes2016,seo2017}. Sensor location and flow observability place further limits on what sparse counts can identify \cite{yang1998,castillo2008,gentili2012,castillo2015}. In particular, reproducing the count of a detector already used for correction is not evidence of accuracy elsewhere.
 
-These issues remain relevant alongside recent methods. Telecom--vehicle fusion has been studied for prediction away from cameras \cite{lin2024}; probabilistic estimation targets sensor-free traffic states \cite{lei2024}; and sparse-detector scaling methods estimate network traffic states from limited stationary coverage \cite{maiti2025}. Uncertainty in demand inputs propagates through every stage of such models \cite{zhao2002,rasouli2012}, and simulation outputs require statistical validation against data not used for calibration \cite{toledo2004,hollander2008}. Simple historical profiles are also strong benchmarks for temporal traffic patterns \cite{lippi2013,vlahogianni2014}. The present study does not introduce a new fusion principle or establish that its algorithm outperforms those methods. It evaluates an existing regional workflow against observations withheld from demand generation and correction, with simple baselines and an explicit separation between temporal-profile and count validation.
+These issues remain relevant alongside recent methods. Telecom--vehicle fusion has been studied for prediction away from cameras \cite{lin2024}; probabilistic estimation targets sensor-free traffic states \cite{lei2024}; and sparse-detector scaling methods estimate network traffic states from limited stationary coverage \cite{maiti2025}. Uncertainty in demand inputs propagates through every stage of such models \cite{zhao2002,rasouli2012}, and simulation outputs require statistical validation against data not used for calibration \cite{toledo2004,hollander2008}. Simple historical profiles are also strong benchmarks for temporal traffic patterns \cite{lippi2013,vlahogianni2014}.
 
-We examine a reconstruction for Emilia-Romagna, Italy. January 2020 mobile-phone OD activity drives the \texttt{minimocas} simulator on an OpenStreetMap-derived graph. Regional inductive loop detectors, called coils below, correct the simulated link counts locally. Viasat GPS extracts from February 2020 and June--July 2021 provide a separate probe layer. Our assessment uses every matched link with positive simulated and GPS totals, a leave-one-counter-out experiment, day-type comparisons and an audit of timing and implementation choices. Clustering and selected-road examples are retained in the Supplementary Material as illustrations rather than evidence of network-wide accuracy.
+We reconstruct hourly flows on the regional road network of Emilia-Romagna from January 2020 mobile-phone OD activity, the \texttt{minimocas} agent-based simulator on an OpenStreetMap-derived graph, the regional inductive loop detectors (called coils below) and Viasat GPS probes. The probes play two separate roles: in one province they provide speeds and road-class usage for route choice; everywhere they provide independent hourly profiles. The contribution is a regional assessment that keeps three questions apart: whether the hourly shape of traffic is reproduced, whether the spatial distribution of volumes is reproduced, and how far local detector information propagates through the network. Each question is answered with data that did not enter the corresponding modelling step, and the reconstruction is compared with simple baselines throughout.
 
-\section{Results and validation}
+\section{Results}
 
-\subsection{Regional inputs and reconstructed field}
+\subsection{Regional inputs}
 
-The regional network connects an east--west urban corridor, the Adriatic coast and Apennine roads (Fig.~\ref{fig:inputs}). Mobile-phone activity is aggregated to municipality-level OD relations. The demand basis is January 2020 throughout the experiments; it is not a measurement of daily vehicle trips in either validation campaign. Weekday and weekend profiles differ, with more concentrated peaks on weekdays (Fig.~\ref{fig:demand}). Four endpoint classes represent observed OD pairs and residual demand with one or both endpoints sampled by the model. These classes allocate mobility activity to the network under the assumptions described in Methods.
+The regional network connects an east--west urban corridor, the Adriatic coast and Apennine roads (Fig.~\ref{fig:inputs}). The model graph has 3,925 directed polylines and 2,548 nodes; matching to OpenStreetMap assigns 709~km to motorways, 326~km to trunk roads, 2,629~km to primary, 4,673~km to secondary and 2,863~km to tertiary roads. Mobile-phone activity is aggregated to municipality-level OD relations and averaged separately for weekdays and weekends (Fig.~\ref{fig:demand}). The hourly OD labels refer to local time and to the start of the hour: the weekday OD profile agrees best with the hourly profile of the MTS coils at zero lag (correlation 0.96, against 0.74 with a one-hour shift). Four endpoint classes represent observed OD pairs and residual demand with one or both endpoints sampled by the model.
 
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth,height=.68\textheight,keepaspectratio]{fig1.jpg}
-\caption{\textbf{Regional domain and observational inputs.} \textbf{(a)} Model road graph on the inherited CartoDB Positron basemap; scale bar, 50~km. \textbf{(b)} Municipality-level mobile-phone OD activity in January 2020, shown logarithmically. \textbf{(c)} MTS loop-detector locations. \textbf{(d)} Directional counts of coil 282 on 10 February 2020 in local time, with its location in the inset. Panels are retained from the revised source manuscript; their complete regeneration and basemap attribution remain part of the figure-provenance audit.}
+\caption{\textbf{Regional domain and observational inputs.} \textbf{(a)} Regional road graph on a CartoDB Positron basemap; scale bar, 50~km. \textbf{(b)} Municipality-level mobile-phone OD activity in January 2020, logarithmic scale. \textbf{(c)} Locations of the MTS inductive loop detectors. \textbf{(d)} Directional counts of coil 282 on 10 February 2020 in local time, with its location in the inset.}
 \label{fig:inputs}
 \end{figure*}
 
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth,height=.68\textheight,keepaspectratio]{fig2.png}
-\caption{\textbf{Mobile-phone demand basis.} \textbf{(a)} Mean hourly weekday and weekend activity in January 2020. \textbf{(b,c)} Weekday and weekend shares of source--destination, source--random, random--destination and random--random demand. \textbf{(d)} Activity of the 15 most active municipalities. These describe the input activity and its model decomposition, not independently measured vehicle flows. Panels are retained from the revised source manuscript.}
+\caption{\textbf{Mobile-phone demand.} \textbf{(a)} Mean hourly weekday and weekend activity in January 2020. \textbf{(b,c)} Weekday and weekend shares of source--destination, source--random, random--destination and random--random demand. \textbf{(d)} Activity of the 15 most active municipalities.}
 \label{fig:demand}
 \end{figure*}
 
-The simulator routes agents over directed links and records distinct agents present on each link during hourly intervals. This unique-link count differs from passage counts at a point detector. On the polyline containing coil 282, the raw 10 February 2020 reconstruction carries 14,804 agents against 21,935 observed passages, with hourly correlation 0.95 in the local-time comparison (Fig.~\ref{fig:simulation}a; inherited illustrative result). Assimilation imposes the detector series under non-zero simulated-count conditions. Its agreement with that detector is therefore a consequence of the update. The daily map provides a regional model output, rather than a map of independently validated traffic volumes.
+\subsection{Reconstructed field and local detector correction}
+
+The simulator routes agents over directed links and records, for each hour, the distinct agents present on each link. On 10 February 2020 the raw reconstruction on the link of coil 282 follows the daily shape of the counter (hourly correlation 0.86) with 6,232 agents against 21,935 observed passages; after assimilation the link carries 21,808 vehicles (Fig.~\ref{fig:simulation}a). Agreement at an assimilated detector is a consequence of the correction and is not used as validation below. The daily map shows the reconstructed field over the whole network (Fig.~\ref{fig:simulation}b).
 
 \begin{figure*}[htbp]
 \centering
-\includegraphics[width=\textwidth,height=.68\textheight,keepaspectratio]{fig3.jpg}
-\caption{\textbf{Model output and an assimilated location.} \textbf{(a)} Raw and assimilated counts on the link of coil 282 and observed hourly counts on 10 February 2020. The archived assimilation treats UTC observations as local time, explaining the relative displacement of its series. \textbf{(b)} Simulated daily counts by flow quantile. Counter agreement after assimilation is not held-out validation. Panels are retained from the revised source manuscript.}
+\includegraphics[width=\textwidth]{fig3_reconstruction.pdf}
+\caption{\textbf{Reconstructed field and local correction.} \textbf{(a)} Hourly counts of coil 282 (both directions) and raw and assimilated reconstruction on its link, 10 February 2020, local time; totals in parentheses. \textbf{(b)} Assimilated daily link flows, coloured and scaled by flow quantile.}
 \label{fig:simulation}
 \end{figure*}
 
-\subsection{What the independent GPS comparison measures}
+\subsection{GPS-informed route choice}
 
-Viasat observations were not used to generate demand or assimilate counters. Their matched links cover a subregion, predominantly near Forl\`i--Cesena (Fig.~\ref{fig:viasat}); validation there cannot establish accuracy across the entire regional graph. We estimate a link-specific GPS-to-simulation ratio over the same dates,
+Two thirds of the injected demand belongs to the random-endpoint classes, whose agents choose the next link at each node with transition probabilities rather than following a best path; with uniform probabilities they spread over the network irrespective of road hierarchy. We used the raw GPS traces of private vehicles in the province of Forl\`i--Cesena (February 2020) to inform route choice with two road-class properties (Table~\ref{tab:classes}): the off-peak median speed of the matched links, which sets link speeds and travel times, and the median daily number of probes per covered link, which sets the transition weights of random-endpoint agents and a usage term in the best-path cost (Methods). Link speeds of the same roads in June 2021 have a rank correlation of 0.98 with those of February 2020.
+
+\begin{table}[htbp]
+\centering
+\caption{Road-class properties estimated from private-vehicle GPS traces in Forl\`i--Cesena, February 2020: median off-peak speed of links with at least 50 matched points (interquartile range in brackets) and median daily probes per covered link. Both are applied to all links of each class in the region.}
+\label{tab:classes}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Road class & Links (speed) & Speed (km/h) & Links (usage) & Probes per day \\
+\midrule
+Motorway & 44 & 123 [120--124] & 61 & 130 \\
+Trunk & 75 & 83 [76--95] & 76 & 79 \\
+Primary & 151 & 55 [46--64] & 160 & 109 \\
+Secondary & 245 & 51 [46--60] & 248 & 36 \\
+Tertiary & 193 & 53 [43--59] & 227 & 21 \\
+Unclassified & 42 & 49 [36--54] & 57 & 14 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Among the route-choice variants simulated for 10 February 2020 (Supplementary Section~S3), we selected the one with the highest rank correlation between simulated link volumes and GPS link counts in Forl\`i--Cesena (0.54, against 0.47 for shortest-distance routing). It raises the share of vehicle-kilometres on motorways, trunk and primary roads from 0.39 to 0.48. All results below refer to this configuration; detectors outside Forl\`i--Cesena played no role in the selection.
+
+\subsection{Hourly profiles on all GPS-matched links}
+\label{sec:all_links}
+
+Viasat probes did not enter demand generation or detector correction. Matched links cover mainly the Forl\`i--Cesena area (Fig.~\ref{fig:viasat}). Of 930 matched links in 2020 and 927 in 2021, 821 and 818 have positive totals in both data sources. The campaigns contain eight days in 2020 (10--17 February, six weekdays and a weekend) and seven in 2021 (28 June--4 July, five weekdays and a weekend), each simulated with the OD matrix of its day type. The ratio between probes and simulated vehicles has a median of 1.4\% in 2020 and 1.2\% in 2021 and spans several orders of magnitude (Fig.~\ref{fig:viasat}c), so we compare hourly shares, which do not depend on it.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig4_gps.pdf}
+\caption{\textbf{GPS coverage.} \textbf{(a,b)} Usable GPS-matched links (number in parentheses) over the regional graph, 10--17 February 2020 and 28 June--4 July 2021. \textbf{(c)} Distribution of the link ratio $\eta_i$ between probe counts and simulated vehicles, Eq.~\eqref{eq:penetration}.}
+\label{fig:viasat}
+\end{figure*}
+
+Simulated and observed traffic peak at the same hours: pooled over all usable links, both have their maximum at 18:00 in both campaigns, and the pooled profiles differ by 0.66 and 0.64 percentage points (pp) per hour on average (Fig.~\ref{fig:diagnostics}a,b). At link level, the median error of the hourly shares is 1.41~pp in 2020 and 1.50~pp in 2021, about one third of the mean hourly share of 4.17~pp, with median hourly correlation 0.81 and 0.76 (Table~\ref{tab:baselines}, Fig.~\ref{fig:validation_cdf}). The error decreases with the number of probes: on links with at least 200 probes per campaign, 511 in 2020 and 470 in 2021, the medians are 1.10 and 1.18~pp.
+
+\begin{table}[htbp]
+\centering
+\caption{Median hourly-share MAE (pp) on all usable GPS-matched links: raw and assimilated reconstruction, and three profiles applied to every link (injected OD demand, mean MTS detector profile of the same days, uniform). Weekends contain two days per campaign.}
+\label{tab:baselines}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+Campaign & Days & Links & Raw & Assimilated & OD & MTS & Uniform \\
+\midrule
+2020 & all (8) & 821 & 1.52 & 1.41 & 1.27 & 1.17 & 2.71 \\
+     & weekday (6) & 817 & 1.68 & 1.60 & 1.41 & 1.33 & 2.87 \\
+     & weekend (2) & 813 & 2.17 & 2.11 & 2.01 & 1.90 & 2.97 \\
+\midrule
+2021 & all (7) & 818 & 1.50 & 1.50 & 1.30 & 1.21 & 2.57 \\
+     & weekday (5) & 816 & 1.62 & 1.60 & 1.44 & 1.40 & 2.71 \\
+     & weekend (2) & 803 & 2.36 & 2.33 & 2.19 & 2.03 & 2.94 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two fixed profiles set these values in context. The hourly profile of the injected OD demand has median errors of 1.27 and 1.30~pp, and the mean profile of the MTS coils on the same days 1.17 and 1.21~pp; the reconstruction is more accurate than the OD profile on 31\% and 28\% of the links and than the MTS profile on 24\% and 23\%. Network loading therefore does not sharpen the timing of the demand: travel times and the hourly accounting of agents that remain on a link for more than one interval broaden the simulated profiles. Separating weekdays and weekends raises all errors, because each subset has fewer probes, and the ordering of the methods is unchanged.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig5_validation.pdf}
+\caption{\textbf{Hourly-share validation on all usable matched links.} \textbf{(a,b)} Cumulative distributions of the link MAE for the raw and assimilated reconstruction, the OD demand profile and the mean MTS profile. \textbf{(c,d)} Assimilated reconstruction and MTS profile on weekdays and weekends; curves extend beyond the 6~pp limit.}
+\label{fig:validation_cdf}
+\end{figure*}
+
+\subsection{Link volumes at detectors}
+
+The raw reconstruction never uses the coils, so all coils with complete data provide an independent test of daily volumes. Outside Forl\`i--Cesena, the rank correlation between simulated and observed daily volumes is 0.36 in 2020 (136 coils) and 0.36 in 2021 (128 coils), against 0.27 and 0.28 with shortest-distance routing (Fig.~\ref{fig:volumes}). The paired bootstrap difference is 0.09 (95\% interval 0.01--0.17) in 2020 and 0.08 ($-$0.01--0.17) in 2021; the 2021 campaign is out of sample for the route-choice weights, which were estimated in February 2020. The median absolute log-ratio between simulated and observed volumes falls from 0.50 to 0.46 and from 0.51 to 0.48. The level of the simulated volumes is not calibrated to counts: at the coils it is about half of the observed one in both campaigns (ratio 0.52).
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig7_volumes.pdf}
+\caption{\textbf{Daily volumes at detectors outside Forl\`i--Cesena.} Raw simulated against observed daily vehicles (mean over complete days) for shortest-distance routing and GPS-informed routing, \textbf{(a)} 10--17 February 2020 and \textbf{(b)} 28 June--4 July 2021; $\rho_s$ is the Spearman rank correlation. Dashed line: equality; dotted lines: factor of two.}
+\label{fig:volumes}
+\end{figure*}
+
+\subsection{Reach of the detector correction}
+
+The correction adds to each coil link the difference between observed and simulated counts and propagates it along the simulated turning shares. Its reach was measured on the GPS links and on withheld coils. On GPS links, the median reduction of the hourly-share error is largest on the coil links themselves (0.40~pp in 2020, 0.22~pp in 2021), 0.19~pp one link away in 2020, 0.06--0.10~pp two and three links away, and zero beyond three links, where the correction does not act (Fig.~\ref{fig:diagnostics}d). Timing information therefore propagates over a few links.
+
+Volumes do not. In a leave-one-detector-out test, each coil with complete data is removed from the correction in turn and its observed counts are compared with the reconstruction on its link (152 coils and 614 coil-days in 2020, 140 coils and 571 coil-days in 2021; Fig.~\ref{fig:diagnostics}c). The correction reaches 64\% and 57\% of the withheld coils; their median error falls from 72\% to 68\% and from 72\% to 69\% of the observed volume, with 45\% and 39\% of the coils improved and 19\% worsened, but the pooled absolute error rises from 78\% to 88\% and from 76\% to 84\%, driven by large increments that reach low-volume links. Limiting the propagation depth reduces this effect: on a fixed set of withheld coils in 2020 the pooled error increases by 5.7~pp with propagation over one link and by 13.6~pp over three links (Supplementary Section~S4). The correction is therefore best used locally, at and immediately around instrumented sections.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig6_diagnostics.pdf}
+\caption{\textbf{Timing and reach of the correction.} \textbf{(a,b)} Hourly shares pooled over all usable links: reconstruction, GPS probes and mean MTS profile. Pooling weights links by their own volumes, so these curves are not regional traffic shares. \textbf{(c)} Error on each withheld coil, as a percentage of its observed volume, with the raw reconstruction and with the other coils assimilated; dashed line, equal errors. \textbf{(d)} Median reduction of the hourly-share error on GPS links by network distance from the nearest coil, in polylines; numbers of links inside the bars.}
+\label{fig:diagnostics}
+\end{figure*}
+
+\section{Discussion}
+
+The reconstruction provides an hourly value on every directed link of the regional network, and the three tests show which of its properties are supported by observation. The timing of traffic is: simulated and observed peaks coincide and the median link profile differs from the GPS one by about a third of the mean hourly share. It is not better than simpler profiles, however. A mean detector profile describes the hourly shape of traffic on the GPS links more accurately, consistent with the strength of historical profiles in traffic forecasting \cite{lippi2013,vlahogianni2014}, and the injected demand profile is also more accurate than the simulated one. The value of the simulation lies in the spatial allocation of the demand, which no single profile provides, and its validation requires volume data.
+
+The volume test shows that the spatial allocation depends strongly on route choice. With uniform transition probabilities and shortest-distance paths, agents spread over secondary roads and the volumes of the main roads are underestimated most. Speeds and road-class usage measured by GPS in a single province, transferred to the whole region by road class, improve the rank agreement with detectors in the other provinces and in a later season. This is a modest gain: a rank correlation of 0.36 leaves most of the variation in link volumes unexplained, and the absolute level is not calibrated. Joint estimation of demand and route choice from counts \cite{cascetta1984,flotterod2011,antoniou2016} is the natural next step, and the volume test introduced here provides the hold-out criterion for it.
+
+The correction behaves differently for timing and for volume. Increments derived at a detector improve the hourly shape of neighbouring links, but when they are propagated as absolute vehicle numbers they overshoot on links whose volume differs from that of the detector link. The leave-one-out test therefore favours a local correction, and the reconstruction away from detectors should be read as a model estimate whose spatial ranking, not its absolute level, has been validated.
+
+These conclusions refer to the data that support them. GPS profiles test the hourly shape on links concentrated in one province; volumes are tested at the detector sites, which lie mostly on primary roads; and the demand is the January 2020 OD matrix in every run, including the summer 2021 campaign, when Italian mobility had changed under the pandemic \cite{pepe2020,bonaccorsi2020}. The similar performance in the two campaigns indicates that the hourly structure of the demand is more stable than its level. A demand basis covering several seasons, a route-choice model estimated jointly with demand, and the uncertainty of link volumes are the main extensions; the evaluation framework applies unchanged to them.
+
+\section{Methods}
+
+\subsection{Data and network}
+\label{sec:data_preprocessing}
+
+The network is the project graph derived from OpenStreetMap \cite{osm,boeing2017}, whose road coverage has been estimated to exceed 95\% in most European countries \cite{barrington2017}. Polylines store connectivity, length, direction and turn restrictions. Each polyline was assigned the OpenStreetMap class of the ways nearest to three points along it (within 30~m; Geofabrik extract of 26 October 2026, ODbL). Municipality OD activity from January 2020 is averaged separately for Monday--Friday and Saturday--Sunday; the public holidays of 1 and 6 January enter the weekday average. Each hourly OD value is injected uniformly in the corresponding hour of local time. MTS counts are available every 15~min in UTC and are converted to local time. For 2020 we use the project archive of the regional counts; for 2021 we use the regional open-data release of the same counts (Regione Emilia-Romagna, CC BY), which in local time reproduces the archive for February 2020.
+
+\subsection{Simulation and route choice}
+
+The \texttt{minimocas} agent-based model advances in 10~s steps and writes hourly outputs. The speed of an agent is the speed of its link, reduced above a critical density. Source--destination agents follow best paths computed with a Dijkstra engine \cite{dijkstra1959} that respects turn restrictions; random-endpoint agents choose the next link at each node with probability proportional to its transition weight. The cost of link $i$ in the best-path computation is
+\begin{equation}
+w_i = L_i\left[\alpha + (1-\alpha)\,\frac{1/c_i - 1/c_{\max}}{1/c_{\min} - 1/c_{\max}}\right],
+\label{eq:route_cost}
+\end{equation}
+where $L_i$ is its length, $c_i$ its usage weight and $\alpha=0.5$. Link speeds and usage weights are assigned by road class (Table~\ref{tab:classes}); usage weights are proportional to the median daily GPS probes per covered link of the class, and the same weights define the transition probabilities. Assignment is not equilibrated \cite{wardrop1952}, and the model does not resolve the congestion phenomena of microscopic traffic-flow models \cite{horni2016,lopez2018,treiber2013}. In two of the fifteen simulated days, 50 next-node decisions in total had no feasible path under turn restrictions with the cost of Eq.~\eqref{eq:route_cost} and used the shortest-distance path instead. The simulator records, for each hour and direction, the number of distinct agents on each polyline; virtual barriers at the coil locations count point crossings.
+
+GPS speeds were obtained by matching every fix with engine on and speed of at least 5~km/h to the nearest polyline within 20~m whose bearing agrees with the heading within 30$^\circ$, and taking the median of weekday fixes between 10:00 and 16:00. Route-choice variants (shortest distance, travel time, mixed, and usage-weighted) were compared for 10 February 2020 by the Spearman correlation between simulated daily volumes and GPS counts on the links of Forl\`i--Cesena.
+
+\subsection{Detector correction}
+
+Let $u_i(h)$ and $b_i(h)$ be the unique-link and virtual-barrier counts on the link of coil $i$ in hour $h$, and $c_i(h)$ the observed count after direction mapping. We compute
+\begin{equation}
+r_i(h)=\frac{b_i(h)}{\max(u_i(h),1)},\qquad
+\Delta_i(h)=\frac{c_i(h)r_i(h)-b_i(h)}{\max(b_i(h),1)},\qquad
+\delta_i(h)=u_i(h)\Delta_i(h),
+\label{eq:coil_residual}
+\end{equation}
+and set $\widetilde u_i(h)=u_i(h)+\delta_i(h)$, which equals $c_i(h)$ whenever $u_i,b_i\ge1$. The increment is propagated downstream and upstream: each adjacent link receives the increment of its parent multiplied by its own simulated turning share, $\delta_{(n_2,n)}=\delta_{(n_1,n_2)}\,u_{(n_2,n)}/\sum_m u_{(n_2,m)}$. Propagation stops when the increment falls below one vehicle, after three links along a path, at another coil link, at a forbidden turn or at a closed link; negative counts are set to zero.
+
+\subsection{Validation}
+
+For each matched polyline $i$ the ratio between probes and simulated vehicles over the same days is
 \begin{equation}
 \eta_i=\frac{\sum_{d,h}\psi_i(d,h)}{\sum_{d,h}\phi_i(d,h)},
 \label{eq:penetration}
 \end{equation}
-where $\psi_i$ counts probes and $\phi_i$ counts simulated agents. Rescaling GPS counts by $\eta_i$ matches the simulated total by construction. Accordingly, $\eta_i$ is a model-relative sampling ratio, not an independently measured penetration probability. It cannot validate absolute volumes or establish that fleet coverage is uniform across hours.
-
-We compare normalized hourly shares,
+where $\psi_i$ counts probes and $\phi_i$ simulated vehicles. We compare hourly shares $p_i(h)$ and $q_i(h)$ of the simulated and GPS counts summed over the campaign days, both directions together, through
 \begin{equation}
-p_i(h)=\frac{\sum_d\phi_i(d,h)}{\sum_{d,h'}\phi_i(d,h')},\qquad
-q_i(h)=\frac{\sum_d\psi_i(d,h)}{\sum_{d,h'}\psi_i(d,h')},
-\label{eq:normalized_gps}
-\end{equation}
-and their mean absolute difference in percentage points,
-\begin{equation}
-\mathrm{MAE}_i=\frac{100}{24}\sum_{h=0}^{23}|p_i(h)-q_i(h)|.
+\mathrm{MAE}_i=\frac{100}{24}\sum_{h=0}^{23}|p_i(h)-q_i(h)|,
 \label{eq:profile_error}
 \end{equation}
-Dividing by the mean hourly share, $100/24$, gives
-\begin{equation}
-\varepsilon_i=\sum_h|p_i(h)-q_i(h)|,
-\label{eq:relative_error}
-\end{equation}
-an $L^1$ distribution distance between zero and two, not a relative vehicle-count error. Both directions are summed before the GPS comparison, whereas the counter experiment retains directions.
+in percentage points; links with zero simulated or GPS total are excluded. GPS counts come from the map matching of the original extracts; we use the links whose geometry is identical in the project graph. The OD baseline sums the creation rates of each hour; the MTS baseline averages the normalized hourly profiles of the coil directions complete on all days of the subset; the uniform baseline assigns $1/24$ to every hour.
 
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=\textwidth,height=.68\textheight,keepaspectratio]{fig4.jpg}
-\caption{\textbf{GPS coverage and model-relative sampling ratios.} Top: 10--17 February 2020; bottom: 28 June--4 July 2021. \textbf{(a,d)} GPS-matched links against the regional graph. \textbf{(b,e)} Link shares by $\eta_i$ rounded to the nearest power of ten. \textbf{(c,f)} Spatial arrangement of these classes in the validation area. The classes depend on simulated volumes and are not independent measurements of fleet penetration. Panels are retained from the revised source manuscript.}
-\label{fig:viasat}
-\end{figure*}
-
-\subsection{All-link assessment and temporal baselines}
-\label{sec:all_links}
-
-Of 930 matched links in 2020 and 927 in 2021, respectively 848 and 845 have positive totals in both data sources. The campaigns contain eight dates in 2020 (six weekdays and two weekend days) and seven in 2021 (five weekdays and two weekend days). The extra archived simulation of 5 July 2021 is excluded because the GPS extract ends on 4 July. Regenerating the archived MAE, correlation and OD-baseline metrics reproduces the previous calculations to numerical precision.
-
-Median assimilated MAE is 1.34~pp in 2020 and 1.49~pp in 2021, with interquartile ranges 1.05--2.01 and 1.15--2.12~pp. These correspond to median $\varepsilon$ of 0.32 and 0.36. Median Pearson correlation of hourly shares is 0.82 and 0.76. Full distributions, rather than selected good-fitting roads, are shown in Fig.~\ref{fig:validation_cdf}. Error is associated with the model-relative sampling class, but classes depend on simulated volume and cannot by themselves separate probe noise from reconstruction error (Supplementary Section~S5).
-
-Three common temporal profiles provide baselines (Table~\ref{tab:baselines}). A uniform profile ignores within-day variation. The injected OD-demand profile measures the value added by network loading. The mean normalized MTS profile supplies observed timing without link-specific assignment. The 2020 MTS profile uses the 82 detector directions complete across the validation dates, after conversion to local time. The 2021 comparator uses 2022 summer weekday-specific averages, excluding incomplete direction profiles; it is a cross-year comparator, not contemporaneous validation.
-
-The reconstruction improves little on the OD profile: the median paired reduction in MAE is 0.063~pp in 2020 and 0.071~pp in 2021. The MTS baseline is more accurate, with median errors 1.15 and 1.22~pp. Assimilation does not improve GPS shape errors: the raw simulation gives 1.33 and 1.39~pp. These outcomes provide no evidence that local count correction improves hourly shape on the GPS-matched network.
-
-\input{tables/baselines}
-
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=\textwidth]{validation.pdf}
-\caption{\textbf{Hourly-share validation on all usable matched links.} \textbf{(a,b)} MAE distributions for raw and assimilated reconstruction, OD timing and the mean MTS profile. \textbf{(c,d)} Assimilated errors after separating weekdays and weekends; each weekend contains two days. Curves extend beyond the displayed 6~pp limit. Different day types have different usable-link sets and probe counts. The MTS comparator for 2021 comes from 2022.}
-\label{fig:validation_cdf}
-\end{figure*}
-
-\subsection{Day-type and timing diagnostics}
-
-Restricting to weekdays gives median assimilated MAE 1.55~pp on 844 links in 2020 and 1.69~pp on 843 in 2021. On the two weekend dates these rise to 1.96~pp on 840 links and 2.18~pp on 829 links. MTS baseline errors remain lower, at 1.88 and 2.01~pp for weekends. The deterioration is descriptive: separating days also reduces probe totals and changes the non-zero support. It cannot be attributed solely to a worse weekend demand model.
-
-Pooled simulated link counts peak at 17:00, one hour before pooled GPS counts in both campaigns (Fig.~\ref{fig:diagnostics}a,b). These pooled curves weight roads by each data source's counts and are diagnostic, not regional population estimates. No fitted shift is applied in the primary validation. A previous one-hour-shift sensitivity lowers median MAE to 1.29 and 1.34~pp; it is not evidence that a physical timing correction has been identified. The configuration generator omits late-night demand, and the archived assimilation compares UTC counter timestamps with the local simulation clock. Both mechanisms require separate correction and rerun experiments.
-
-\subsection{Transfer of counter information to held-out links}
-
-The archived leave-one-counter-out test covers 149 coils and 610 coil-days in February 2020. The held-out coil is removed both from the assimilated observations and from the list of sensor links stopping propagation. The archived result contains 1,202 directional records, 18 fewer than two per coil-day; directions missing from the correction output were skipped by its runner. On the retained support, pooled absolute error is 59.8\% of observed volume before assimilation and 56.7\% after assimilating the other coils (Fig.~\ref{fig:diagnostics}c). The reduction is 3.08 percentage points, not a 3.08\% count error. Median per-coil error falls from 46.2\% to 44.3\%. Neighbouring corrections reach approximately 51\% of the coils; about 39\% improve and 13\% worsen. These are historic diagnostics with incomplete directional support, not final count-validation estimates.
-
-A 5,000-replicate bootstrap that resamples whole coils, retaining their directions and dates, gives a conditional 95\% interval of 0.39--7.02 percentage points for the pooled reduction. Removing each date in turn gives reductions between 2.93 and 3.26 points. These checks describe sensitivity within the archived experiment. They do not account for dependence between nearby coils, the UTC mismatch or model uncertainty. A local-clock repeat is necessary before treating these as final count-validation estimates.
-
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=\textwidth]{diagnostics.pdf}
-\caption{\textbf{Timing and withheld-counter diagnostics.} \textbf{(a,b)} Pooled assimilated and GPS hourly shares and the MTS baseline for each campaign. Pooling weights links separately by simulated and probe volumes, so these curves do not estimate regional traffic shares. \textbf{(c)} Error on each held-out coil before and after assimilation of the others; each point aggregates its available directions and dates. Colour indicates whether neighbouring corrections reach the link. The dashed line denotes equal errors. The counter test retains the archived UTC-as-local convention.}
-\label{fig:diagnostics}
-\end{figure*}
-
-\section{Methods}
-
-\subsection{Demand and network support}
-\label{sec:data_preprocessing}
-
-The network is derived from OpenStreetMap \cite{osm}, whose road coverage has been estimated to exceed 95\% in most European countries \cite{barrington2017}. Its preprocessed polylines store connectivity, lengths, directionality and turn constraints. Graph construction and simplification are distinct from route assignment \cite{boeing2017}. Municipality OD activity from January 2020 is averaged separately for Monday--Friday and Saturday--Sunday; public holidays on 1 and 6 January enter the weekday average. The generator represents observed municipality and province pairs explicitly and samples missing endpoints for residual mobility. Activity-to-agent conversion and random endpoints remain modelling assumptions, not observed vehicle identities.
-
-\subsection{Simulation and output measurement}
-
-The \texttt{minimocas} agent-based model advances at 10~s steps and writes hourly outputs. Agents follow destination-dependent best paths computed on the weighted road graph with a Dijkstra-style engine \cite{dijkstra1959}; assignment is not equilibrated in the sense of Wardrop \cite{wardrop1952}, static or dynamic. Link speeds depend on density through the implemented threshold rule. The resulting model is simpler than established simulation platforms \cite{horni2016,lopez2018} and does not resolve the range of congestion phenomena described by microscopic traffic-flow models \cite{treiber2013}.
-
-Virtual barriers count point crossings; unique-link tables count distinct agents present on a directed polyline in an output interval. The latter can include agents spanning interval boundaries and are not automatically equivalent to physical detector passages. GPS validation sums the two model directions because the supplied comparison uses total link probes. The simulator source initializes its generator with seed 1; repeated runs are not an uncertainty ensemble. A deterministic seed alone does not guarantee bitwise agreement with historical outputs across software and platform versions.
-
-\subsection{Archived counter correction}
-
-The historic correction code, dated 30 March 2023, maps MTS directions to graph directions. Let $u_i(h)$ and $b_i(h)$ be unique-link and virtual-barrier counts and $c_i(h)$ the mapped counter observation. It computes
-\begin{equation}
-r_i(h)=\frac{b_i(h)}{\max(u_i(h),1)},\qquad
-\Delta_i(h)=\frac{c_i(h)r_i(h)-b_i(h)}{\max(b_i(h),1)},
-\label{eq:coil_residual}
-\end{equation}
-and an additive unique-link increment
-\begin{equation}
-\delta_i(h)=u_i(h)\Delta_i(h),\qquad
-\widetilde u_i(h)=u_i(h)+\delta_i(h).
-\label{eq:assimilation_increment}
-\end{equation}
-For $u_i,b_i\ge1$, this gives $\widetilde u_i=c_i$ when the update is applied. Corrections propagate forwards and backwards through adjacent links, using simulated turning shares, with a nominal depth limit of three and a one-vehicle increment threshold. Forbidden turns, closed links and other detector links constrain propagation. Negative output values are clipped to zero.
-
-The archived recursion has two implementation qualifications: outgoing sibling weights are compounded and the visited-link counter is shared between branches. Thus its nominal depth is not an independent path-length limit, and the update should not be described as a globally conservative reconstruction. The primary results assess that historic implementation. Corrected algorithms must be evaluated as separate experimental variants rather than silently substituted.
-
-\subsection{Validation, baselines and missingness}
-
-Every campaign uses exactly the dates present in the GPS extract. Counts are summed over those dates before each link is normalized; every comparison includes 24 hourly bins and applies no time shift. Links with zero model or probe total are excluded. Absent GPS link-hour rows are treated as zero in the supplied extract; the archive does not distinguish no passage from no observation. Raw and corrected simulation tables are checked for duplicate direction keys and missing hourly columns.
-
-The OD baseline sums configuration creation rates in each hour. For 2020, the MTS baseline sums contemporaneous counts across the selected local dates, normalizes each complete direction by its total, and averages direction profiles equally. For 2021, daily summer weekday profiles are constructed from the 2022 averages and then averaged over campaign dates. The revised calculation preserves all-missing hourly cells as missing; the inherited calculation converted them to zero. This changes the 2021 median baseline error from 1.2143 to 1.2156~pp without changing the comparison's conclusion. A uniform baseline assigns $1/24$ to every hour.
-
-Weekday and weekend analyses repeat normalization and link eligibility within each subset. No independent-link confidence intervals are used because neighbouring links share vehicle trajectories and model inputs. The counter bootstrap samples 149 coil clusters with replacement, recomputes the pooled error reduction, and takes percentile limits (5,000 replicates, NumPy seed 20261027). It resamples existing held-out predictions; it does not refit the simulation or create independent spatial replicates.
-
-\section{Discussion}
-
-The results distinguish spatial coverage of a model from the accuracy supported by observations. Mobile-phone demand and network loading produce an hourly value for each directed link. Independent GPS profiles test only the temporal distribution on matched roads in a subregion. With simulation-relative scaling they cannot establish absolute volumes elsewhere. The held-out counter experiment provides limited evidence of transfer of local count information, while leaving more than half an observed daily volume in pooled absolute hourly error.
-
-Temporal baselines are essential to interpreting the GPS agreement, as recommended for the validation of traffic simulations \cite{toledo2004,hollander2008}. A high hourly correlation can coexist with limited improvement over the input demand and worse accuracy than a mean counter profile; the strength of historical-average profiles is well known in short-term traffic forecasting \cite{lippi2013,vlahogianni2014}. The difference is practically relevant: the simulation supplies spatial allocation and modelled volumes, but its temporal performance alone does not justify the additional model complexity. The small or negative profile benefit of assimilation also shows that fitting local counts and improving out-of-sample temporal shape are different objectives.
-
-The contribution is therefore a transparent assessment of a heterogeneous regional workflow, including its failure modes. It complements established mobile-phone assignment and sensor-fusion studies \cite{wang2012,toole2015,colak2016,nantes2016,seo2017} and count-based calibration of agent-based demand \cite{flotterod2011}; it does not replace probabilistic sensor-free estimation or sparse-sensor methods \cite{lei2024,maiti2025}. No common-data benchmark against those methods has been performed. A stronger methodological claim would require corrected implementation, genuinely held-out sensor groups and explicit demand/parameter sensitivity.
-
-\subsection{Future work}
-\label{sec:limitations}
-
-January 2020 demand is reused for a summer 2021 campaign with potentially different mobility levels and behaviour; Italian mobility changed sharply under the 2020 COVID-19 restrictions \cite{pepe2020,bonaccorsi2020}. Two short campaigns cannot establish seasonal stability or transferability to other regions. Weekend comparisons contain fewer probes and only two dates each. Sensor-class associations partly reflect simulated denominators, and the fleet's hourly representativeness remains unknown. The model graph lacks a verified OSM road-class mapping for stratified assessment.
-
-Time handling requires direct attention. The generator drops a late-night demand component and injects selected hourly OD values earlier than a straightforward start-labelled mapping. The original OD hour semantics must be established before a corrected mapping is interpreted as ground truth. Raw counter tables are UTC, while the archived update uses them as local. The historic 2020 local-clock assimilation sensitivity slightly improves GPS profile error, but a full corrected-demand and corrected-clock counter assessment has not yet been completed. Neither the primary estimates nor their bootstrap intervals resolve those biases.
-
-Further methodological work will address directed output support and the correction rules. A pilot identified loss of a held-out direction on a terminal link in the historic correction, requiring a support-preserving implementation before final count validation. A 10 February 2020 simulation replay completed with matching link and hour keys but did not reproduce the archived numeric counts: summed link-hour counts were 33.36 million against 34.33 million. Its discrepancy has not been isolated and is not evidence of a demand correction. Replacing sibling-weight compounding or changing the depth rule also changes the algorithm and needs independent assessment. Priorities are to reconcile clocks and output definitions, establish simulator-version compatibility, repeat held-out validation with corrected inputs, and measure sensitivity to sensor coverage and OD assumptions. Global count uncertainty and network conservation remain unestablished.
-
-A separate planned study will investigate time-dependent traffic exposure and road safety. It will compare accident counts with exposure-normalized temporal patterns, using accident and traffic observations matched in time and at compatible spatial resolutions, and assess how exposure uncertainty affects the resulting indicators. This application forms the focus of the second manuscript; no road-safety result is established by the present reconstruction assessment.
-
-\section{Conclusions}
-
-A regional reconstruction from mobile-phone OD activity, a road graph and sparse counters can be evaluated without conflating model coverage with observation support. Across two GPS campaigns, reconstructed temporal profiles perform only slightly better than OD timing and less accurately than a mean counter profile. Held-out counters indicate a modest reduction in count error when neighbouring measurements are used, with substantial residual error. These results identify concrete timing and correction issues to resolve before stronger regional accuracy claims are warranted.
+Daily volumes are compared at coils with complete data in both directions, averaging over complete days; the Spearman difference between routing variants is tested with 5,000 paired bootstrap resamples of coils (seed 20261028). In the leave-one-detector-out test the withheld coil is removed from the correction and from the links that stop propagation, and the error is $\sum|\tilde u(h)-c(h)|/\sum c(h)$ over hours, directions and days. The depth experiment uses a fixed random 20\% of the complete coils of each 2020 day as test set (seed 20261027). Network distance from the nearest coil is the minimum number of polylines between a link and any coil link.
 
 \section*{Supplementary Material}
 
-The supplement records the data layers, run inventory, model variables, archived correction rules, full validation tables, selected-road illustrations and reproduction commands. Accident and operational-platform analyses are outside the scope of this article.
+The Supplementary Material describes the data layers and the demand classes (S1), the simulation model (S2), the route-choice variants (S3), the detector correction and its sensitivity to propagation depth (S4), additional validation results (S5) and the reproduction of all results (S6).
 
 \section*{Availability of data and materials}
 
-The present working package contains manuscript sources, analysis scripts and aggregate results. Mobile-phone and Viasat datasets are proprietary and are not redistributed. The regional MTS source is \url{https://mobilita.regione.emilia-romagna.it/servizi/flussi-online}; road support is derived from OpenStreetMap. \todo{Confirm the permitted route for access to restricted data for review and replication, and archive the exact public counter inputs and licences.}
+Mobile-phone and Viasat GPS data are proprietary and cannot be redistributed. MTS loop-detector counts are published by Regione Emilia-Romagna under a CC BY licence (open-data catalogue, dataset ``Sistema MTS -- Flussi di traffico al quarto d'ora''). Road classes are derived from OpenStreetMap (\copyright{} OpenStreetMap contributors, ODbL). Aggregate results are included in the code repository. \todo{Confirm the route for access to the restricted data for review.}
 
 \section*{Code availability}
 
-Analysis scripts for this draft are in \texttt{article1/analysis/}; the historic scripts and simulator are retained in the parent project. No public release or archival DOI is claimed. \todo{Confirm repository visibility, simulator licensing and a distributable reproducibility package before submission.}
+The simulator, the correction and all analysis scripts are in \url{https://github.com/federicobellisardi/multi-sensor-traffic-reconstruction} (directory \texttt{article1/analysis}). \todo{Make the repository public, confirm the licence of \texttt{minimocas} and archive a release with a DOI before submission.}
 
 \section*{Ethics approval and consent to participate}
 
@@ -253,4 +264,5 @@ The original study acknowledges TIM (Telecom Italia), the Mobility and Viability
 \bibliographystyle{unsrtnat}
 \bibliography{references}
 \end{document}
+
 

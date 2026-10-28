@@ -20,7 +20,7 @@ from matplotlib.collections import LineCollection
 
 A1 = Path(__file__).resolve().parents[1]
 ROOT = A1.parent
-SIM = Path(os.environ.get("SIM_DIR", "/home/fede/sim_runs/carto2024"))
+SIM = Path(os.environ.get("SIM_DIR", "/home/fede/sim_runs/routing/V6_gps_usage_classweights"))  # final configuration
 RES = A1 / "results/corrected"
 PRIV = A1 / "results/private"
 FIG = A1 / "figures"
@@ -141,8 +141,8 @@ def fig5():
 
 
 def fig6():
-    fig = plt.figure(figsize=(10, 6), constrained_layout=True)
-    gs = fig.add_gridspec(2, 2)
+    fig = plt.figure(figsize=(10, 9), constrained_layout=True)
+    gs = fig.add_gridspec(3, 2, height_ratios=[1, 1, 1.1])
     for j, year in enumerate([2020, 2021]):
         ax = fig.add_subplot(gs[j, 0])
         d = pd.read_csv(RES / f"aggregate_profiles_{year}.csv")
@@ -152,7 +152,20 @@ def fig6():
         ax.set(xlabel="Hour (local time, interval start)", ylabel="Hourly share (%)", xticks=range(0, 24, 3),
                title=f"({chr(97 + j)}) {year}, all usable links pooled")
         ax.legend(fontsize=8, ncol=3, frameon=False)
-    ax = fig.add_subplot(gs[:, 1])
+    ax = fig.add_subplot(gs[2, :])
+    e = pd.read_csv(RES / "error_vs_detector_distance.csv")
+    for year, c, off in [(2020, C["assim"], -0.18), (2021, C["raw"], 0.18)]:
+        z = e[e.year == year]
+        x = np.arange(len(z))
+        ax.bar(x + off, z.gain_pp, width=0.34, color=c, label=f"{year}")
+        for xi, n in zip(x, z.links):
+            ax.text(xi + off, 0.005, str(n), ha="center", va="bottom", fontsize=6, rotation=90, color="white")
+    ax.set_xticks(np.arange(len(z)), z.hop_class)
+    ax.axhline(0, color="k", lw=0.6)
+    ax.set(xlabel="Network distance from the nearest detector (polylines)",
+           ylabel="Median MAE reduction (pp)", title="(d) Effect of assimilation on GPS links")
+    ax.legend(frameon=False)
+    ax = fig.add_subplot(gs[:2, 1])
     d = pd.read_csv(RES / "loo_detectors.csv").dropna(subset=["loo_abs", "raw_abs"])
     hi = 0
     for year, c, mk in [("2020", C["assim"], "o"), ("2021", C["raw"], "s")]:
@@ -170,11 +183,38 @@ def fig6():
     save(fig, "fig6_diagnostics")
 
 
+def fig7():
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import volume_check as V
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.6), constrained_layout=True)
+    cmp = json.load(open(RES / "routing_comparison.json"))
+    for j, year in enumerate([2020, 2021]):
+        ax = axes[j]
+        for sim_dir, lab, c, mk in [("/home/fede/sim_runs/carto2024", "Shortest-distance routing", C["od"], "o"),
+                                    (str(SIM), "GPS-informed routing", C["assim"], "s")]:
+            _, r = V.run(sim_dir, year, "raw")
+            r = r[r.prov != "FO"]
+            key = "spearman_base" if "carto2024" in sim_dir else "spearman_gps"
+            ax.scatter(r.obs, r.sim.clip(lower=1), s=12, alpha=0.7, color=c, marker=mk,
+                       label=f"{lab} ($\\rho_s$ = {cmp[str(year)][key]:.2f})")
+        lim = [1e3, 1e5]
+        ax.plot(lim, lim, "k--", lw=0.8)
+        ax.plot(lim, [l / 2 for l in lim], "k:", lw=0.6)
+        ax.plot(lim, [l * 2 for l in lim], "k:", lw=0.6)
+        ax.set(xscale="log", yscale="log", xlim=lim, ylim=[1e2, 1e5],
+               xlabel="Observed daily vehicles (MTS detector)", ylabel="Simulated daily vehicles (raw)",
+               title=f"({chr(97 + j)}) {year}, {cmp[str(year)]['detectors']} detectors outside Forli-Cesena")
+        ax.legend(fontsize=8, frameon=False, loc="upper left")
+    save(fig, "fig7_volumes")
+
+
 def main():
     carto = gpd.read_file(CARTO)
     info = {"fig3": fig3(carto), "fig4": fig4(carto)}
     fig5()
     fig6()
+    fig7()
     (RES / "figure_numbers.json").write_text(json.dumps(info, indent=2, default=float) + "\n")
     print(json.dumps(info, indent=1, default=float))
 

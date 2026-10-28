@@ -27,7 +27,7 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 A1 = HERE.parent
 ROOT = A1.parent
-SIM = Path(os.environ.get("SIM_DIR", "/home/fede/sim_runs/carto2024"))
+SIM = Path(os.environ.get("SIM_DIR", "/home/fede/sim_runs/routing/V6_gps_usage_classweights"))  # final configuration
 COILS = Path(os.environ.get("COIL_DIR", "/home/fede/sim_runs/coils"))
 WS = ROOT.parent  # WORKSPACE/covid_hep/vars = project cartography (commit a059fb0)
 OUT = A1 / "results/corrected"

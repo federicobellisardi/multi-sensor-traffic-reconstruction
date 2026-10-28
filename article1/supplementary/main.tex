@@ -34,430 +34,75 @@
 \begin{document}
 \maketitle
 
-\noindent This supplementary material documents the meaning of the data
-layers, model variables, data-assimilation logic, validation metrics and selected-road illustrations supporting the main manuscript. Numerical choices are reported with their interpretation: some follow from the temporal resolution of the observations, some stabilize the simulator, and one (the 40~km separation of the example links) only serves the figures. The scripts that produce the revised numbers are listed in Section~\ref{sec:reproducibility}.
 
-\section{Data Layers}
+\noindent This Supplementary Material documents the data layers, the simulation model, the route-choice variants, the detector correction and additional validation results of the main manuscript, and lists the commands that reproduce them.
+
+\section{Data layers}
 \label{sec:data-layers}
 
-The reconstruction combines four observational layers and one derived road support. Their roles are distinct and are not interchangeable (Table~\ref{tab:data-layers}). The mobile-phone layer is the only one that describes regional demand at broad areal scale, but it is too coarse to say which road was used. The road graph provides the missing physical support for route assignment. Coils provide local counts, but only where a sensor exists. Viasat is spatially richer than coils, but it is a probe sample rather than a total-count system. The reconstructed link-flow table combines these partial views under the model assumptions described below.
-
-\begin{longtable}{@{}p{0.23\linewidth}p{0.21\linewidth}p{0.45\linewidth}@{}}
-\caption{Meaning and role of the data layers.}
-\label{tab:data-layers}\\
-\toprule
-Layer & Spatial/temporal support & Meaning in the workflow \\
-\midrule
-\endfirsthead
-\toprule
-Layer & Spatial/temporal support & Meaning in the workflow \\
-\midrule
-\endhead
-\bottomrule
-\endfoot
-Mobile-phone OD activity &
-Municipality pairs, hourly profiles &
-Mobility-activity demand. It defines where trips are generated and how demand
-changes over the day, but it does not identify the road sequence used by each
-trip. \\
-Road graph &
-Directed polylines and nodes &
-Physical support on which demand is assigned. It stores connectivity,
-directionality, segment length and turn constraints. \\
-MTS inductive loop detectors (coils) &
-Fixed points, 15-min counts &
-Local direct traffic measurements. They anchor the simulation and drive the
-data assimilation where observed counts are available. \\
-Viasat GPS telemetry &
-Matched road links, hourly counts &
-Independent validation layer. Because it samples only part of the vehicle
-population, it is compared with simulation after estimating link-specific
-penetration. \\
-Derived link-flow tables &
-Directed road links, hourly counts &
-Simulation output after optional data assimilation. These tables are the link-level reconstruction used for maps and validation. \\
-\end{longtable}
-
-\subsection{Demand Structure}
-
-The weekday and weekend OD matrices are highly concentrated. This motivates using the observed spatial demand instead of injecting uniform trips across the region. The total-flow values in Table~\ref{tab:od-structure} are the activity weights entering the demand generator after aggregation over the selected January 2020 period. They are relative mobility mass, not vehicle counts. Positive cells count municipality pairs with non-zero activity. The Gini coefficient and top-share columns quantify concentration: values close to 0.8 and a top-1\% share above 0.4 mean that a small number of OD relations dominate the signal. The model therefore uses the observed high-demand centres explicitly and assigns weakly observed endpoints to the random classes.
-
-\begin{table}[htbp]
-\centering
-\caption{Structure of the weekday and weekend (Saturday--Sunday) OD matrices.}
-\label{tab:od-structure}
-\begin{tabular}{@{}lrrrrr@{}}
-\toprule
-Period & Total flow & Positive cells & Gini & Top 10\% share & Top 1\% share \\
-\midrule
-Weekdays & 2,665,186 & 87,212 & 0.788 & 0.708 & 0.448 \\
-Weekends & 2,198,516 & 87,447 & 0.777 & 0.690 & 0.432 \\
-\bottomrule
-\end{tabular}
+\begin{table}[htbp]\centering
+\caption{Data layers and their role in the reconstruction.}
+\label{tab:layers}
+\begin{tabularx}{\textwidth}{@{}lXXl@{}}\toprule
+Layer & Content & Role & Period \\\midrule
+Mobile-phone OD (TIM) & hourly device movements between census areas, aggregated to municipalities and provinces & demand & January 2020 \\
+Road graph & 3,925 directed polylines, 2,548 nodes, turn restrictions, derived from OpenStreetMap & network & -- \\
+OSM road classes & motorway to unclassified, nearest ways within 30~m & route-choice parameters & extract of 26/10/2026 \\
+MTS loop detectors & 15-min counts per station and direction & local correction; volume validation & Feb 2020, Jun--Jul 2021 \\
+Viasat GPS, link counts & hourly probes per matched link & profile validation & 10--17/02/2020, 28/06--04/07/2021 \\
+Viasat GPS, raw traces & private-vehicle fixes in Forl\`i--Cesena & speeds and class usage for route choice & same periods \\
+\bottomrule\end{tabularx}
 \end{table}
 
-The ranking in Table~\ref{tab:city-ranking} is used only to describe the heterogeneity of municipal activity and to identify the dominant urban centres. The last-ranked municipalities have mean activity equal to one because they are at the residual tail of the aggregated demand table. They are kept in the descriptive statistics, but the simulator does not assume that such low-activity entries carry enough information to define precise origin--destination routes on their own.
+The OD tables are hourly. Their labels refer to the start of the hour in local time: the weekday OD profile of 10--14 February 2020 and the mean profile of the 90 detectors complete on those days have correlation 0.96 at zero lag, 0.94 with the OD profile shifted one hour earlier and 0.74 with it shifted one hour later. Demand is generated in four classes: observed source and destination (\code{src-dest}, municipalities, and \code{scr\_dest\_prov}, provinces), observed source and random destination (\code{src-rnd}), random source and observed destination (\code{rnd-dest}) and random source and destination (\code{rnd-rnd}). On a weekday, the random-endpoint classes account for 66\% of the generated agents (\code{rnd-rnd} 33\%, \code{src-rnd} 22\%, \code{rnd-dest} 12\%).
 
-\begin{table}[htbp]
-\centering
-\caption{Municipality activity ranking used to define high-demand centres.}
-\label{tab:city-ranking}
-\begin{tabular}{@{}rlr@{\qquad}rlr@{}}
-\toprule
-\multicolumn{3}{c}{Highest activity} & \multicolumn{3}{c}{Lowest activity} \\
-\cmidrule(r){1-3}\cmidrule(l){4-6}
-Rank & Municipality & Mean points & Rank & Municipality & Mean points \\
-\midrule
-1 & Bologna & 345,267 & 519 & Montecalvo in Foglia & 1 \\
-2 & Modena & 176,166 & 520 & Porto San Giorgio & 1 \\
-3 & Parma & 158,440 & 521 & Trento & 1 \\
-4 & Ravenna & 147,772 & 522 & Montepulciano & 1 \\
-5 & Rimini & 144,696 & 523 & Vescovato & 1 \\
-6 & Reggio nell'Emilia & 139,849 & 524 & Tortona & 1 \\
-7 & Ferrara & 103,067 & 525 & Aviano & 1 \\
-8 & Piacenza & 92,678 & 526 & Malborghetto Valbruna & 1 \\
-9 & Forl\`i & 86,078 & 527 & Bolzano & 1 \\
-10 & Cesena & 78,582 & 528 & Grottammare & 1 \\
-\bottomrule
-\end{tabular}
-\end{table}
+MTS counts of 2021 were obtained from the monthly open-data files of Regione Emilia-Romagna (dataset DS-1944, CC BY), summing all vehicle classes. The open-data time labels are in local time; converted to UTC they reproduce the counts of the February 2020 archive used for 2020 (ratio of totals 0.995 on 12 February 2020).
 
-\subsection{Sensor and Telemetry Coverage}
+\section{Simulation model}
+\label{sec:model}
 
-Table~\ref{tab:data-volumes} reports data volume in terms of records, variables and physical interpretation. The 528 municipalities define the areal units of the demand layer. The 292 traffic stations are sparse compared with the road graph, so the assimilation is local and directional. The 5,760 rows of the 2020 coil table correspond to 60 days at 15-min resolution; each day contributes 96 samples per direction. The Viasat campaigns contain hundreds of thousands of hourly link observations, but the 4,186 matched road identifiers are still only a subset of the regional graph. This justifies using Viasat for temporal-profile validation and not as a complete observation layer.
+Agents move with the speed of their link, $v_i$, reduced linearly with density $\rho_i$ below the critical density and set to a critical speed above it. Link speeds are read in km/h from the cartography and assigned by road class from GPS (main text, Table~\ref{M-tab:classes}). Random-endpoint agents have a trip-time budget of 5,600~s; source--destination agents follow the best-path matrix of their type. When the turn-restricted best-path search finds no feasible next node for the cost of their type, the agent uses the shortest-distance path matrix; this happened for 50 next-node decisions in two of the fifteen simulated days. The simulator is deterministic (fixed random seed). A simulated day takes 9--12 minutes on an 8-core workstation running four days in parallel.
 
-\begin{table}[htbp]
-\centering
-\caption{Observed data volumes used by the paper workflow.}
-\label{tab:data-volumes}
-\begin{tabular}{@{}lrrp{0.35\linewidth}@{}}
-\toprule
-Layer & Records & Variables & Interpretation \\
-\midrule
-Municipality activity table & 528 & 5 & Ranked source and destination
-activity over municipalities. \\
-Coil registry & 292 & 5 & Geographical catalogue of traffic-count stations. \\
-Coil-to-road matching & 292 & 9 & Association between each traffic station
-and a graph polyline. \\
-February--March 2020 coil table & 5,760 & 496 & Fifteen-minute directional
-traffic counts used for the coil-282 comparison and data-assimilation support. \\
-Viasat 2020 campaign & 803,904 & 10 & Hourly GPS link-flow observations over
-4,186 matched road identifiers. \\
-Viasat 2021 campaign & 703,416 & 10 & Hourly GPS link-flow observations over
-the same matched road universe. \\
-\bottomrule
-\end{tabular}
-\end{table}
+\section{Route-choice variants}
+\label{sec:routing}
 
-\section{Simulation Runs and Source Classes}
-\label{sec:simulation-runs}
+Table~\ref{tab:routing} lists the variants simulated for 10 February 2020. Speeds alone (V1--V3) do not change the distribution of traffic over road classes, because two thirds of the agents follow transition probabilities rather than best paths. Transition weights by road class (V4--V6) raise the share of main roads and the agreement with GPS counts in the calibration area. The selected variant combines the usage cost of Eq.~\eqref{M-eq:route_cost} with class transition weights. Correlations with the detectors of a single day (53 coils) are noisy and were not used for selection; the comparison over full campaigns is in the main text. Table~\ref{tab:routing_shape} shows that route choice hardly changes the hourly profiles.
 
-The final validation archive contains sixteen daily simulations, eight in February 2020 and eight in June--July 2021. The 5 July 2021 run is excluded from every primary validation result, leaving fifteen evaluated dates. The source-class totals below describe all sixteen archived configurations and are provenance only. The two periods were selected because independent Viasat validation campaigns are available for those dates. Viasat is not used to configure or assimilate the simulations; it provides the held-out probe layer against which simulated link profiles are compared. The two weeks do not span the seasonal variability of traffic.
+\input{tables/routing_variants}
+\input{tables/routing_shape}
 
-Every run uses a 10 s integration time step and writes hourly outputs. No numerical time-step convergence study has been completed for this assessment. Hourly output is used because both the mobile-phone demand profiles and the validation figures are expressed at hourly scale; it also reduces noise relative to 15-min sensor counts while preserving morning, midday and evening traffic structure. The source count changes by day because the OD generator activates only demand components present in the selected daily schedule.
+\section{Detector correction}
+\label{sec:correction}
 
-\begin{longtable}{@{}llp{0.36\linewidth}@{}}
-\caption{Archived daily simulation configurations, summarized by meaning
-rather than file name.}
-\label{tab:daily-runs}\\
-\toprule
-Date & Sources & Output support \\
-\midrule
-\endfirsthead
-\toprule
-Date & Sources & Output support \\
-\midrule
-\endhead
-\bottomrule
-\endfoot
-2020-02-10 & 758 & Hourly directed links \\
-2020-02-11 & 740 & Hourly directed links \\
-2020-02-12 & 762 & Hourly directed links \\
-2020-02-13 & 736 & Hourly directed links \\
-2020-02-14 & 722 & Hourly directed links \\
-2020-02-15 & 758 & Hourly directed links \\
-2020-02-16 & 980 & Hourly directed links \\
-2020-02-17 & 758 & Hourly directed links \\
-2021-06-28 & 763 & Hourly directed links \\
-2021-06-29 & 744 & Hourly directed links \\
-2021-06-30 & 766 & Hourly directed links \\
-2021-07-01 & 740 & Hourly directed links \\
-2021-07-02 & 726 & Hourly directed links \\
-2021-07-03 & 763 & Hourly directed links \\
-2021-07-04 & 983 & Hourly directed links \\
-2021-07-05 & 763 & Hourly directed links \\
-\end{longtable}
+The correction starts from the residual of Eq.~\eqref{M-eq:coil_residual} on each coil link and hour. The ratio $r_i(h)$ converts the coil count, a count of passages at a section, into the scale of the simulated unique-link count, which counts distinct agents present on the whole polyline during the hour. Downstream, the increment of a link is passed to each admissible outgoing link multiplied by that link's share of the simulated outgoing counts; upstream, the same rule is applied to incoming links. Each branch carries its own increment and its own path length. Propagation stops when the increment is below one vehicle, after three polylines along the path, at another coil link, at a forbidden turn or at a closed polyline. Every directed polyline of the raw simulation is kept in the output, and the hours of the observed table are aligned with the local-time hours of the simulation.
 
-The inherited source-count interpretation suggests that the larger counts on Sundays arise from the way residual weekend mobility is represented: when the observed OD structure is less dominated by commuting pairs, more source components are needed to preserve regional coverage. This does not mean that Sunday traffic is necessarily larger than weekday traffic; it means that the demand generator uses a larger set of active source definitions to represent a more diffuse mobility pattern.
-
-\begin{table}[htbp]
-\centering
-\caption{Source-class counts across the archived simulations.}
-\label{tab:source-classes}
-\begin{tabular}{@{}lrrrp{0.33\linewidth}@{}}
-\toprule
-Class & Min/day & Max/day & Total & Endpoint logic \\
-\midrule
-Fixed municipality OD & 563 & 804 & 9,843 & Observed source and observed
-destination. \\
-Fixed province OD & 55 & 78 & 1,003 & Province-level source and destination. \\
-Source-random & 50 & 50 & 800 & Observed source, sampled destination. \\
-Random-destination & 50 & 50 & 800 & Sampled source, observed destination. \\
-Random-random & 1 & 1 & 16 & Both endpoints sampled from the modelled region. \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The fixed municipality OD class dominates because it is the part of the demand where both endpoints are directly observed. The two one-sided random classes are kept at 50 sources per day so that residual mobility can enter and leave the main observed centres without overwhelming the empirical OD matrix. The single random--random source is a low-intensity background component: it prevents the model from suppressing trips with neither endpoint in the dominant observed set, but it is deliberately small so that it cannot create an artificial uniform traffic field.
-
-\section{\modelname{} Model Details}
-\label{sec:model-details}
-
-\modelname{} is an agent-based road simulator. Vehicles are represented by
-agents that move on directed polylines, choose a next node at junctions and accumulate link-level counts. The model state is summarized in Table~\ref{tab:pawn-vars}. Agents are individual vehicles, without lane changing or car-following dynamics; the output of interest is the directional link-by-time flow field.
-
-\begin{longtable}{@{}p{0.25\linewidth}p{0.18\linewidth}p{0.47\linewidth}@{}}
-\caption{Main vehicle-agent state variables.}
-\label{tab:pawn-vars}\\
-\toprule
-State variable & Type/unit & Role \\
-\midrule
-\endfirsthead
-\toprule
-State variable & Type/unit & Role \\
-\midrule
-\endhead
-\bottomrule
-\endfoot
-Identifier & integer & Distinguishes each simulated vehicle. \\
-Status & categorical & Tracks whether the vehicle is active, completed,
-waiting, queued or interacting with transport logic. \\
-Current road link & polyline id & Link occupied by the vehicle at the
-current time step. \\
-Position on link & m & Longitudinal coordinate along the occupied link. \\
-Signed speed & m s$^{-1}$ & Magnitude gives speed; sign encodes direction. \\
-Destination & node id & Current graph node pursued by the routing rule. \\
-Previous and next node & node ids & Junction state used to move between
-links. \\
-Route-deviation parameter & probability & Controls whether the vehicle
-follows or departs from the precomputed best path. \\
-Distance and time counters & m, s & Accumulate travelled distance, trip time
-and lifetime. \\
-\end{longtable}
-
-Best paths are computed on a weighted graph with a Dijkstra-style engine. In the archived validation runs the routing weight reduces to polyline length, while forbidden turns are still excluded. The movement update also contains a density-dependent speed rule:
-\begin{equation}
-v_p^{\rm target} =
-\begin{cases}
-v_{\rm crit}, & \rho_p > \rho_{\rm crit},\\
-(1-\rho_p/\rho_{\rm crit})v_p, & \rho_p \leq \rho_{\rm crit},
-\end{cases}
-\qquad
-v_p^{\rm target}\geq v_{\rm crit}.
-\end{equation}
-The validation configuration uses $\rho_{\rm crit}=3/4.20$~m$^{-1}$ and
-$v_{\rm crit}=10/3.6$~m~s$^{-1}$.
-
-The critical density corresponds to a compact but still interpretable spacing: roughly three vehicles over 4.2~m in the internal density convention used by the simulator. Its role is not to calibrate a detailed fundamental diagram; it prevents unrealistically high speeds when many agents occupy the same link. The critical speed is 10~km~h$^{-1}$, converted to SI units, and acts as a lower operational speed in congested conditions. The rule should therefore be read as a stabilizing traffic-flow constraint rather than as a fitted car-following law.
-
-\begin{table}[htbp]
-\centering
-\caption{Numerical parameters and switches in the archived validation runs.}
-\label{tab:parameters}
-\begin{tabularx}{\linewidth}{@{}l l X@{}}
-\toprule
-Parameter & Value & Role \\
-\midrule
-Integration step & 10 s & Numerical simulation step. \\
-Output sampling & 3600 s & Temporal resolution of saved link counts. \\
-Source activation & 30 s & Interval at which new vehicles are generated. \\
-State grid cell & 5000 m & Spatial scale of gridded state output. \\
-Cartographic index cell & 10000 m & Spatial index used for graph lookup. \\
-Length routing weight & 1.0 & Makes routing cost proportional to length. \\
-Speed routing weight & 0.0 & Disables speed-dependent routing in archived runs. \\
-Initial speed range & 15--25 m s$^{-1}$ & Sampling range for generated vehicles. \\
-Random-endpoint time budget & 5600 s & Maximum time field used by random
-source classes. \\
-Unique-link output & active & Saves the directional link counts used in the
-paper. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The values in Table~\ref{tab:parameters} reflect a compromise between temporal fidelity and reproducibility. A 10 s integration step is small relative to the one-hour saved output and keeps route progression smooth. The 3600 s sampling interval is chosen because the OD demand and Viasat validation are analysed hourly; a finer output would mostly add sensor noise. The 30 s source-activation interval spreads injected agents over each hour instead of creating a single burst at the hour boundary. The 5000 m state grid and 10000 m cartographic index are lookup scales used to organize regional graph operations; they are much larger than individual road links, so they do not define the resolution of the final traffic field. Setting the length routing weight to 1.0 and the speed routing weight to 0.0 makes route choice depend on path length in the archived runs. This choice avoids mixing route assignment with uncertain speed calibration when the main objective is to validate link-flow profiles. The 15--25 m s$^{-1}$ initial-speed range covers typical extra-urban speeds before density updates. The 5600 s random-endpoint time budget is a soft bound used when sampling residual trip endpoints: it allows trips longer than a one-hour commute but avoids generating unrealistic cross-region random journeys as the dominant residual class.
-
-\section{Coil-based Data Assimilation}
-\label{sec:post-correction}
-
-The data-assimilation step adjusts simulated unique-link counts using MTS coil residuals. Directional coil columns are mapped to cartographic
-\code{IN}/\code{OUT} directions. The previous revision identifies the 30 March 2023 correction code as the archived implementation and reports a machine-precision reproduction of one corrected table. This historical report has not been independently re-established across every current variant. In that version, gaps in an observed coil table are filled by linear interpolation in time, and when no observed table covers the simulated day (the 2021 runs) the weekday-specific seasonal average of each coil is used. The operational code now in the webserver fills missing values with seasonal weekday averages that combine the most recent year and earlier years with inverse standard-deviation weights.
-
-For a coil-associated directed link $i$, let $u_i(h)$ be the unique-link count, $b_i(h)$ the simulated virtual-barrier count and $c_i(h)$ the measured coil count. The data-assimilation step estimates a barrier-to-unique relation and a local relative residual,
-\begin{equation}
-r_i(h)=\frac{b_i(h)}{\max(u_i(h),1)}, \qquad
-\Delta_i(h)=
-\frac{c_i(h)r_i(h)-b_i(h)}{\max(b_i(h),1)}.
-\end{equation}
-This residual becomes the additive increment $\delta_i(h)=u_i(h)\Delta_i(h)$ on the local directed link, so that the assimilated count equals $c_i(h)$ whenever $u_i,b_i\ge1$, and is propagated to neighbouring links according to simulated turning shares. The ratio $r_i(h)$ is needed because a virtual barrier crossing and a unique-link occupancy count are not the same measurement. The former counts passages through a point-like section, whereas the latter counts distinct agents present on the whole directed polyline during the output interval. Using $r_i(h)$ converts the coil residual into the same scale as the simulated barrier before it is applied to the unique-link table. The denominator thresholds $\max(u_i(h),1)$ and $\max(b_i(h),1)$ prevent division by zero in night-time or low-flow hours; they do not add vehicles to the output, but only regularize the residual calculation.
-
-\begin{table}[htbp]
-\centering
-\caption{Stopping and exclusion rules in recursive data assimilation.}
-\label{tab:correction-rules}
-\begin{tabularx}{\linewidth}{@{}lX@{}}
-\toprule
-Rule & Implementation \\
-\midrule
-Minimum propagated increment & Stop if the absolute assimilation increment is below one
-vehicle. \\
-Maximum graph depth & Archived runs: stop once more than three links have been visited from the same coil (the counter is shared by all branches). Webserver version: five links. \\
-Other sensor links & Archived runs: stop at a node as soon as one of its outgoing links is a coil polyline. Webserver version: skip only that link. \\
-Forbidden turns & Do not propagate through transitions forbidden in the road
-graph. \\
-Closed or patched roads & Do not propagate through excluded polylines. \\
-Negative counts & Clip negative assimilated counts to zero before delivery. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The one-vehicle stopping rule in Table~\ref{tab:correction-rules} is a discreteness threshold: below one vehicle an increment has no meaning in an hourly count table. The depth limit keeps the correction local, so that a single coil cannot reshape a large part of the regional network, and stopping at other sensor links leaves each observed location under the control of its own counter. Two features of the implementation should be kept in mind when reading the results. In both versions the increment passed to the second and later outgoing branches of a node is multiplied by the weights of the branches already processed, so those branches receive less than their turning share. Furthermore, the MTS tables store UTC timestamps, which both versions compare with the local clock of the simulation without conversion; the effect of this offset on the validation is quantified in the main text.
-
-\subsection{Leave-one-out test}
-
-The archived leave-one-out table contains 1,202 directional records over 610 coil-days, with 18 expected directions missing. Its runner skips absent corrected directions. A new one-day pilot observed such a loss on a terminal link; complete directional-support validation remains open. The leave-one-out test uses the assimilation code of the archived runs and the raw simulations of 10--17 February 2020. For every day and every coil with all 96 quarter-hours observed in both directions, the coil is removed from the list of assimilated coils and from the list of polylines at which the propagation stops, so that increments from neighbouring coils can reach its link. The assimilation is then rerun and the hourly counts $\tilde u(h)$ on the held-out link are compared with the hourly coil counts $c(h)$, in the same clock convention used by the assimilation. The error of a coil is $\sum|\tilde u(h)-c(h)|/\sum c(h)$ over hours, directions and days. Table~\ref{tab:loo} and Fig.~\ref{fig:loo} summarize the results. When the coil is kept in the assimilation the same error is 1.2\%, the residual coming from hours with no simulated vehicle or barrier crossing on the link, where the increment does not reproduce $c(h)$. Of the 76 coils reached by the propagation, the median error goes from 49.4\% to 44.7\%.
+Table~\ref{tab:loo} summarizes the leave-one-detector-out test, Table~\ref{tab:depth} the dependence on the propagation depth and Table~\ref{tab:distance} the effect of the correction on the hourly profiles of GPS links by network distance from the nearest coil.
 
 \input{tables/loo}
+\input{tables/depth}
+\input{tables/distance}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.55\textwidth]{S_loo_coils.pdf}
-  \caption{Leave-one-out test: error on each held-out coil link before (raw simulation) and after assimilating the other coils, 10--17 February 2020. Red: coils whose link receives an increment from the propagation; grey: coils not reached.}
-  \label{fig:loo}
-\end{figure}
+\section{Additional validation results}
+\label{sec:validation}
 
-\begin{table}[htbp]
-\centering
-\caption{Observed coil 282 data on Monday 10 February 2020 (local time).}
-\label{tab:coil-282}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Direction & Fifteen-minute samples & Daily sum & Peak hourly count & Peak hour \\
-\midrule
-0 & 96 & 11,538 & 1,166 & 17:00 \\
-1 & 96 & 10,397 & 1,143 & 07:00 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Coil 282 is used in the main manuscript because both directions have complete 15-min coverage for the selected day. The daily sums are similar but not identical, as expected for a road with different dominant directions in the morning and in the afternoon. The opposite peak hours, 17:00 in direction 0 and 07:00 in direction 1, are consistent with a road segment that carries different dominant directions in the morning and afternoon. 
-
-\section{Validation Tables}
-\label{sec:validation-tables}
-
-The GPS-to-simulation ratio is defined in the main text. It depends on the model denominator and must not be interpreted as an independently observed fleet penetration. The archived class-stratified validation table below is reproduced as provenance; the three-link 2021 upper class is displayed explicitly and should not be overinterpreted. No significance test treating neighbouring links as independent is used in the new analysis.
-
-\input{tables/validation_all_links}
-
-
-The candidate set for the example links is the upper class of a three-class $k$-means partition of the standardized $\log_{10}\eta_i$, which in 2020 contains the 487 links with $\eta_i\ge0.40\%$. Before clustering, each simulated profile is divided by its daily total, so that Ward linkage acts on the 24 hourly shares and not on volumes. On raw counts the Ward distance is dominated by volume: the three raw-count clusters used in the earlier version of this analysis (74, 112 and 301 links) are disjoint bands of daily traffic, 1,001--6,384, 6,597--15,446 and 14,638--55,856 simulated vehicles per day. The partition on shares has an adjusted Rand index of 0.18 with the raw-count partition, so the two groupings are largely different. The dendrogram is cut into three clusters, at Ward distance 0.15; three is also the number of example links that fit in one validation figure. Figure~\ref{fig:subcluster_profiles} shows the mean hourly shares of the three subclusters.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{S_subcluster_profiles.pdf}
-  \caption{Mean normalized simulated profile of the three subclusters of Fig.~\ref{fig:subclusters} (51, 78 and 358 links).}
-  \label{fig:subcluster_profiles}
-\end{figure}
-
-The selection of the example links in Table~\ref{tab:representatives} follows three rules. The three roads belong to different subclusters. Polyline 104671 is fixed because its position near Forlimpopoli gives it a direct interpretation. In the other two subclusters, among the links with at least 300 simulated vehicles per day and 50 Viasat probes in the week (all 487 candidates), we take the pair with the lowest total MAE whose pairwise distances, including the distance to 104671, are at least 40~km. The two selected links are thus among the best of the candidate set, as the last column of Table~\ref{tab:representatives} shows; the full distribution is in Table~\ref{tab:validation_all} and Fig.~\ref{M-fig:validation_cdf} of the main text.
-
-\begin{table}[htbp]
-\centering
-\caption{Candidate-filtering logic for the representative validation links.}
-\label{tab:representative-candidate-filter}
-\begin{tabular}{@{}lrl@{}}
-\toprule
-Selection stage & Links & Purpose \\
-\midrule
-Common simulated--Viasat links in 2020 & 930 & Initial matched comparison set. \\
-Usable hourly profiles & 848 & Non-zero simulated and GPS totals. \\
-Upper $k$-means class of $\log_{10}\eta_i$ & 487 & Candidates for subclustering, $\eta_i\ge0.40\%$. \\
-Displayed representative links & 3 & One illustrative link per temporal subcluster. \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\input{tables/representatives}
-
-
-\begin{figure*}[htbp]
-  \centering
-  \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{fig5.png}
-  \caption{\textbf{Subclusters of the high-penetration links in 2020.}
-  \textbf{(a)} Ward dendrogram of the normalized hourly profiles of the 487 candidate links; the dashed line marks the three-cluster cut.
-  \textbf{(b)} Location of the three subclusters, with the number of links in parentheses.}
-  \label{fig:subclusters}
-\end{figure*}
-
-\begin{figure*}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{fig6.png}
-  \caption{\textbf{Representative links, 10--17 February 2020.}
-  \textbf{(a--c)} Mean simulated hourly flow and penetration-normalized Viasat profile (top) and hourly absolute share difference $|p_i(h)-q_i(h)|$ (bottom).
-  \textbf{(a)} Subcluster 1, polyline 104671, MAE $=1.22$~pp.
-  \textbf{(b)} Subcluster 2, polyline 134419, MAE $=0.81$~pp.
-  \textbf{(c)} Subcluster 3, polyline 64544, MAE $=0.72$~pp.
-  \textbf{(d)} Location of the three polylines on the road graph, coloured as in Fig.~\ref{fig:subclusters}.}
-  \label{fig:representatives}
-\end{figure*}
-
-\section{Additional validation and uncertainty}
-
-\subsection{Declared one-hour display shift}
-
-Figure~\ref{fig:display-shift} shows the pooled simulated profile translated forward by one hour as a visual diagnostic. The original profile is retained for comparison. This translation changes only the plotted time coordinate: the 23:00 value is displayed at 24:00 without circular wrapping. It does not correct the simulation or establish the cause of its lead. The primary validation uses the original time coordinates and unchanged data. Pooled GPS and simulated curves weight links by their own counts, as in the main diagnostics.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{time_shift_sensitivity.pdf}
-\caption{\textbf{Declared timing sensitivity.} Pooled GPS profiles, original simulated profiles and the same simulated profiles displayed one hour later. The $+1$ h translation is applied for this illustration only; it is not an inferred physical correction or an independent validation result.}
-\label{fig:display-shift}
-\end{figure}
-
-The new analysis separates weekdays and weekends and stratifies by total probe count without dividing by a model volume. These groups describe the available archive, not independent traffic regimes or experimental replicates. Each weekend contains only two dates. Fewer observations increase uncertainty of a normalized hourly profile, so a weekend error increase cannot be assigned uniquely to the demand model.
+Table~\ref{tab:probes} reports the profile error by number of probes per link. The error decreases with the number of probes for both the reconstruction and the MTS profile, as expected when part of the difference is sampling noise of the probe counts. Matched links with zero simulated or GPS total are excluded; absent link-hour records of the GPS extract are counted as zero.
 
 \input{tables/probe_strata}
 
-The updated 2021 mean MTS comparator excludes direction profiles containing all-missing hourly bins. The old group-by sum converted these bins to zeros. Its median error changes from 1.214265 to 1.215563 pp; all primary reconstruction, OD and correlation metrics reproduce the inherited computations within $10^{-9}$. This difference does not reverse the baseline comparison.
-
-The sensor-cluster bootstrap samples whole counters with replacement and retains each counter's available dates and directions. For 5,000 replicates and seed 20261027, the pooled error reduction is 3.0809 pp, with percentile interval 0.3937--7.0201 pp. The interval describes resampling of the observed sensor set; spatial dependence, implementation bias and uncertainty in demand are outside its scope. Leave-one-date-out reductions range from 2.9266 to 3.2550 pp. These are diagnostic checks on the historic UTC-as-local experiment.
-
-
-\subsection{Exploratory sensor-coverage, clock and depth pilot}
-
-A separate experiment uses 10 February 2020, requiring complete observed data and usable graph-direction support. It excludes terminal-link coils because the historic correction can omit their held-out direction. There are 56 eligible coils; a fixed random split (seed 20261027) withholds 11 and retains 45 in the training pool. Training subsets contain approximately 25\%, 50\% or all of that pool, with three nested-order repeats. The nominal shared recursion budgets are 1, 3 and 5. Each variant uses either the archived counter clock or local-time training observations. Every test target is local time, and test coils are absent both from correction inputs and propagation-stopping links. This gives 54 specified runs; the full-training repeats are identical, not independent replications.
-
-At budget 3, the raw pooled error on the 11 test coils is 55.61999\%; using all 45 training coils with local-time observations changes it to 55.61670\%, a reduction of only 0.00329 percentage points (Table~\ref{tab:sensor-pilot}). This restricted one-day result shows almost no transfer to this fixed test set. It does not establish coverage insensitivity in general, compare directly with the historical LOO population, or select an optimal depth. The retained implementation still has sibling-weight and shared-budget defects. Broader sensor coverage, geographic holdouts and repaired output support remain necessary.
-
-\input{tables/sensor_pilot}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{sensor_pilot.pdf}
-\caption{Exploratory fixed-holdout experiment on one date. (a) Training-pool coverage at shared recursion budget 3; shading is the range across three nested subset repeats, not a confidence interval. (b) Nominal depth budget with all training-pool coils. All evaluation targets are in local time, and the raw error is dashed. The near-overlapping curves reflect negligible gains on this particular withheld set.}
-\label{fig:sensor-pilot}
-\end{figure}
-
-\section{Reproducibility and unresolved experiments}
+\section{Reproducibility}
 \label{sec:reproducibility}
 
-From the parent repository root, run \code{python3 article1/analysis/validate\_archive.py}. This reads the original simulations, GPS extracts, MTS files and archived held-out counter table. It creates aggregate JSON/CSV results, the two new vector figures and the main baseline table under \code{article1/}. Link-level GPS-derived outputs remain under the ignored \code{results/private/} directory. SHA-256 digests of simulation, configuration and GPS inputs and software versions are recorded in the validation summary. Counter source digests are listed in the package inventory.
-
-The existing counter predictions were originally produced by \path{article/python/revision/loo/run_loo.py}, using the historic correction code and metadata recovered from project history. The new script resamples these predictions; it does not rerun the counter experiment. Historic scripts are referenced for provenance and must not be executed unchanged if preserving the original output directory is required.
-
-The bibliography metadata is checked with \code{python3 article1/analysis/verify\_references.py}; saved Crossref responses permit inspection without relying on manually transcribed titles or DOIs. Network failures are recorded and prevent replacement of the bibliography. OpenStreetMap is cited as the network source, not as a Crossref-indexed publication.
-
-The current assessment does not include full-campaign ensembles for OD assumptions, sensor coverage, graph depth or random seed. Corrected-demand configurations in the original rerun workspace are candidates for sensitivity experiments; their hour-label interpretation still requires confirmation. A one-day replay completed in 607 s with matching keys but failed numeric reproduction: summed link-hour counts are 33,361,561 against 34,334,965 in the archive. Its cause has not been isolated. A fixed seed does not establish historical reproducibility. These tasks and their current status are maintained in \code{article1/PLAN.md}.
-
-All maps and composite figures inherited from the source draft are marked as such in the main captions. The validation, diagnostics and supplementary sensor-pilot figures have been generated by the new pipelines. Road-class stratification is deferred until a reliable classification is joined to the model graph. No proprietary data or manuscript has been uploaded or published.
+All results are produced by the scripts in \code{article1/analysis} of the code repository, run from its root:
+\begin{enumerate}
+\item \code{od\_clock\_check.py}: hour convention of the OD tables;
+\item \code{carto\_geojson.py}, \code{osm\_road\_class.py}, \code{gps\_link\_speeds.py}: geometry, road classes and GPS link speeds;
+\item \code{routing\_variants.py prepare|run|evaluate}: route-choice variants and selection;
+\item \code{run\_corrected\_sims.py}: simulations of the validation days;
+\item \code{build\_coils\_table.py}: 2021 detector table from the open-data files;
+\item \code{reconstruct\_and\_validate.py assimilate|validate|loo}: correction, GPS validation, leave-one-out;
+\item \code{volume\_check.py}, \code{compare\_routing.py}, \code{distance\_to\_detector.py}, \code{sensitivity\_fixed.py}: volume tests, routing comparison, reach of the correction, depth sensitivity;
+\item \code{make\_figures.py}, \code{make\_supp\_tables.py}: figures and tables.
+\end{enumerate}
+Proprietary inputs (mobile-phone OD tables, Viasat link counts and traces) are required for steps 1--6 and are not distributed.
 
 \end{document}
