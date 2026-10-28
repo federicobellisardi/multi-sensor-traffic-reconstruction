@@ -15,8 +15,12 @@ State on 2026-10-28, 22:15. Resume from here; the full history is in `article1/P
 
 ## Layout on nuredduna
 ```
-MOVER=/data/workspaces/fbellisardi/mover_data
-$MOVER/covid_hep        git clone (must be named covid_hep)
+CODE=/home/fbellisardi/code/multi-sensor-traffic-reconstruction   git clone (code only)
+~/code/covid_hep -> multi-sensor-traffic-reconstruction            REQUIRED symlink: the correction reads
+                                                                  <parent>/covid_hep/vars; always work from
+                                                                  ~/code/covid_hep (setup.sh checks the name)
+MOVER=/data/workspaces/fbellisardi/mover_data                      ALWAYS export it (home is 96% full;
+                                                                  default would be ~/code)
 $MOVER/sim_runs         SIM_RUNS: routing/{V6_gps_usage_classweights,V0_default_distance} (route-choice
                         files), coils/ (2021 coil table), demand/ (final simulations, created by jobs)
 $MOVER/env              conda environment (created by article1/cluster/setup.sh)
@@ -24,9 +28,28 @@ $MOVER/build_minimocas  simulator build; covid_hep/minimocas/bin/sim_engine link
 $MOVER/logs             setup.log, sim_*.out/err, pipeline.out/err
 $MOVER/carto_key        CARTO basemap key
 ```
-Copied private inputs (checked by MD5): `data/old_coils_data/_coils_table_200201-000000_200331-234500.csv`,
+One-time preparation:
+```
+ln -s /home/fbellisardi/code/multi-sensor-traffic-reconstruction ~/code/covid_hep
+export MOVER=/data/workspaces/fbellisardi/mover_data
+cd ~/code/covid_hep && git pull
+```
+Private inputs that must exist INSIDE the clone (git-ignored; they were first copied to
+`$MOVER/covid_hep/...`, MD5-checked against the originals — move or copy them if that clone was
+removed): `data/old_coils_data/_coils_table_200201-000000_200331-234500.csv`,
 `data/coils_{std,ave}_*.csv`, `work_viasat/viasat_*_timed_fluxes.csv`, `article1/results/private/`,
-`article/python/revision/rerun/work/conf_noaug/*.json` (OD configurations without per-pair rescaling).
+`article/python/revision/rerun/work/conf_noaug/*.json` (15 OD configurations without per-pair
+rescaling). From the PC (WSL), if needed:
+```
+cd /mnt/c/Users/belli/OneDrive/Desktop/code/covid_hep
+R=/home/fbellisardi/code/multi-sensor-traffic-reconstruction
+rsync -aR data/old_coils_data/_coils_table_200201-000000_200331-234500.csv data/coils_std_*.csv data/coils_ave_*.csv \
+  work_viasat/viasat_20200210_20200218_timed_fluxes.csv work_viasat/viasat_20210628_20210705_timed_fluxes.csv \
+  article1/results/private article/python/revision/rerun/work/conf_noaug nuredduna:$R/
+```
+(~110 MB, of which ~60 MB coil averages; it lands in the home, which has ~12 GB free.)
+If `$MOVER/build_minimocas` exists the simulator is already built; rerun setup.sh from
+`~/code/covid_hep` anyway so that `minimocas/bin/sim_engine` is linked inside the new clone.
 
 ## Where we are
 1. Correction bugs fixed (co-located coils, propagation early return, LOO overwriting outputs,
@@ -45,9 +68,10 @@ Copied private inputs (checked by MD5): `data/old_coils_data/_coils_table_200201
    (k* = 1.57, "64% additivity", per-class fit) and must be rewritten with the valid scan.
 
 ## Steps
-1. `tail -3 $MOVER/logs/setup.log` must end with `setup done`; otherwise
-   `bash $MOVER/covid_hep/article1/cluster/setup.sh` (build + conda env).
-2. `cd $MOVER/covid_hep && git pull && bash article1/cluster/submit.sh`
+1. `export MOVER=/data/workspaces/fbellisardi/mover_data; cd ~/code/covid_hep; bash article1/cluster/setup.sh`
+   (links the simulator, creates the conda env if missing; check `$MOVER/logs/setup.log` from the first
+   run: conda was still solving when the session stopped).
+2. `cd ~/code/covid_hep && git pull && bash article1/cluster/submit.sh` (with MOVER exported)
    - 15 simulation jobs (`demand_scaling.py one NAME DAY`: V6_scaled and V0_scaled, one per weekday
      2020-02-10..16, plus V6 2020-02-17 as determinism check), 2 cores / 6 GB / 3 h each;
    - one dependent job running `article1/cluster/pipeline.sh` (8 cores / 32 GB / 8 h).
