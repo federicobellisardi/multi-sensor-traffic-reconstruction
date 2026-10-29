@@ -1465,16 +1465,22 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           // roll origin
           int sn;
           if (cherry_pick_map[cherry_key].find(dn) != cherry_pick_map[cherry_key].end()) {
-            double score_ext = rnd_01(generator);
-            auto ss = std::lower_bound(cherry_pick_map[cherry_key][dn].begin(),
-              cherry_pick_map[cherry_key][dn].end(),
-              score_ext,
-              [](const std::pair<int, double> &p1, const double &w) {
-              return p1.second < w;
-            }
-            );
-            sn = ss[0].first;
-            c->add_bpmatrix(std::set<int>({ sn }));
+            // the picked origin must be able to reach dn under this user tag
+            int tries = 0;
+            do {
+              double score_ext = rnd_01(generator);
+              auto ss = std::lower_bound(cherry_pick_map[cherry_key][dn].begin(),
+                cherry_pick_map[cherry_key][dn].end(),
+                score_ext,
+                [](const std::pair<int, double> &p1, const double &w) {
+                return p1.second < w;
+              }
+              );
+              sn = ss[0].first;
+              c->add_bpmatrix(std::set<int>({ sn }));
+            } while (c->bpmatrix[pw.tag].at(dn).at(sn) == NO_ROUTE && ++tries < 1000);
+            if (c->bpmatrix[pw.tag].at(dn).at(sn) == NO_ROUTE)
+              throw std::runtime_error("[make_pawns] no origin reaches node " + std::to_string(dn));
           }
           else {
             if (cherry_pick_map["all"].find(dn) == cherry_pick_map["all"].end()) {
