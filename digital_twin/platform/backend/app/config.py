@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     sim_engine: Path = _env_path("SIM_ENGINE", REPO_ROOT / ".work" / "build" / "sim_engine")
     research_python: Path = _env_path("PY", REPO_ROOT / ".work" / "env" / "bin" / "python")
     sim_runs: Path = _env_path("SIM_RUNS", REPO_ROOT / ".work" / "sim_runs")
-    frontend_dist: Path = REPO_ROOT / "platform" / "alpha" / "frontend" / "dist"
+    frontend_dist: Path = REPO_ROOT / "digital_twin" / "platform" / "frontend" / "dist"
 
     # resource limits of the job runner
     max_concurrent: int = 1

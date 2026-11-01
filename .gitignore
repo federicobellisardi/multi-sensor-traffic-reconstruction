@@ -75,8 +75,9 @@ model/notes/LITERATURE_AND_POSITIONING.md
 model/notes/results_analysis.ipynb
 !model/results/*.geojson
 
-# alpha platform
-platform/alpha/frontend/node_modules/
-platform/alpha/frontend/dist/
-platform/alpha/frontend/test-results/
-platform/alpha/frontend/playwright-report/
+# digital twin platform
+digital_twin/results/private
+digital_twin/platform/frontend/node_modules/
+digital_twin/platform/frontend/dist/
+digital_twin/platform/frontend/test-results/
+digital_twin/platform/frontend/playwright-report/

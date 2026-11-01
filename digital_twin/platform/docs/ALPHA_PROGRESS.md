@@ -23,4 +23,4 @@ All items are done on branch `alpha/platform` unless marked otherwise.
 
 ## Findings about the research code (not changed)
 
-See "Findings for the research project" in `ALPHA_TEST_REPORT.md`.
+See "Findings for the research project" in `docs/ALPHA_TEST_REPORT.md`.

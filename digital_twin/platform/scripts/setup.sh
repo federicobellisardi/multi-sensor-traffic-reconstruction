@@ -14,4 +14,4 @@ cd "$ALPHA_DIR/frontend"
 npm ci --no-audit --no-fund
 npm run build
 [ -x "$SIM_ENGINE" ] || echo "NOTE: simulator not found at $SIM_ENGINE; build it with: bash hpc/setup.sh"
-echo "setup done. Start with: bash platform/alpha/scripts/run.sh"
+echo "setup done. Start with: bash digital_twin/platform/scripts/run.sh"

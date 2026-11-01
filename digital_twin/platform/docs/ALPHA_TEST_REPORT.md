@@ -20,9 +20,9 @@ Date: 2026-11-01. Host: Ubuntu 26.04, 4 cores, 13 GB RAM, Chrome headless with s
 
 | Command | Where | Result |
 |---|---|---|
-| `bash platform/alpha/scripts/test.sh` | Clean clone, freshly built engine, no private data | 25 backend, 11 frontend, 8 browser tests passed |
+| `bash digital_twin/platform/scripts/test.sh` | Clean clone, freshly built engine, no private data | 25 backend, 11 frontend, 8 browser tests passed |
 | `SIM_ENGINE=…/build_ubuntu22.04/sim_engine bash hpc/smoke_test.sh` | Research checkout | Passed: 7,850 rows, 34 s; `git status` unchanged |
-| `bash platform/alpha/scripts/run.sh` | Worktree, private inputs available | Started, 30 research runs imported, frozen profile available, no engine warning |
+| `bash digital_twin/platform/scripts/run.sh` | Worktree, private inputs available | Started, 30 research runs imported, frozen profile available, no engine warning |
 
 Backend tests mostly use a stand-in engine to force failures. `test_engine.py` and all browser tests use the real one, with no mocks.
 
@@ -60,4 +60,4 @@ Only one frozen day was regenerated. The frozen run and the 6-hour run are the o
 
 ## Screenshots
 
-Synthetic data only, in `platform/alpha/docs/screenshots/`: empty network, monitoring, completed run, map with road chart, comparison, failed run, phone layout.
+Synthetic data only, in `digital_twin/platform/docs/screenshots/`: empty network, monitoring, completed run, map with road chart, comparison, failed run, phone layout.

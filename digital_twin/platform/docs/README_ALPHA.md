@@ -15,8 +15,8 @@ From the repository root:
 export WORK_ROOT=$PWD/.work                     # any disk with about 2 GB free
 . hpc/config.sh
 cmake -S minimocas -B "$BUILD" && cmake --build "$BUILD" --target sim_engine --parallel 4
-bash platform/alpha/scripts/setup.sh
-bash platform/alpha/scripts/run.sh
+bash digital_twin/platform/scripts/setup.sh
+bash digital_twin/platform/scripts/run.sh
 ```
 
 Open <http://127.0.0.1:8765>; API documentation is at `/docs`. `hpc/setup.sh` also builds the engine, but creates the full research environment too.
@@ -25,7 +25,7 @@ First run: **Scenarios → Demo baseline (SYNTHETIC) → Launch**, then **View o
 
 ## With the private research inputs
 
-The frozen profile enables itself when its inputs exist (see `hpc/README.md`). The Scenarios page reports what is missing. Settings go in `platform/alpha/.env` (see `.env.example`):
+The frozen profile enables itself when its inputs exist (see `hpc/README.md`). The Scenarios page reports what is missing. Settings go in `digital_twin/platform/.env` (see `.env.example`):
 
 ```sh
 SIM_ENGINE=/path/to/current/sim_engine      # check that the app shows no engine warning
@@ -35,10 +35,10 @@ ALPHA_SCIENCE_ROOT=/path/to/research/checkout   # if this checkout has no privat
 ## Tests
 
 ```sh
-bash platform/alpha/scripts/test.sh    # backend, frontend, browser end-to-end with the real engine
+bash digital_twin/platform/scripts/test.sh    # backend, frontend, browser end-to-end with the real engine
 ```
 
-The browser suite rewrites `platform/alpha/docs/screenshots/` using synthetic data only.
+The browser suite rewrites `digital_twin/platform/docs/screenshots/` using synthetic data only.
 
 ## Data handling
 

@@ -1,5 +1,5 @@
 # Shared settings of the alpha scripts (source it). Reuses hpc/config.sh for the simulator and the
-# research environment; local overrides go in platform/alpha/.env (git-ignored, see .env.example).
+# research environment; local overrides go in digital_twin/platform/.env (git-ignored, see .env.example).
 ALPHA_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 . "$ALPHA_DIR/../../hpc/config.sh"
 [ -f "$ALPHA_DIR/.env" ] && { set -a; . "$ALPHA_DIR/.env"; set +a; }

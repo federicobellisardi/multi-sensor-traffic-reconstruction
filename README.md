@@ -9,6 +9,7 @@ demand, an agent-based simulator on an OpenStreetMap-derived road graph, inducti
 | Path | Content |
 |---|---|
 | `model/` | The regional model: analysis pipeline, aggregate results and manuscript (see `model/README.md`) |
+| `digital_twin/` | Second paper: web platform for launching and inspecting simulations, and its analyses (see `digital_twin/README.md`) |
 | `minimocas/` | Agent-based traffic simulator (C++, pybind11 interface) |
 | `src/`, `CMakeLists.txt`, `cmake/`, `build.sh` | Build of the simulator and of the Python bindings |
 | `vars/` | Project cartography (`vars/carto`, 3,925 polylines) and metadata (detectors, no-turn rules) |

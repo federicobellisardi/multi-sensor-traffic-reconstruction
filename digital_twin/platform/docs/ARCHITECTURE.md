@@ -3,7 +3,7 @@
 ```
 Browser (React, TypeScript, MapLibre, ECharts)
    │  HTTP/JSON, polling
-FastAPI  platform/alpha/backend/app
+FastAPI  digital_twin/platform/backend/app
    ├─ main.py      API; serves the built frontend
    ├─ profiles.py  validated parameters; what each profile can do
    ├─ jobs.py      queue, limits, supervision, recovery
