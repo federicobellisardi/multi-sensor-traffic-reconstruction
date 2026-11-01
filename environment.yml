@@ -1,0 +1,17 @@
+name: traffic-reconstruction
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - geopandas
+  - shapely
+  - pyproj
+  - contextily
+  - jupyter_core
+  - nbconvert
+  - nbformat
+  - ipykernel

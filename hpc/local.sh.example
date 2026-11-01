@@ -1,0 +1,2 @@
+# Copy to hpc/local.sh (git-ignored) and adapt, e.g. on the IFISC cluster:
+WORK_ROOT=/data/workspaces/fbellisardi/mover_data
