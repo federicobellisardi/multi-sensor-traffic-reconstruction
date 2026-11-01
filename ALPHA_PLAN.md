@@ -9,7 +9,7 @@
 | Crono, nginx, compose | Tied to the former deployment (`.env.dev`, `work_lavoro`); not runnable here | Left in place |
 | Engine (`minimocas/sim_engine`) | Independent executable: JSON in, files out, `.status` progress | Reused unchanged, called as a process |
 | Science (`model/analysis`) | `demand_scaling.one` defines the frozen configuration | Reused by a bridge, not reimplemented |
-| Security | Legacy auth via env-provided password; no secrets in git found by the ignore rules | New app binds to localhost, see limitations |
+| Security | Legacy login uses an env-provided password. No security audit or secret scan of the repository was done; the new app binds to localhost, see limitations |
 
 The environment has no Docker. It has 4 cores, 13 GB RAM shared with research jobs, and a nearly full `/home`.
 
