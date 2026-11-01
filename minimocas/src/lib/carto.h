@@ -455,6 +455,7 @@ struct cart
   std::map<std::string, std::map<int, std::map<int, double>>> bpweight;       // map < user_type, < node_lid, node_lid, weight >>>
   std::unordered_map<int, std::unordered_map<int, double>> trans;             // < poly_lid, poly_lid, weight >
   std::map<std::string, std::unordered_map<int, std::vector<int>>> bpmatrix;  // map <user_type, < node_lid dest, [ node_lid ] >>
+  long skipped_od_pawns = 0;  // OD agents with spread_origin dropped because no drawn endpoint pair has a route
   long route_fallbacks = 0;  // next hops taken from the "locals" (distance) matrix because the user-type matrix has no route
   int next_hop(const std::string &tag, int dest, int node_lid)
   {

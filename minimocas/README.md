@@ -1,6 +1,6 @@
 # minimocas
 
-[![Build Status](https://travis-ci.com/physycom/minimocas.svg?token=***REMOVED***&branch=master)](https://travis-ci.com/physycom/minimocas)
+[![Build Status](https://travis-ci.com/physycom/minimocas.svg?branch=master)](https://travis-ci.com/physycom/minimocas)
 
 ### TESTING
 

@@ -102,6 +102,7 @@ struct source
   jsoncons::json pawns_spec;
   bool is_localized;
   bool is_geofenced;
+  bool spread_origin;
   bool is_control;
   int source_type;
   int orientation;

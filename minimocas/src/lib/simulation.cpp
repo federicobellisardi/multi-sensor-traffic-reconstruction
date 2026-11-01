@@ -349,6 +349,7 @@ inline std::vector<sink> init_sinks(const jsoncons::json &jconf)
 source::source()
 {
   is_localized = false;
+  spread_origin = false;
   is_geofenced = false;
   is_control = false;
 }
@@ -503,10 +504,15 @@ source()
         orientation = FT;
       }
 
+      spread_origin = jconf.has_member("spread_origin") && jconf["spread_origin"].as<bool>();
+
       if (jconf.has_member("pawns"))
       {
         for (auto &sp : pawns_spec["pawns"].object_range())
+        {
           sp.value()["start_node_lid"] = node_lid;
+          if (spread_origin) sp.value()["spread_origin"] = true;
+        }
       }
       else if (jconf.has_member("pawns_from_weight"))
       {
@@ -743,7 +749,7 @@ simulation::simulation(const jsoncons::json &jconf, cart *c) :
   polygon_outfile(""),
   poly_outfile("")
 {
-  generator.seed(1);
+  generator.seed(jconf.has_member("seed") ? jconf["seed"].as<int>() : 1);
   rnd_node = std::uniform_int_distribution<int>(0, int(c->node.size()) - 1);
   rnd_01 = std::uniform_real_distribution<double>(0., 1.);
   auto lambda = jconf.has_member("rnd_exp_mean") ? jconf["rnd_exp_mean"].as<double>() : 1. / 5000.;
@@ -1411,6 +1417,7 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
       bool ferrypawn = s.value().has_member("ferrypawn") ? s.value()["ferrypawn"].as<bool>() : false;
 
       std::string cherry_key = s.value().has_member("cherry_pick") ? s.value()["cherry_pick"].as<std::string>() : "all";
+      bool spread_origin = s.value().has_member("spread_origin") && s.value()["spread_origin"].as<bool>();
 
       std::vector<pawn> type_pawns;
       type_pawns.reserve(number);
@@ -1427,7 +1434,8 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           pw.TLB = TLB;
           pw.last_node = start_node;
           pw.next_node = c->next_hop(pw.tag, first_dest, start_node);
-          if (pw.next_node == NO_ROUTE)
+          // with spread_origin the endpoints are drawn below and checked there: the two centres need no path
+          if (pw.next_node == NO_ROUTE && !spread_origin)
           {
             // std::cout << "Last Node: " << pw.last_node<< " Next Node: " << pw.next_node << std::endl;
             std::stringstream ss;
@@ -1435,23 +1443,32 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
             throw std::runtime_error(ss.str());
           }
 
-          // roll dest
+          // roll dest around the OD destination
           int dn;
-          if (cherry_pick_map[cherry_key].find(start_node) != cherry_pick_map[cherry_key].end()) {
-            double score_ext = rnd_01(generator);
-            auto ss = std::lower_bound(cherry_pick_map[cherry_key][start_node].begin(),
-              cherry_pick_map[cherry_key][start_node].end(),
-              score_ext,
-              [](const std::pair<int, double> &p1, const double &w) {
-              return p1.second < w;
+          if (cherry_pick_map[cherry_key].find(first_dest) != cherry_pick_map[cherry_key].end()) {
+            // the picked destination must be reachable from start_node under this user tag
+            int tries = 0;
+            do {
+              double score_ext = rnd_01(generator);
+              auto ss = std::lower_bound(cherry_pick_map[cherry_key][first_dest].begin(),
+                cherry_pick_map[cherry_key][first_dest].end(),
+                score_ext,
+                [](const std::pair<int, double> &p1, const double &w) {
+                return p1.second < w;
+              }
+              );
+              dn = ss[0].first;
+              c->add_bpmatrix(std::set<int>({ dn }));
+            } while (c->bpmatrix[pw.tag].at(dn).at(start_node) == NO_ROUTE && ++tries < 1000);
+            if (c->bpmatrix[pw.tag].at(dn).at(start_node) == NO_ROUTE)
+            {
+              if (spread_origin) { ++c->skipped_od_pawns; continue; }
+              throw std::runtime_error("[make_pawns] no reachable destination from node " + std::to_string(start_node));
             }
-            );
-            dn = ss[0].first;
-            c->add_bpmatrix(std::set<int>({ dn }));
           }
           else {
-            if (cherry_pick_map["all"].find(start_node) == cherry_pick_map["all"].end()) {
-              std::cout << "You have selected an isolated node as start node (roll_dest): "<< start_node << std::endl;
+            if (cherry_pick_map["all"].find(first_dest) == cherry_pick_map["all"].end()) {
+              std::cout << "You have selected an isolated node as dest node (roll_dest): "<< first_dest << std::endl;
             }
             static std::uniform_int_distribution<int> rnd_cherry_node;
             rnd_cherry_node = std::uniform_int_distribution<int>(0, int(cherry_pick_map[cherry_key].size()) - 1);
@@ -1462,15 +1479,16 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
             } while (c->bpmatrix[pw.tag].at(dn).at(start_node) == NO_ROUTE);
           }
 
-          // roll origin
+          // roll origin (around the OD origin with spread_origin; otherwise overwritten by the geofenced source)
           int sn;
-          if (cherry_pick_map[cherry_key].find(dn) != cherry_pick_map[cherry_key].end()) {
+          const int origin_center = spread_origin ? start_node : dn;
+          if (cherry_pick_map[cherry_key].find(origin_center) != cherry_pick_map[cherry_key].end()) {
             // the picked origin must be able to reach dn under this user tag
             int tries = 0;
             do {
               double score_ext = rnd_01(generator);
-              auto ss = std::lower_bound(cherry_pick_map[cherry_key][dn].begin(),
-                cherry_pick_map[cherry_key][dn].end(),
+              auto ss = std::lower_bound(cherry_pick_map[cherry_key][origin_center].begin(),
+                cherry_pick_map[cherry_key][origin_center].end(),
                 score_ext,
                 [](const std::pair<int, double> &p1, const double &w) {
                 return p1.second < w;
@@ -1478,9 +1496,12 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
               );
               sn = ss[0].first;
               c->add_bpmatrix(std::set<int>({ sn }));
-            } while (c->bpmatrix[pw.tag].at(dn).at(sn) == NO_ROUTE && ++tries < 1000);
-            if (c->bpmatrix[pw.tag].at(dn).at(sn) == NO_ROUTE)
+            } while ((sn == dn || c->bpmatrix[pw.tag].at(dn).at(sn) == NO_ROUTE) && ++tries < 1000);
+            if (sn == dn || c->bpmatrix[pw.tag].at(dn).at(sn) == NO_ROUTE)
+            {
+              if (spread_origin) { ++c->skipped_od_pawns; continue; }
               throw std::runtime_error("[make_pawns] no origin reaches node " + std::to_string(dn));
+            }
           }
           else {
             if (cherry_pick_map["all"].find(dn) == cherry_pick_map["all"].end()) {
@@ -1624,10 +1645,10 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
           else
             pw.TTB = TTB;
 
-          // roll random dest
-          int dn;
-          if (cherry_pick_map[cherry_key].find(start_node) != cherry_pick_map[cherry_key].end()) {
-            // the picked node must be reachable from start_node under this user tag
+          // with spread_origin the origin is drawn around the source point
+          int orig_node = start_node;
+          if (spread_origin && cherry_pick_map[cherry_key].find(start_node) != cherry_pick_map[cherry_key].end()) {
+            // the picked origin must be connected to the source point both ways, so that it has somewhere to go
             int tries = 0;
             do {
               double score_ext = rnd_01(generator);
@@ -1638,15 +1659,36 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
                 return p1.second < w;
               }
               );
+              orig_node = ss[0].first;
+              c->add_bpmatrix(std::set<int>({ orig_node }));
+            } while ((c->bpmatrix[pw.tag].at(start_node).at(orig_node) == NO_ROUTE || c->bpmatrix[pw.tag].at(orig_node).at(start_node) == NO_ROUTE) && ++tries < 1000);
+            if (c->bpmatrix[pw.tag].at(start_node).at(orig_node) == NO_ROUTE || c->bpmatrix[pw.tag].at(orig_node).at(start_node) == NO_ROUTE)
+              orig_node = start_node;
+          }
+
+          // roll random dest
+          int dn;
+          if (cherry_pick_map[cherry_key].find(orig_node) != cherry_pick_map[cherry_key].end()) {
+            // the picked node must be reachable from orig_node under this user tag
+            int tries = 0;
+            do {
+              double score_ext = rnd_01(generator);
+              auto ss = std::lower_bound(cherry_pick_map[cherry_key][orig_node].begin(),
+                cherry_pick_map[cherry_key][orig_node].end(),
+                score_ext,
+                [](const std::pair<int, double> &p1, const double &w) {
+                return p1.second < w;
+              }
+              );
               dn = ss[0].first;
               c->add_bpmatrix(std::set<int>({ dn }));
-            } while (c->bpmatrix[pw.tag].at(dn).at(start_node) == NO_ROUTE && ++tries < 1000);
-            if (c->bpmatrix[pw.tag].at(dn).at(start_node) == NO_ROUTE)
-              throw std::runtime_error("[make_pawns] no reachable random destination from node " + std::to_string(start_node));
+            } while (c->bpmatrix[pw.tag].at(dn).at(orig_node) == NO_ROUTE && ++tries < 1000);
+            if (c->bpmatrix[pw.tag].at(dn).at(orig_node) == NO_ROUTE)
+              throw std::runtime_error("[make_pawns] no reachable random destination from node " + std::to_string(orig_node));
           }
           else {
-            if (cherry_pick_map["all"].find(start_node) == cherry_pick_map["all"].end()) {
-              std::cout << "You have selected an isolated node as start node (roll random_dest): " << start_node << std::endl;
+            if (cherry_pick_map["all"].find(orig_node) == cherry_pick_map["all"].end()) {
+              std::cout << "You have selected an isolated node as start node (roll random_dest): " << orig_node << std::endl;
             }
             static std::uniform_int_distribution<int> rnd_cherry_node;
             rnd_cherry_node = std::uniform_int_distribution<int>(0, int(cherry_pick_map[cherry_key].size()) - 1);
@@ -1655,23 +1697,23 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
               dn = rnd_cherry_node(generator);
               // if (c->isolated_nodes.find(dn) == c->isolated_nodes.end()) {continue;}
               c->add_bpmatrix(std::set<int>({ dn }));
-            } while (c->bpmatrix[pw.tag].at(dn).at(start_node) == NO_ROUTE);
+            } while (c->bpmatrix[pw.tag].at(dn).at(orig_node) == NO_ROUTE);
           }
 
           pw.dest = std::list<int>(0);
           pw.current_dest = dn;
 
-          auto sp = c->node2poly(start_node, c->bpmatrix[pw.tag][dn][start_node])->lid;
-          //std::cout << i << ") " << start_node << " " << c->bpmatrix[pw.tag][dn][start_node] << " p" << sp << std::endl;
+          auto sp = c->node2poly(orig_node, c->bpmatrix[pw.tag][dn][orig_node])->lid;
+          //std::cout << i << ") " << orig_node << " " << c->bpmatrix[pw.tag][dn][orig_node] << " p" << sp << std::endl;
 
           int speedsign = 1;
           double ss;
-          if (c->node[start_node].isT(c->poly[sp]))
+          if (c->node[orig_node].isT(c->poly[sp]))
           {
             ss = c->poly[sp].length;
             speedsign = -1;
           }
-          else if (c->node[start_node].isF(c->poly[sp]))
+          else if (c->node[orig_node].isF(c->poly[sp]))
           {
             ss = 0.;
             speedsign = 1;
@@ -1681,8 +1723,8 @@ std::vector<std::vector<pawn>> simulation::make_pawns(const jsoncons::json &jcon
             throw std::runtime_error("WTF orig-random make_pawns : no front no tail");
           }
 
-          pw.last_node = start_node;
-          pw.next_node = c->next_hop(pw.tag, dn, start_node);
+          pw.last_node = orig_node;
+          pw.next_node = c->next_hop(pw.tag, dn, orig_node);
           pw.current_poly = sp;
           pw.current_s = ss;
           pw.speed *= speedsign;
@@ -2357,7 +2399,7 @@ void simulation::update_sources()
     }
 
     // update pawn initial position
-    if (s.is_geofenced)
+    if (s.is_geofenced && !s.spread_origin)
     {
       for (auto &type : pawn_tmp)
         for (auto &p : type)
@@ -2941,21 +2983,6 @@ void simulation::evolve(pawn &p)
   }
   case PAWN_ACTIVE:
   {
-    if (c->poly[p.current_poly].density > density_critical)
-    {
-      if (p.current_s > c->poly[p.current_poly].length)
-      {
-        p.dlen = p.current_s - c->poly[p.current_poly].length;
-        evolve_poly(p, c->poly[p.current_poly].nT);
-      }
-      else if (p.current_s < 0.0)
-      {
-        p.dlen = -1.0 * p.current_s;
-        evolve_poly(p, c->poly[p.current_poly].nF);
-      }
-      break;
-    }
-
     // TTB
     if (p.TTB > 0 && p.lifetime > p.TTB)
     {
