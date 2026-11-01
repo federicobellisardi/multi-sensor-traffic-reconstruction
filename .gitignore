@@ -49,6 +49,28 @@ research/datasets/raw/
 .gitmodules
 
 # internal working notes (local only)
-article1/PLAN.md
-article1/reports/original_brief.txt
+model/notes/PLAN.md
+model/notes/original_brief.txt
 research/PROGRESS.md
+
+# runlog job logs
+logs/
+
+# link-level outputs derived from proprietary data, simulation outputs
+model/results/private
+model/results/work
+__pycache__/
+
+# local settings and working directory of the hpc scripts
+hpc/local.sh
+.work/
+sim_runs/
+
+# internal project notes (local only)
+model/notes/HANDOFF.md
+model/notes/PUBLICATION_STRATEGY.md
+model/notes/IMPLEMENTATION_AUDIT.md
+model/notes/CLAIM_EVIDENCE.md
+model/notes/LITERATURE_AND_POSITIONING.md
+model/notes/results_analysis.ipynb
+!model/results/*.geojson

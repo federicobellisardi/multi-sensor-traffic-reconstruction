@@ -8,21 +8,26 @@ demand, an agent-based simulator on an OpenStreetMap-derived road graph, inducti
 
 | Path | Content |
 |---|---|
+| `model/` | The regional model: analysis pipeline, aggregate results and manuscript (see `model/README.md`) |
 | `minimocas/` | Agent-based traffic simulator (C++, pybind11 interface) |
 | `src/`, `CMakeLists.txt`, `cmake/`, `build.sh` | Build of the simulator and of the Python bindings |
-| `python/` | OD processing, simulation configuration and analysis tools |
 | `vars/` | Project cartography (`vars/carto`, 3,925 polylines) and metadata (detectors, no-turn rules) |
-| `dashboard/` | Web platform: FastAPI simulation service, Django dashboard, MTS data fetcher, nginx |
-| `article1/` | Article 1, *Large-scale traffic flow reconstruction from heterogeneous mobility sensors*: manuscript, supplement, analysis pipeline (`article1/analysis`) |
-| `research/` | Programme notes, literature, dataset provenance and processing scripts for the companion studies |
+| `hpc/` | Setup, smoke test and job scripts for workstations and the Slurm cluster (see `hpc/README.md`) |
+| `environment.yml` | Python environment of the analysis |
+| `platform/` | Earlier operational platform, not used by the model pipeline: web dashboard (`dashboard/`), OD and configuration tools (`python/`), `scripts/` |
+| `research/` | Literature, dataset provenance and processing scripts for companion studies |
 
 The history of the previous manuscript revision is kept on the branch `revision-v2`.
 
 ## Build
 
 ```sh
-./build.sh          # requires CMake, Boost and pybind11
+bash hpc/setup.sh        # simulator (CMake, C++14 compiler, Boost filesystem) and Python environment
+bash hpc/smoke_test.sh   # two simulated hours, about 30 s
 ```
+
+The legacy `build.sh` builds the Python bindings (also needs pybind11). See `hpc/README.md` for the
+location of working files and the cluster workflow.
 
 ## Data
 
@@ -35,7 +40,7 @@ Not included in this repository:
   `research/datasets/scripts/`);
 * OpenStreetMap extracts: © OpenStreetMap contributors, ODbL (Geofabrik).
 
-Dashboard credentials are read from environment variables; see `dashboard/.env.example`.
+Dashboard credentials are read from environment variables; see `platform/dashboard/.env.example`.
 
 ## Credits and licence
 
