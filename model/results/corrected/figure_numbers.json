@@ -1,0 +1,44 @@
+{
+  "fig3": {
+    "best_coil": 258,
+    "detectors_that_day": 61,
+    "median_directional_error_pct": 31.819581399387793,
+    "best_obs": 24230.0,
+    "best_withheld": 25503.971387634752,
+    "best_corr_hourly": 0.9908505134917724,
+    "best_abs_error_pct": 8.607697097764978,
+    "best_peak_obs": 8,
+    "best_peak_rec": 8
+  },
+  "fig4": {
+    "2020": {
+      "links": 821,
+      "median_ratio": 0.007473426740411362
+    },
+    "2021": {
+      "links": 818,
+      "median_ratio": 0.006212759960650486
+    }
+  },
+  "fig8": {
+    "2020": {
+      "detectors": 152,
+      "median_raw": 37.954095829769315,
+      "median_corrected": 33.34586612895616,
+      "iqr_corrected": [
+        23.462034383931137,
+        50.13291524989651
+      ]
+    },
+    "2021": {
+      "detectors": 141,
+      "median_raw": 39.14007092198582,
+      "median_corrected": 36.69229605871054,
+      "iqr_corrected": [
+        24.783484288752405,
+        53.47923617325865
+      ]
+    },
+    "zero_simulated": 1
+  }
+}

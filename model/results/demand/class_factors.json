@@ -1,0 +1,11 @@
+{
+ "factors": {
+  "scr_dest": 0.0,
+  "scr_dest_prov": 0.3040875156833818,
+  "src_rnd": 0.0,
+  "rnd_dest": 0.0,
+  "rnd_rnd": 1.7263847958445244,
+  "intra": 0.36894454976704927
+ },
+ "status": "candidate, unverified"
+}

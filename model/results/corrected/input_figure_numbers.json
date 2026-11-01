@@ -1,0 +1,35 @@
+{
+  "fig1": {
+    "polylines": 3925,
+    "detectors": 292,
+    "detectors_use": {
+      "validation": 115,
+      "calibration": 100,
+      "other": 77
+    },
+    "calibration_also_2021": 60,
+    "municipalities": 50
+  },
+  "fig2": {
+    "weekday": {
+      "agents": 2010312.0,
+      "shares": {
+        "rnd_dest": 0.14858191166346318,
+        "src_rnd": 0.2737465627226023,
+        "rnd_rnd": 0.37979975247623254,
+        "scr_dest": 0.16337762496567698,
+        "scr_dest_prov": 0.03449414817202504
+      }
+    },
+    "weekend day": {
+      "agents": 1547800.0,
+      "shares": {
+        "rnd_dest": 0.1434164620752035,
+        "src_rnd": 0.27415169918594134,
+        "rnd_rnd": 0.3895335314640134,
+        "scr_dest": 0.15396304432097171,
+        "scr_dest_prov": 0.03893526295387001
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+ "targets": "winter average 2022, 2023, 2024Q1 (data/coils_ave_*.csv)",
+ "days": {
+  "2020-02-10": "Mon",
+  "2020-02-15": "Sat"
+ },
+ "detectors": 269,
+ "detector_days": 531,
+ "k_current": 1.0,
+ "k_star": 1.0,
+ "k_star_bootstrap95": [
+  1.0,
+  1.0
+ ],
+ "k_star_bootstrap_distribution": {
+  "0.6": 0.0,
+  "0.8": 0.0,
+  "1.0": 0.9845,
+  "1.2": 0.0155,
+  "1.5": 0.0,
+  "1.8": 0.0,
+  "2.2": 0.0
+ },
+ "obs2020_k_star": 1.2,
+ "obs2020_detector_days": 353,
+ "level_drift_obs2020_over_average_median_log10": 0.08788744104408583,
+ "level_drift_detectors": 191
+}

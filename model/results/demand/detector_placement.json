@@ -1,0 +1,43 @@
+{
+ "detectors": 292,
+ "evaluated": 197,
+ "flags": {
+  "far": 1,
+  "other_link_closer": 0,
+  "road_differs": 2,
+  "no_road": 1,
+  "closed": 2,
+  "province": 0,
+  "doubtful": 5
+ },
+ "dist_link_m_quantiles": [
+  7.7344730693752695,
+  11.162359578569488,
+  16.459154716621068,
+  869.5851712316263
+ ],
+ "doubtful_vs_rest": {
+  "false": {
+   "n": 193,
+   "sd": 0.24725018701236104,
+   "median_abs": 0.16915281322614328
+  },
+  "true": {
+   "n": 4,
+   "sd": 1.9548871645011388,
+   "median_abs": 0.14133510294027535
+  }
+ },
+ "parallel_vs_rest": {
+  "False": {
+   "n": 196,
+   "sd": 0.3756200433497684,
+   "median_abs": 0.1674856066595793
+  },
+  "True": {
+   "n": 1,
+   "sd": NaN,
+   "median_abs": 0.3884497416417432
+  }
+ }
+}

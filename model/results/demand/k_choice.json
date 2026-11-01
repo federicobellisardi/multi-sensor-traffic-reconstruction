@@ -1,0 +1,21 @@
+{
+ "k": 1.0,
+ "criterion": "minimum per day type of the unweighted mean squared log10(sim/obs) of the daily volumes on the calibration half of the detectors of the February 2020 group means (weekdays against the Monday run, 15-16 Feb against the Saturday run; demand_scaling.group_observations), clean OD mean 13 Jan - 23 Feb 2020, minimocas without the freeze, OD destination around the declared one, spread_origin, departures 3 quarters earlier, radius 20 km, ISTAT population scores. See radius_scan.py; k by day type is not distinguishable from one common k on the sd (k 0.9), adopted by the user's decision because demand differs.",
+ "coils_calibration": 100,
+ "coils_test": 97,
+ "seed": 20261028,
+ "scan": [
+  0.7,
+  0.8,
+  0.9,
+  1.0,
+  1.1,
+  1.2
+ ],
+ "k_calibration_base": 1.0,
+ "bootstrap95": null,
+ "k_average_2022_24": null,
+ "k_weekend": 0.8,
+ "radius_km": 20,
+ "departure_shift_quarters": 3
+}

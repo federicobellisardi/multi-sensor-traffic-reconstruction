@@ -1,0 +1,176 @@
+{
+ "k_weekday": 1.0,
+ "k_weekend": 0.8,
+ "radius_km": 20.0,
+ "shift_quarters": 3,
+ "daily": {
+  "all": {
+   "frozen": {
+    "n": 175,
+    "ratio": 0.9825592817562092,
+    "spearman": 0.6605713505214597,
+    "sd_log10": 0.4861987346868733,
+    "median_abs_log10": 0.15089568859963862,
+    "within_factor2": 0.8
+   },
+   "round7": {
+    "n": 175,
+    "ratio": 1.052690399429544,
+    "spearman": 0.61896621021782,
+    "sd_log10": 0.49856082845568434,
+    "median_abs_log10": 0.19042797271777137,
+    "within_factor2": 0.76
+   }
+  },
+  "sd_frozen_minus_round7_ci95": [
+   -0.03961238008525288,
+   -0.0020521092663643003
+  ],
+  "Weekdays": {
+   "frozen": {
+    "n": 82,
+    "ratio": 1.0091240029890118,
+    "spearman": 0.643038277772336,
+    "sd_log10": 0.49287870567304143,
+    "median_abs_log10": 0.14746126000491708,
+    "within_factor2": 0.8292682926829268
+   },
+   "round7": {
+    "n": 82,
+    "ratio": 0.9722734232870758,
+    "spearman": 0.6103655815674622,
+    "sd_log10": 0.5015888193127027,
+    "median_abs_log10": 0.1863702229753854,
+    "within_factor2": 0.7804878048780488
+   }
+  },
+  "Weekend": {
+   "frozen": {
+    "n": 93,
+    "ratio": 0.9520213209853293,
+    "spearman": 0.6392527826683775,
+    "sd_log10": 0.4798717200750014,
+    "median_abs_log10": 0.15724234937823262,
+    "within_factor2": 0.7741935483870968
+   },
+   "round7": {
+    "n": 93,
+    "ratio": 1.1451352039968539,
+    "spearman": 0.6304497030825698,
+    "sd_log10": 0.4939821799051383,
+    "median_abs_log10": 0.1976621228791545,
+    "within_factor2": 0.7419354838709677
+   }
+  }
+ },
+ "Weekdays": {
+  "detectors": 82,
+  "ratio_barriers": 0.9271314832281371,
+  "pooled_error_15min_pct": 40.16940179394254,
+  "pooled_error_hourly_pct": 39.445945469911216,
+  "error_15min_quartiles_pct": [
+   24.681708087656236,
+   35.21726774158226,
+   53.04890809772019
+  ],
+  "error_hourly_quartiles_pct": [
+   23.393011523491435,
+   34.35137499886207,
+   52.82569556689933
+  ],
+  "profile_correlation_quartiles": [
+   0.9302959893543922,
+   0.9567021471337483,
+   0.9646080992941723
+  ],
+  "remaining_best_shift_quarters": 1,
+  "oracle_level_error_hourly_pct": 14.005673526673593,
+  "peaks_obs_am_sim_am_obs_pm_sim_pm": [
+   7.5,
+   8.0,
+   17.5,
+   17.75
+  ],
+  "shown": {
+   "122": {
+    "label": "rank 1 of 82",
+    "ratio": 1.094866912003331,
+    "error_15min_pct": 12.63892035539118,
+    "correlation": 0.9843633079006509
+   },
+   "638": {
+    "label": "rank 2 of 82",
+    "ratio": 1.0531980006120576,
+    "error_15min_pct": 13.778095140943247,
+    "correlation": 0.9641127251784887
+   },
+   "651": {
+    "label": "rank 3 of 82",
+    "ratio": 1.107031743572016,
+    "error_15min_pct": 14.799760006039584,
+    "correlation": 0.9739626719455258
+   },
+   "237": {
+    "label": "rank 4 of 82",
+    "ratio": 0.958552880935217,
+    "error_15min_pct": 15.165567999682912,
+    "correlation": 0.9643188481272891
+   }
+  }
+ },
+ "Weekend": {
+  "detectors": 93,
+  "ratio_barriers": 0.8790586124004387,
+  "pooled_error_15min_pct": 43.656323736305126,
+  "pooled_error_hourly_pct": 42.84589366093947,
+  "error_15min_quartiles_pct": [
+   30.472426124600037,
+   38.83560491334343,
+   56.04038137969714
+  ],
+  "error_hourly_quartiles_pct": [
+   28.93240093240093,
+   37.58752574286555,
+   55.83847448121144
+  ],
+  "profile_correlation_quartiles": [
+   0.8342473885617723,
+   0.8627113283452956,
+   0.8893063054697621
+  ],
+  "remaining_best_shift_quarters": 2,
+  "oracle_level_error_hourly_pct": 22.00613482472665,
+  "peaks_obs_am_sim_am_obs_pm_sim_pm": [
+   11.75,
+   11.75,
+   17.5,
+   18.75
+  ],
+  "shown": {
+   "122": {
+    "label": "rank 1 of 93",
+    "ratio": 1.0067308781869688,
+    "error_15min_pct": 16.31501416430595,
+    "correlation": 0.9277906935509153
+   },
+   "638": {
+    "label": "rank 2 of 93",
+    "ratio": 0.905122169917059,
+    "error_15min_pct": 18.3591123066577,
+    "correlation": 0.8997394161105929
+   },
+   "651": {
+    "label": "rank 3 of 93",
+    "ratio": 0.9170532325558763,
+    "error_15min_pct": 20.543679242222726,
+    "correlation": 0.8952397393770726
+   },
+   "665": {
+    "label": "rank 4 of 93",
+    "ratio": 1.031887755102041,
+    "error_15min_pct": 21.451762523191096,
+    "correlation": 0.8839820144729519
+   }
+  }
+ }
+}

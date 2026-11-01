@@ -1,0 +1,72 @@
+{
+ "k": 1.2,
+ "day": "2020-02-10",
+ "test_detectors": 82,
+ "example_in_test": true,
+ "quantiles": {
+  "hourly_error_pct": {
+   "0.25": 32.88172643165001,
+   "0.5": 42.39088811791323,
+   "0.75": 56.76265398231653
+  },
+  "ratio": {
+   "0.25": 0.5765127221448557,
+   "0.5": 0.8312652119933293,
+   "0.75": 1.2800536728022531
+  },
+  "shape_correlation": {
+   "0.25": 0.8437017300957274,
+   "0.5": 0.8853611563346138,
+   "0.75": 0.9182489707411682
+  }
+ },
+ "peak_hour_within_1h": 0.4634146341463415,
+ "best_lag_h_counts": {
+  "-3": 1,
+  "0": 2,
+  "1": 79
+ },
+ "shape_correlation_undefined": 1,
+ "shown": {
+  "282": {
+   "obs_daily": 22480.333333333332,
+   "sim_daily": 27257.0,
+   "ratio": 1.212482021322341,
+   "hourly_error_pct": 37.64772171231151,
+   "shape_correlation": 0.8110220391932296,
+   "peak_hour_obs": 7.0,
+   "peak_hour_sim": 18.0,
+   "best_lag_h": 1.0
+  },
+  "615": {
+   "obs_daily": 27861.833333333336,
+   "sim_daily": 18872.0,
+   "ratio": 0.6773423620125499,
+   "hourly_error_pct": 32.68449671294662,
+   "shape_correlation": 0.9514312059078931,
+   "peak_hour_obs": 17.0,
+   "peak_hour_sim": 8.0,
+   "best_lag_h": 1.0
+  },
+  "229": {
+   "obs_daily": 11974.866666666665,
+   "sim_daily": 16053.0,
+   "ratio": 1.3405577236768123,
+   "hourly_error_pct": 42.19504183762659,
+   "shape_correlation": 0.8649696766973459,
+   "peak_hour_obs": 7.0,
+   "peak_hour_sim": 8.0,
+   "best_lag_h": 1.0
+  },
+  "292": {
+   "obs_daily": 18251.166666666664,
+   "sim_daily": 7881.0,
+   "ratio": 0.43180801227318805,
+   "hourly_error_pct": 57.18264585825563,
+   "shape_correlation": 0.8671927252131398,
+   "peak_hour_obs": 17.0,
+   "peak_hour_sim": 18.0,
+   "best_lag_h": 1.0
+  }
+ }
+}

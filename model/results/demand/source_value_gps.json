@@ -1,0 +1,74 @@
+{
+ "2020_weekday_forli_cesena": {
+  "links": 435,
+  "spearman_frozen": 0.682016552007478,
+  "spearman_no_od": 0.6849940126802434,
+  "diff_ci95": [
+   -0.012262070456302603,
+   0.007316751559218559
+  ]
+ },
+ "2020_weekday_rest_of_region": {
+  "links": 379,
+  "spearman_frozen": 0.4834304406008365,
+  "spearman_no_od": 0.46529315568730123,
+  "diff_ci95": [
+   -0.006045891833376153,
+   0.04137354133253797
+  ]
+ },
+ "2020_weekend_forli_cesena": {
+  "links": 442,
+  "spearman_frozen": 0.707158503434594,
+  "spearman_no_od": 0.7111386993365635,
+  "diff_ci95": [
+   -0.01413962702337009,
+   0.006579718208423195
+  ]
+ },
+ "2020_weekend_rest_of_region": {
+  "links": 381,
+  "spearman_frozen": 0.5499051687453993,
+  "spearman_no_od": 0.5570525380223402,
+  "diff_ci95": [
+   -0.02893348977284062,
+   0.012332356352562355
+  ]
+ },
+ "2021_weekday_forli_cesena": {
+  "links": 438,
+  "spearman_frozen": 0.7200440411067776,
+  "spearman_no_od": 0.7241800258870928,
+  "diff_ci95": [
+   -0.01294129798201942,
+   0.005475811206945619
+  ]
+ },
+ "2021_weekday_rest_of_region": {
+  "links": 376,
+  "spearman_frozen": 0.5844652466784706,
+  "spearman_no_od": 0.5920021911391183,
+  "diff_ci95": [
+   -0.028952410893514434,
+   0.013368995248779339
+  ]
+ },
+ "2021_weekend_forli_cesena": {
+  "links": 442,
+  "spearman_frozen": 0.7301908029563987,
+  "spearman_no_od": 0.7352804838152533,
+  "diff_ci95": [
+   -0.013992886842993841,
+   0.004194955510550431
+  ]
+ },
+ "2021_weekend_rest_of_region": {
+  "links": 374,
+  "spearman_frozen": 0.6482526067716273,
+  "spearman_no_od": 0.6610166469042562,
+  "diff_ci95": [
+   -0.03186144991769067,
+   0.006146702092475504
+  ]
+ }
+}
