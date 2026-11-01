@@ -25,7 +25,7 @@ services:
       - 11001:80
     volumes:
       - ./fastapi/sim-ws.py:/app/main.py
-      - ../vars/data/fastapi:/data
+      - ../../vars/data/fastapi:/data
       - ../work_lavoro/dashboard/sync_simws:/output
 
   gui:
@@ -45,7 +45,7 @@ services:
     ports:
       - 11000:8000
     volumes:
-      - ../vars/data/django:/data
+      - ../../vars/data/django:/data
       - ../dashboard/sync_gui:/output
 
     depends_on:

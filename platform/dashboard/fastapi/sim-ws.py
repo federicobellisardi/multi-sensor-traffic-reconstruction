@@ -38,7 +38,7 @@ try:
   sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'bin'))
   from pysim import simulation
 
-  sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'dashboard', 'fastapi', 'python'))
+  sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'platform', 'dashboard', 'fastapi', 'python'))
   from conf import conf
   from simulation import simulation_task
   from correction import SimPostCorrection

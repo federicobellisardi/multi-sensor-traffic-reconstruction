@@ -669,7 +669,7 @@ class SimPostCorrection():
     df_std['datetime'] = self.date
     df_std = df_std[['datetime','poly_lid', 'counter_min','counter_max']]
 
-    sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'dashboard', 'fastapi','python'))
+    sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'platform', 'dashboard', 'fastapi','python'))
     from province_map import output_forli
     df_std = output_forli(df_std)
 

@@ -14,7 +14,7 @@ try:
   sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'bin'))
   from pysim import simulation
 
-  sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'python', 'webservice'))
+  sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'platform', 'python', 'webservice'))
   from conf import conf
 
 except Exception as e:

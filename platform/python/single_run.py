@@ -14,7 +14,7 @@ try:
   sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'bin'))
   from pysim import simulation
 
-  sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'python'))
+  sys.path.append(os.path.join(os.environ['WORKSPACE'], 'covid_hep', 'platform', 'python'))
   from config import config
   from sim_coil_map import sim_plot_coils
   from sim_prov_aggregation import sim_plot_prov
