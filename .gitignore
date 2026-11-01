@@ -74,3 +74,9 @@ model/notes/CLAIM_EVIDENCE.md
 model/notes/LITERATURE_AND_POSITIONING.md
 model/notes/results_analysis.ipynb
 !model/results/*.geojson
+
+# alpha platform
+platform/alpha/frontend/node_modules/
+platform/alpha/frontend/dist/
+platform/alpha/frontend/test-results/
+platform/alpha/frontend/playwright-report/
