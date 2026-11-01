@@ -1,0 +1,234 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1.8cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{xr-hyper}
+\usepackage{hyperref}
+\externaldocument[M-]{main}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\graphicspath{{./figures/}}
+
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thesubsection}{S\arabic{section}.\arabic{subsection}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+
+\title{Supplementary Material for\\
+\emph{A regional traffic simulation from mobile-phone, detector and GPS data: what each source adds, tested on independent observations}}
+\author{Federico Bellisardi, Chiara Mizzi, Alessandro Fabbri and Armando Bazzani}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\noindent This document gives further detail on the data layers, the simulation model, the route-choice variants and the detector correction described in the main manuscript. It also reports additional validation results and lists the commands that reproduce them.
+
+\section{Data layers}
+\label{sec:data-layers}
+
+\begin{table}[htbp]\centering
+\caption{Data layers and their role in the reconstruction.}
+\label{tab:layers}
+\begin{tabularx}{\textwidth}{@{}lXXl@{}}\toprule
+Layer & Content & Role & Period \\\midrule
+Mobile-phone OD (TIM) & hourly device movements between census areas, aggregated to municipalities and provinces & demand & 13 January--23 February 2020 \\
+Road graph & 3,925 directed links, 2,548 nodes, turn restrictions, derived from OpenStreetMap & network & -- \\
+OSM road classes & motorway to unclassified, nearest ways within 30~m & route-choice parameters & extract of 26/10/2026 \\
+MTS loop detectors & 15-min counts per station and direction & demand scale and demand settings (half of the detectors of February 2020); local correction; volume validation & Feb 2020, Jun--Jul 2021 \\
+Viasat GPS, link counts & hourly probes per matched link & profile validation & 10--17/02/2020, 28/06--04/07/2021 \\
+Viasat GPS, raw traces & private-vehicle fixes in Forl\`i--Cesena & speeds and class usage for route choice & same periods \\
+\bottomrule\end{tabularx}
+\end{table}
+
+Demand is generated in five classes. Agents have an observed source and destination between the 50 most active municipalities (16\% of the agents on a Monday) or between them and the provinces of neighbouring regions (3\%), an observed source and a random destination (27\%), a random source and an observed destination (15\%), or a random source and destination (38\%). This last class represents the activity not attributed to the selected relations. Agents with a random end therefore account for 80\% of the 2.01 million agents generated on a Monday, after the province factors. The hour convention of the OD tables is discussed in Section~\ref{sec:further}.
+
+We obtained the MTS counts of 2021 from the monthly open-data files of Regione Emilia-Romagna (dataset DS-1944, CC BY), summing all vehicle classes. The time labels of these files are in local time; converted to UTC, they reproduce the counts of the February 2020 archive used for 2020 (ratio of totals 0.995 on 12 February 2020).
+
+\section{Demand scale}
+\label{sec:scale}
+
+The configuration generator inherited from the operational platform rescaled individual source--destination pairs with ratios between observed and simulated counts at detectors. Because these ratios used the counts of the simulated day itself, the simulation was not independent of the detectors. We switched this rescaling off and instead multiply the demand by a factor $k$ for each day type (main text, Methods). Earlier scans and a fit by demand class, made on a previous version of the engine and demand, are not reported.
+
+The grid of $k$ was evaluated on the calibration detectors at the 20-km radius, without province factors, which leave $k$ unchanged (Fig.~\ref{fig:k_choice}). The selected values, 1.0 on weekdays and 0.8 on weekends, are the minima of the loss and give volume ratios of 1.00 and 0.98. The minima are flat: the loss at $k=1.1$ on weekdays and at $k=0.9$ on weekends cannot be told apart from the selected one (paired 95\% intervals $[-0.004, +0.004]$ and $[-0.005, +0.005]$; each is the best value in 47\% and 45\% of the bootstrap resamples). These neighbours do differ in level, with ratios of 1.10 and 1.10, so the volume ratio supports the selected values as well. The intervals exclude $k\le 0.8$ on weekdays and $k=0.7$ and $k=1.2$ on weekends; $k=1.1$ on weekends just includes zero ($[-0.0001, +0.024]$).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figS_k_choice.pdf}
+\caption{\textbf{Choice of the demand scale $k$.} Calibration detectors, 20-km radius, without province factors; 83 detectors on weekdays (Monday run) and 95 on weekends (Saturday run). \textbf{(a)} Mean squared $\log_{10}$(simulated/observed) of daily volumes; large open markers: selected $k$. \textbf{(b)} Ratio of total simulated to total observed volume. \textbf{(c)} Difference in loss from the selected $k$, with 95\% paired bootstrap intervals over detectors (2,000 resamples, seed 20261047).}
+\label{fig:k_choice}
+\end{figure}
+
+Table~\ref{tab:rounds} lists the changes tested on the calibration detectors, in the order in which we tested them, each against the previous configuration. Each rule was fixed before its runs and required the 95\% interval to lie below zero.
+
+\begin{table}[htbp]\centering
+\caption{Changes tested on the calibration detectors. Difference in the standard deviation of $\log_{10}$(simulated/observed), new minus reference; for the departure shift, difference in the pooled hourly error (pp). Intervals: 95\% paired bootstrap over detectors.}
+\label{tab:rounds}
+\begin{tabular}{@{}p{6.6cm}rlll@{}}\toprule
+Change & Difference & Interval & Rule met & Kept \\\midrule
+OD destination drawn around the declared one (correction of a defect) & +0.0047 & [$-0.0037$, +0.0123] & no & yes \\
+Origins spread around the source point & $-0.0187$ & [$-0.0421$, +0.0059] & no & yes \\
+Departures 45 min earlier, Monday (pp) & $-2.73$ & [$-3.54$, $-1.99$] & yes & yes \\
+Departures 45 min earlier, Saturday (pp) & +0.57 & [$-0.23$, +1.47] & no & -- \\
+Intra-municipal trips added & +0.0105 & [$-0.0011$, +0.0221] & no & no \\
+$k$ by day type at 10 km, against one $k$ & $-0.0032$ & [$-0.0069$, +0.0002] & no & -- \\
+Radius 20 km against 10 km & $-0.0201$ & [$-0.0326$, $-0.0076$] & yes & yes \\
+$k$ 1.0/0.8 at 20 km, against common 0.9 & $-0.0036$ & [$-0.0071$, +0.0002] & no & yes \\
+\bottomrule\end{tabular}\end{table}
+
+The destination change corrects a verified defect, so we kept it regardless of the result. The origin spreading and the factors by day type did not meet their rules and were kept by decision. The first has no demonstrated effect; the second brings the level of both day types close to one (ratios 1.00 and 0.98, against 0.90 and 1.10) without measurably changing the dispersion. On the test detectors the 20-km radius does not confirm its gain ($-0.005$ [$-0.016$, $+0.007$]).
+
+\paragraph{Province factors.} The factors were set on the calibration half in two rounds. Dispersion and Spearman correlation are 0.215 and 0.67 without them, 0.195 and 0.71 after the first round, and 0.187 and 0.72 after the second. The evaluation uses the rule stated in the main text, where the outcome is reported. On the test half the rule was met only narrowly, and the dispersion there includes a detector without simulated traffic.
+
+\section{Simulation model and route-choice variants}
+\label{sec:routing}
+
+Agents move at the speed of their link, $v_i$, which is reduced linearly with density $\rho_i$ below the critical density and set to a critical speed above it. Link speeds are read in km/h from the cartography and assigned by road class from GPS (Table~\ref{tab:classes}). Agents with a random end have a trip-time budget of 5,600~s, while source--destination agents follow the best-path matrix of their type. When the turn-restricted search finds no feasible next node for the cost of their type, these agents use the shortest-distance path matrix. The simulator is deterministic (fixed random seed).
+
+Table~\ref{tab:routing} lists the variants simulated for 10 February 2020. They were run with the demand of the earlier generator, before the demand scale was revised; the selection uses only GPS counts in Forl\`i--Cesena and was not repeated. Speeds alone (second to fourth rows) do not change the distribution of traffic over road classes, because about four fifths of the agents follow transition probabilities rather than best paths. Transition weights by road class (last three rows) raise the share of main roads and the agreement with GPS counts in Forl\`i--Cesena, and the selected variant combines the usage cost of Eq.~\eqref{M-eq:route_cost} with these weights. Table~\ref{tab:routing_volumes} compares shortest-distance and GPS-informed route choice over the full campaigns with the scaled demand, and Table~\ref{tab:routing_shape} shows that route choice hardly changes the hourly profiles.
+
+\begin{table}[htbp]\centering
+\caption{Road-class properties from private-vehicle GPS traces in Forl\`i--Cesena, February 2020. Median off-peak speed of links with at least 50 matched points (interquartile range in brackets) and median daily probes per covered link, both applied to all links of each class in the region.}
+\label{tab:classes}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Road class & Links (speed) & Speed (km/h) & Links (usage) & Probes per day \\
+\midrule
+Motorway & 44 & 123 [120--124] & 61 & 130 \\
+Trunk & 75 & 83 [76--95] & 76 & 79 \\
+Primary & 151 & 55 [46--64] & 160 & 109 \\
+Secondary & 245 & 51 [46--60] & 248 & 36 \\
+Tertiary & 193 & 53 [43--59] & 227 & 21 \\
+Unclassified & 42 & 49 [36--54] & 57 & 14 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The best-path cost of link $i$ in the simulator is
+\begin{equation}
+w_i = L_i\left[\alpha + \alpha_s\,\frac{v_{\min}}{v_i} + (1-\alpha-\alpha_s)\,\frac{1/c_i - 1/c_{\max}}{1/c_{\min} - 1/c_{\max}}\right],
+\label{eq:route_cost_general}
+\end{equation}
+with $v_{\min}=20$~km/h. Equation~(1) of the main text is the case $\alpha=0.5$, $\alpha_s=0$, used for all agents in the final configuration. The variants of Table~\ref{tab:routing} are shortest distance $(\alpha,\alpha_s)=(1,0)$, travel time $(0,1)$, mixed $(0.5,0.5)$ and usage cost $(0.5,0)$.
+
+After the selection on GPS, we simulated a grid of $(\alpha,\alpha_s)$ with all else fixed and compared it with the selected variant on the 100 calibration detectors, for 10 and 15 February 2020 (Table~\ref{tab:routing_grid}). The rule, fixed before the results were seen, was that a variant replaces the selected one only if the 95\% paired bootstrap interval of the change in dispersion lies below zero. No variant met it. The selection on GPS (Spearman 0.54, against 0.47 for shortest-distance routing) was made on an earlier version of the demand, and the grid used a scale of $k=1.5$ and an earlier version of the simulator and demand. Neither was repeated on the final model.
+
+\input{tables/routing_variants}
+\input{tables/routing_volumes}
+\input{tables/routing_shape}
+
+\begin{table}[htbp]
+\centering
+\caption{Grid of cost weights on the 100 calibration detectors, 10 and 15 February 2020, earlier version of the model at $k=1.5$. Dispersion and Spearman correlation of daily volumes over detector-days; 95\% paired bootstrap interval over detectors of the change in dispersion from the selected variant (2,000 resamples, seed 20261032).}
+\label{tab:routing_grid}
+\begin{tabular}{@{}rrrrc@{}}
+\toprule
+$\alpha$ & $\alpha_s$ & Dispersion & Spearman & Change in dispersion \\
+\midrule
+0.50 & 0.00 & 0.260 & 0.611 & selected \\
+1.00 & 0.00 & 0.259 & 0.599 & $[-0.008, +0.004]$ \\
+0.75 & 0.25 & 0.259 & 0.603 & $[-0.008, +0.004]$ \\
+0.50 & 0.50 & 0.257 & 0.607 & $[-0.010, +0.001]$ \\
+0.25 & 0.75 & 0.257 & 0.606 & $[-0.010, +0.003]$ \\
+0.00 & 1.00 & 0.257 & 0.602 & $[-0.010, +0.003]$ \\
+0.25 & 0.25 & 0.259 & 0.612 & $[-0.005, +0.002]$ \\
+0.50 & 0.25 & 0.260 & 0.604 & $[-0.007, +0.005]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Detector correction}
+\label{sec:correction}
+
+The correction starts from the increment of Eq.~\eqref{M-eq:coil_residual} on each detector link and hour. The simulated count on a link is the number of distinct agents present on it during the hour, while the detector counts passages at a section; the two coincide for agents that traverse the whole link within the hour. Barrier counts do not enter the correction. Two pairs of detectors (404 and 680; 503 and 685) lie on the same link, and their observations are averaged before the increment is computed. Downstream, the increment of a link is passed to each admissible outgoing link, multiplied by that link's share of the simulated outgoing counts at the node; upstream, the same rule applies to incoming links. Each branch carries its own increment and its own path length. The spreading skips other detector links, which receive their own increment, and stops when the increment is below one vehicle, after three links along the path, at a forbidden turn or at a closed link. Every directed link of the raw simulation is kept in the output, and the hours of the observed table are aligned with the local-time hours of the simulation. In the leave-one-detector-out and depth experiments, all detectors on the withheld link are removed together, so that a co-located detector cannot reproduce the withheld count.
+
+Table~\ref{tab:loo} summarizes the leave-one-detector-out test, Table~\ref{tab:depth} the dependence on the depth of the spreading, and Table~\ref{tab:distance} the effect of the correction on the hourly profiles of GPS links, by network distance from the nearest detector.
+
+\input{tables/loo}
+\input{tables/depth}
+\input{tables/distance}
+
+Before the province factors, the same rule selected depth 4.
+
+\section{Additional validation results}
+\label{sec:validation}
+
+Table~\ref{tab:probes} reports the profile error by number of probes per link. The error decreases with the number of probes for both the reconstruction and the mean detector profile, as expected if part of the difference is sampling noise in the probe counts. Matched links with zero simulated or GPS total are excluded, and link-hour records absent from the GPS extract are counted as zero.
+
+\input{tables/probe_strata}
+
+The ratio between probes $\psi_i$ and simulated vehicles $\phi_i$ on link $i$,
+\begin{equation}
+\eta_i=\frac{\sum_{d,h}\psi_i(d,h)}{\sum_{d,h}\phi_i(d,h)},
+\label{eq:penetration}
+\end{equation}
+describes how GPS samples traffic (Fig.~\ref{fig:viasat}). Figure~\ref{fig:diagnostics} shows the timing and the reach of the correction, and Fig.~\ref{fig:loo_volumes} the daily volumes at withheld detectors.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig4_gps.pdf}
+\caption{\textbf{GPS coverage.} \textbf{(a,b)} Usable GPS-matched links (number in parentheses) over the regional network, 10--17 February 2020 and 28 June--4 July 2021. \textbf{(c)} Distribution of the link ratio $\eta_i$ between probe counts and simulated vehicles, Eq.~\eqref{eq:penetration}. Basemap \copyright{} OpenStreetMap contributors \copyright{} CARTO.}
+\label{fig:viasat}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig6_diagnostics.pdf}
+\caption{\textbf{Timing and reach of the correction.} \textbf{(a,b)} Hourly shares pooled over all usable links: reconstruction, GPS probes and mean detector profile. Pooling weights links by their own volumes, so these curves are not regional traffic shares. \textbf{(c)} Median reduction of the hourly-share error on GPS links by network distance from the nearest detector, in links, for 2020 and 2021.}
+\label{fig:diagnostics}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig7_volumes.pdf}
+\caption{\textbf{Daily volumes at withheld detectors.} Observed daily volume of each detector (mean over complete days, both directions) against the reconstruction on its link when the detector is withheld and all others are used, \textbf{(a)} 10--17 February 2020 and \textbf{(b)} 28 June--4 July 2021. Detectors reached by the spreading from other detectors are distinguished from those that are not; $\rho_s$, Spearman correlation. Dashed line: equality; dotted lines: factor of two.}
+\label{fig:loo_volumes}
+\end{figure}
+
+\section{Reproducibility}
+\label{sec:reproducibility}
+
+The code repository contains the simulator and all analysis scripts, and it explains how to build the simulator and set up the Python environment. The results are reproduced in the following order:
+\begin{enumerate}
+\item check the hour convention of the OD tables;
+\item build the road geometry, the road classes and the GPS link speeds;
+\item simulate and select the route-choice variants;
+\item build the 2021 detector table from the open-data files;
+\item build the demand, run the tests of Table~\ref{tab:rounds}, choose $k$ and the province factors, and run the eight simulations of the fifteen validation days;
+\item run the correction, the GPS validation and the leave-one-out test;
+\item run the volume tests, the comparison of route choices, the depth selection, the predictors without simulation, the tests of the OD relations and the final tests;
+\item produce the figures and tables.
+\end{enumerate}
+Steps 1--7 require the proprietary inputs (mobile-phone OD tables, Viasat link counts and traces), which are not distributed. A simulated day takes 10--30 minutes on an 8-core workstation, depending on the demand factor and on the number of days run in parallel.
+
+
+\section{Further details of data and methods}
+\label{sec:further}
+
+\paragraph{Road classes.} Each link was assigned the OpenStreetMap class of the ways nearest to three points along it (within 30~m; Geofabrik extract of 26 October 2026). This gives 709~km of motorways, 326~km of trunk roads, 2,629~km of primary, 4,673~km of secondary and 2,863~km of tertiary roads.
+
+\paragraph{Clock of the OD tables.} The hourly OD labels refer to local time and to the start of the hour. On the days of 10--14 February 2020, the weekday OD profile correlates best with the mean profile of the 90 detectors complete on those days at zero lag (0.96, against 0.94 with the OD profile shifted one hour earlier and 0.74 one hour later), although the mean absolute difference does not separate zero lag from one hour earlier (0.60 and 0.60~pp).
+
+\paragraph{Detector data.} Time stamps are in UTC and are converted to local time; the 2021 open-data release, in local time, reproduces the archive for February 2020. A detector-day is used when both directions are complete for all 96 intervals. The archive contains no zero counts, and more than 95\% of the isolated missing intervals fall before 06:00, which suggests that empty intervals are recorded as missing. The filter therefore favours busy roads (median daily volume of about 17,000 vehicles, against about 8,000 for detector-days with isolated gaps in 2020) and retains fewer detectors on weekdays, whose nights are quieter. Reading isolated gaps (at most 20 intervals, none longer than 4) as zero extends 2020 from 152 to 227 detectors and hardly changes the raw error (39.0\% to 41.4\%, both directions together) or the volume ratio (0.96 to 1.02). 2021 behaves likewise (41.1\% to 42.7\%, ratio 1.06 to 1.08). We did not repeat the leave-one-out test on the extended set.
+
+\paragraph{GPS matching.} GPS fixes with engine on and speed of at least 5~km/h were matched to the nearest link within 20~m whose bearing agrees with the heading within 30$^\circ$. Off-peak speeds are for weekdays, 10:00--16:00. The fallback to the shortest-distance path described in Section~\ref{sec:routing} is rare: 51 next-node decisions in one of the eight simulations, none in the others.
+
+\paragraph{Splits, profiles and bootstrap.} The detector split uses seed 20261028. In the comparison of hourly profiles we exclude links with zero simulated or GPS total and keep only links whose geometry is identical in the graph used for map matching; the mean detector profile is the mean normalized profile of the detector directions complete on all days of the subset. Comparisons between route choices use 2,000 paired bootstrap resamples of detectors (seed 20261029; 5,000 in Table~\ref{tab:routing_volumes}, on all complete detectors). Intervals of the predictors without simulation use 2,000 resamples (seed 20261041). The depth of the correction is selected with seed 20261033, and the effect of the correction on GPS links is summarized by the minimum number of links between a link and any detector link.
+
+\paragraph{More OD relations.} These tests were made without province factors and not repeated with them. On the calibration detectors, $N=100$ raises the Spearman correlation from 0.669 to 0.726 (difference interval $[0.017, 0.104]$), but dispersion goes from 0.215 to 0.232 ($[-0.003, 0.035]$), so it does not beat the model; it was not adopted and the 2021 detectors were not used. The result is hard to interpret, because the share of agents with a random end falls as $N$ grows, which does not separate the information in the relations from the amount of random traffic. We ranked the municipalities of the region by trips in and out; relations among the top $N$ keep both ends, and the other classes follow the same definitions as in the model. Treating activity with no identified destination as an error in the tables, we dropped it and multiplied the remaining classes so that the number of agents is unchanged. The ranking has no sharp cutoff in the useful range (cumulative activity 73\%, 85\% and 92\% at $N=100$, 150 and 200). For each $N$ a multiplier of $k$ (1.0, 1.15 or 1.3) is chosen per day type by the same criterion as $k$, and the selected $N$ is the smallest whose dispersion is not significantly above the lowest. It beats the model if it has lower dispersion, or a higher Spearman correlation with dispersion not higher. $N=150$ gives a Spearman correlation of 0.749 and a dispersion of 0.247, and $N=200$ gives 0.743 and 0.276, both with the multiplier at the edge of the grid; $N=100$ is selected at multiplier 1.15. If that activity is instead kept as trips with a random destination, without retuning $k$, $N=347$ gives a Spearman correlation of 0.745 and a dispersion of 0.204 (intervals $[0.015, 0.141]$ and $[-0.037, 0.011]$). The share of agents with a random end on a Monday falls from 79\% in the model to 49\% at $N=100$ and 11\% at $N=347$, both without that activity.
+
+\paragraph{Value of the OD relations, further results.} Before the province factors the relations met their rule in no comparison: without them the Spearman correlation with detectors was lower by 0.02--0.05, with intervals that include zero, and dispersion was lower by 0.02--0.04, with intervals that exclude zero. Across the variants without relations, with more relations or with shortest-distance routing, also before the factors, the error of a detector correlates at 0.79--0.94 with that of the reference model. The simulations with and without relations are very alike. Before the province factors, across the 3,803 links with traffic, their daily volumes have a Spearman correlation of 0.99 and differ by a median factor of 1.2.
+
+\paragraph{Direction of travel.} For each detector we computed the correlation over the 24 hours between the observed and the simulated difference of the two directions. After seeing this measure on the calibration half, and before reading the test half, we fixed a rule: the OD relations carry directional information if, on the test half, the 95\% interval of the difference in median correlation between $N=100$ and the model lies above zero. The test is exploratory, changes no setting and was made without province factors. The gain with $N=100$ on the calibration detectors (0.12) does not hold on the test half (0.05 against 0.04, difference $[-0.03, 0.08]$), so the rule is not met. An error in the mapping between detector and link directions, which we could not check independently, would produce the same weak signal. On the calibration detectors, volumes by direction have a dispersion of 0.239 against 0.215 for the two directions summed, so most of the error lies at the level of the road. The observed daily split is close to even (standard deviation of the share of one direction 0.017), and the simulated split is off by a median of 5 percentage points. The median correlation of hourly differences is 0.00 in the model and $-0.02$ without OD relations; with $N=100$ the calibration difference from the model is $[0.04, 0.16]$. The bootstrap uses seed 20261046. Detector shares and medians are computed over the rows of the two simulated day types.
+
+\end{document}
