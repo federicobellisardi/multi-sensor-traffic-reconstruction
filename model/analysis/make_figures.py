@@ -242,7 +242,8 @@ def fig8():
     by["road"] = B.CLS.reindex(B.BAR.reindex(by.coil).values).values
     col = {"2020": "#1F7F8C", "2021": "#C8693F"}
     style = dict(patch_artist=True, widths=0.32, flierprops=dict(marker="o", ms=2.5, mfc="#444444", mec="#444444", mew=0, alpha=0.7), medianprops=dict(color="k", lw=1.2), whiskerprops=dict(lw=0.7), capprops=dict(lw=0.7), boxprops=dict(lw=0.6))
-    fig, b = plt.subplots(figsize=(5.6, 3.4), constrained_layout=True)
+    fig, b = plt.subplots(figsize=(170 / 25.4, 3.6), constrained_layout=True)
+    BOXED = ("primary", "secondary")
     out = {}
     for y in ("2020", "2021"):
         z = by[by.year == y]
@@ -250,18 +251,31 @@ def fig8():
     classes = [c for c in ("trunk", "primary", "secondary", "tertiary") if c in set(by.road)]
     z = by[by.ratio > 0]
     out["zero_simulated"] = int((by.ratio <= 0).sum())
+    out["both_years"] = int(z[z.year == "2020"].coil.isin(z[z.year == "2021"].coil).sum())
+    out["by_class"] = {}
+    rng = np.random.default_rng(20261102)
     for i, c in enumerate(classes):
         for j, y in enumerate(("2020", "2021")):
-            v = z[(z.road == c) & (z.year == y)].ratio
-            p = b.boxplot([v], positions=[i + (j - 0.5) * 0.4], **style)
-            p["boxes"][0].set(facecolor=col[y], alpha=0.8)
-            b.text(i + (j - 0.5) * 0.4, 0.14, str(len(v)), ha="center", fontsize=7)
+            v = z[(z.road == c) & (z.year == y)].ratio.values
+            x = i + (j - 0.5) * 0.4
+            if c in BOXED:
+                p = b.boxplot([v], positions=[x], **style)
+                p["boxes"][0].set(facecolor=col[y], alpha=0.35)
+            b.scatter(x + rng.uniform(-0.09, 0.09, len(v)), v, s=7, color=col[y], alpha=0.75, linewidths=0, zorder=3)
+            med = float(np.median(v))
+            res = {"n": len(v), "median": med}
+            if len(v) >= 20:  # a bootstrap of the median means little on few detectors
+                res["ci95"] = [float(q) for q in np.percentile(np.median(rng.choice(v, (5000, len(v))), axis=1), [2.5, 97.5])]
+                b.plot([x + 0.2] * 2, res["ci95"], color=col[y], lw=1.4, zorder=4)
+            b.plot([x - 0.14, x + 0.14], [med, med], color="k", lw=1.2, zorder=5)
+            out["by_class"][f"{c}_{y}"] = res
+            b.text(x, 0.14, str(len(v)), ha="center", fontsize=7)
     b.axhline(1, color="k", lw=0.8, ls="--")
     for v in (0.5, 2):
         b.axhline(v, color="k", lw=0.5, ls=":")
-    b.set(yscale="log", ylim=(0.12, 12), xticks=range(len(classes)), xticklabels=classes, ylabel="Simulated / observed daily volume", title="Volume ratio by road class, raw simulation")
+    b.set(yscale="log", ylim=(0.12, 12), xticks=range(len(classes)), xticklabels=classes, ylabel="Simulated / observed daily volume")
     b.set_yticks([0.25, 0.5, 1, 2, 4, 8], ["0.25", "0.5", "1", "2", "4", "8"])
-    b.legend(handles=[plt.Rectangle((0, 0), 1, 1, color=col[y], alpha=0.8, label=y) for y in col], frameon=False, loc="upper right")
+    b.legend(handles=[plt.Line2D([], [], marker="o", ls="", color=col[y], label=y) for y in col], frameon=False, loc="upper right")
     save(fig, "fig8_distributions")
     return out
 

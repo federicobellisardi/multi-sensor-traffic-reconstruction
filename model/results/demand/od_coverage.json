@@ -59,9 +59,9 @@
    "share_relations_kept": 0.061729996109454024
   },
   "agents_k1": {
-   "rnd_dest": 280304,
-   "src_rnd": 278064,
-   "rnd_rnd": 456248,
+   "rnd_dest": 269096,
+   "src_rnd": 266952,
+   "rnd_rnd": 415036,
    "scr_dest": 356332,
    "scr_dest_prov": 67960
   }
@@ -126,9 +126,9 @@
    "share_relations_kept": 0.051258685499487415
   },
   "agents_k1": {
-   "rnd_dest": 262516,
-   "src_rnd": 261656,
-   "rnd_rnd": 441852,
+   "rnd_dest": 249752,
+   "src_rnd": 249152,
+   "rnd_rnd": 398732,
    "scr_dest": 323660,
    "scr_dest_prov": 73368
   }

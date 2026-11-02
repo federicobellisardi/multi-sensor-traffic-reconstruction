@@ -133,7 +133,7 @@ def v6_config(day, variant="V6_gps_usage_classweights", sources=None, basename=N
 def run(cfg, basename):
     if NO_CODE and set(cfg["sources"]) == {"LOCALS"}:
         # runs with only the LOCALS source end with a segmentation fault under long output paths: short directory, linked
-        short = RUNS.parent / f"nr_{RUNS.name[-1]}" / basename.parent.name
+        short = RUNS.parent / f"nr_{RUNS.name.removeprefix('sim_runs_')}" / basename.parent.name  # the whole suffix: nocode2 and v2 must not share a directory
         short.mkdir(parents=True, exist_ok=True)
         basename.parent.parent.mkdir(parents=True, exist_ok=True)
         try:

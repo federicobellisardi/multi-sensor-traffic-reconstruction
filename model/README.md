@@ -16,7 +16,7 @@ Compile, from `manuscript/`: `latexmk -pdf main.tex` and `latexmk -pdf -jobname=
 
 ## Final configuration
 
-Demand without the destination code 000000000; `k` = 1.4 (weekdays), 1.2 (weekends); radius 25 km; departures 45 min earlier; two rounds of province factors; alpha = 0.5, alpha_s = 0.25; correction depth 3. The settings are in `hpc/config.sh`.
+Demand without the destination code 000000000; model v2, with the relations of neighbouring provinces counted once (`NO_PROVINCE_COPY=1`); `k` = 1.5 (weekdays), 1.3 (weekends); radius 25 km; departures 45 min earlier; two rounds of province factors; alpha = 0.5, alpha_s = 0.25; correction depth 3. The settings are in `hpc/config.sh`.
 
 ## Where each figure and table comes from
 
@@ -38,3 +38,23 @@ Scripts are in `analysis/`; run them with `bash hpc/run_script.sh SCRIPT.py`. Fi
 | Diagnostics of single roads, route weights by link | `road_error_diagnosis.py`, `link_weight_test.py` | `experiments/road_error_diagnosis.json`, `experiments/link_weight_test.json` |
 | 2021 without calibration detectors | `independent_2021.py` | `experiments/independent_2021.json` |
 | Cost-weight grid of the SI | fixed table, from the first pass | `experiments/cost_grid_first_pass.json` |
+
+## Scripts by stage
+
+`analysis/` stays a flat folder, because the scripts import each other and `hpc/` calls them by name.
+
+| Stage | Scripts |
+|---|---|
+| Inputs | `carto_geojson.py`, `osm_road_class.py`, `build_coils_table.py`, `build_node_scores.py`, `gps_link_speeds.py`, `od_clock_check.py` |
+| OD and demand | `build_od_configs.py`, `od_matrix.py`, `remove_od_code.py`, `od_province_duplication.py`, `od_coverage.py` |
+| Calibration | `calibrate_demand.py`, `demand_scaling.py`, `demand_scan_eval.py`, `radius_scan.py`, `departure_shift_test.py`, `province_demand.py`, `k_choice_figure.py` |
+| Route choice and GPS | `routing_variants.py`, `routing_grid.py`, `compare_routing.py`, `gps_fc.py`, `gps_validation_split.py`, `link_weight_test.py` |
+| Validation | `frozen_validation.py`, `volume_validation.py`, `volume_check.py`, `independent_2021.py`, `validation_tests.py`, `detector_baselines.py`, `delay_quarter.py` |
+| Local correction | `reconstruct_and_validate.py`, `correction_fixed.py`, `depth_selection.py`, `distance_to_detector.py`, `loo_by_daytype.py`, `routing_correction_effect.py` |
+| Single-road error | `single_road_error.py`, `road_error_diagnosis.py`, `detector_placement.py`, `direction_diagnosis.py` |
+| Value of the OD | `source_value.py`, `od_factor_decomposition.py`, `od_pairing.py`, `od_pairing_d2.py`, `od_winter2023.py` |
+| Final runs | `final_stage.py`, `final_experiments.py`, `final_experiments_eval.py` |
+| Figures and tables | `make_figures.py`, `make_input_figures.py`, `make_supp_tables.py`, `results_figures.py` |
+| Bibliography | `verify_references.py` |
+
+Test T4 and its numbers on Forlì--Cesena are in `experiments/gps_fc.json`. `corrected/validation_tests.json` holds the same test outside the province, which the paper does not report.

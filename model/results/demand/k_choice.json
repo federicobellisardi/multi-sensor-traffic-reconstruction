@@ -1,6 +1,6 @@
 {
- "k": 1.4,
- "k_weekend": 1.2,
+ "k": 1.5,
+ "k_weekend": 1.3,
  "criterion": "minimum per day type of the mean squared log10(sim/obs) on the calibration half, without code 000000000, alpha_s 0.25; radius_scan.py refine",
  "coils_calibration": 100,
  "coils_test": 97,
