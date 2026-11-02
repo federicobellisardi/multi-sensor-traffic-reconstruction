@@ -52,7 +52,7 @@ Scripts are in `analysis/`; run them with `bash hpc/run_script.sh SCRIPT.py`. Fi
 | Validation | `frozen_validation.py`, `volume_validation.py`, `volume_check.py`, `independent_2021.py`, `validation_tests.py`, `detector_baselines.py`, `delay_quarter.py` |
 | Local correction | `reconstruct_and_validate.py`, `correction_fixed.py`, `depth_selection.py`, `distance_to_detector.py`, `loo_by_daytype.py`, `routing_correction_effect.py` |
 | Single-road error | `single_road_error.py`, `road_error_diagnosis.py`, `detector_placement.py`, `direction_diagnosis.py` |
-| Value of the OD | `source_value.py`, `od_factor_decomposition.py`, `od_pairing.py`, `od_pairing_d2.py`, `od_winter2023.py` |
+| Value of the OD | `source_value.py`, `od_factor_decomposition.py`, `od_pairing.py`, `od_pairing_d2.py`, `od_winter2023.py`, `od_tail_diagnostic.py`, `od_routing.py`, `od_length.py`, `od_length_factors.py`, `od_trip_length.py` |
 | Final runs | `final_stage.py`, `final_experiments.py`, `final_experiments_eval.py` |
 | Figures and tables | `make_figures.py`, `make_input_figures.py`, `make_supp_tables.py`, `results_figures.py` |
 | Bibliography | `verify_references.py` |

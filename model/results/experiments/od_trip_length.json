@@ -1,0 +1,57 @@
+{
+ "od_between_municipalities": {
+  "trips": 1186868.8333333335,
+  "mean_km": 12.042419590872184,
+  "median_km": 10.387565882897162,
+  "q90_km": 19.441930142501477,
+  "share_below_25km": 0.9649520383676207
+ },
+ "model": {
+  "km_by_class": {
+   "rnd_dest": 17150672.368440002,
+   "rnd_rnd": 28021909.189284,
+   "scr_dest": 12696891.371244,
+   "scr_dest_prov": 2878994.307168,
+   "src_rnd": 18175565.39868
+  },
+  "agents_by_class": {
+   "rnd_dest": 405004,
+   "src_rnd": 401484,
+   "rnd_rnd": 622556,
+   "scr_dest": 464428,
+   "scr_dest_prov": 99264
+  },
+  "km_per_agent_by_class": {
+   "rnd_dest": 42.346920940138865,
+   "rnd_rnd": 45.011065975243994,
+   "scr_dest": 27.338772363518135,
+   "scr_dest_prov": 29.003408155705994,
+   "src_rnd": 45.27095824162358
+  },
+  "km_per_agent": 39.60586481842853
+ },
+ "N347": {
+  "km_by_class": {
+   "rnd_dest": 902313.086076,
+   "rnd_rnd": 2330346.8634120002,
+   "scr_dest": 45088126.361963995,
+   "scr_dest_prov": 2869842.66858,
+   "src_rnd": 839413.38906
+  },
+  "agents_by_class": {
+   "scr_dest_prov": 99264,
+   "scr_dest": 1645548,
+   "src_rnd": 18837,
+   "rnd_dest": 19070,
+   "rnd_rnd": 51440
+  },
+  "km_per_agent_by_class": {
+   "rnd_dest": 47.31584090592554,
+   "rnd_rnd": 45.30223295902022,
+   "scr_dest": 27.40006755315797,
+   "scr_dest_prov": 28.911213215062862,
+   "src_rnd": 44.56194665074056
+  },
+  "km_per_agent": 28.36724753366093
+ }
+}

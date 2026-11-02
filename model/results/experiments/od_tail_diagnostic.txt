@@ -1,0 +1,69 @@
+day       set            arm    sp    sd  iqr_sd   med    f2   low  high  ratio
+ 10  all_2021          model 0.627 0.184   0.199 0.144 0.907 0.040 0.053  1.110
+ 10  all_2021      noOD_fact 0.557 0.163   0.157 0.117 0.907 0.040 0.053  1.040
+ 10  all_2021    noOD_nofact 0.528 0.174   0.195 0.122 0.907 0.000 0.093  1.136
+ 10  all_2021 N50_pairs_real 0.638 0.186   0.194 0.124 0.920 0.027 0.053  1.134
+ 10  all_2021           N347 0.686 0.327   0.262 0.209 0.680 0.253 0.067  0.923
+ 10 held_out_          model 0.654 0.219   0.201 0.152 0.827 0.099 0.074  1.022
+ 10 held_out_      noOD_fact 0.630 0.198   0.212 0.139 0.889 0.049 0.062  1.040
+ 10 held_out_    noOD_nofact 0.571 0.211   0.206 0.143 0.864 0.037 0.099  1.109
+ 10 held_out_ N50_pairs_real 0.675 0.217   0.201 0.148 0.840 0.086 0.074  1.046
+ 10 held_out_           N347 0.657 0.428   0.284 0.246 0.642 0.333 0.025  0.813
+ 15  all_2021          model 0.625 0.212   0.207 0.142 0.858 0.075 0.067  1.034
+ 15  all_2021      noOD_fact 0.591 0.191   0.174 0.117 0.867 0.058 0.075  0.995
+ 15  all_2021    noOD_nofact 0.577 0.203   0.207 0.134 0.825 0.067 0.108  1.094
+ 15  all_2021 N50_pairs_real 0.638 0.214   0.200 0.136 0.867 0.058 0.075  1.073
+ 15  all_2021           N347 0.656 0.414   0.284 0.226 0.650 0.308 0.042  0.825
+ 15 held_out_          model 0.660 0.259   0.218 0.148 0.815 0.141 0.043  1.013
+ 15 held_out_      noOD_fact 0.625 0.222   0.230 0.151 0.859 0.054 0.087  1.040
+ 15 held_out_    noOD_nofact 0.602 0.229   0.220 0.147 0.793 0.087 0.120  1.105
+ 15 held_out_ N50_pairs_real 0.675 0.264   0.206 0.140 0.837 0.120 0.043  1.048
+ 15 held_out_           N347 0.654 0.469   0.317 0.256 0.598 0.359 0.043  0.768
+
+model minus noOD_fact: robust spread and Spearman, 95% bootstrap
+10 all_2021 75 sd [-0.002  0.046] robust [-0.012  0.098] median [-0.003  0.072] spearman [-0.008  0.151]
+10 held_out_ 81 sd [0.003 0.037] robust [-0.037  0.069] median [-0.026  0.047] spearman [-0.029  0.073]
+15 all_2021 120 sd [0.002 0.041] robust [-0.002  0.089] median [0.001 0.056] spearman [-0.024  0.096]
+15 held_out_ 92 sd [0.009 0.063] robust [-0.059  0.069] median [-0.044  0.044] spearman [-0.015  0.084]
+
+median log10(sim/obs) by class, 2020 held out Monday
+              n  model  noOD_fact  noOD_nofact  N50_pairs_real   N347
+cls                                                                  
+primary    44.0  0.076      0.020        0.080           0.088 -0.070
+secondary  30.0 -0.126     -0.040       -0.027          -0.132 -0.284
+tertiary    2.0 -0.182     -0.137       -0.109          -0.139 -0.162
+trunk       5.0 -0.210     -0.144        0.021          -0.189 -0.383
+
+by observed volume tercile, all rows: spread of log10(sim/obs)
+      model  noOD_fact  noOD_nofact  N50_pairs_real   N347
+ter                                                       
+low   0.255      0.221        0.229           0.257  0.483
+mid   0.200      0.171        0.188           0.211  0.384
+high  0.204      0.166        0.172           0.197  0.344
+      model  noOD_fact  noOD_nofact  N50_pairs_real   N347
+ter                                                       
+low   0.039      0.067        0.114           0.058 -0.227
+mid  -0.037     -0.011        0.021          -0.021 -0.225
+high  0.002     -0.034       -0.015           0.020 -0.051
+
+share of rows where model abs error is smaller than noOD_fact 0.448 median diff 0.01
+largest gains for OD
+         ds       obs        m        n        cls
+coil                                             
+295  -0.16   2918.00   5211.0   7548.0  secondary
+352  -0.16  25445.50  15892.5  11106.0  secondary
+285  -0.15   5596.72   6264.0   8812.0  secondary
+616  -0.15   4233.70   4177.0   5998.0  secondary
+446  -0.14   7714.61   6172.0   4442.5  secondary
+613  -0.14   5362.50   9618.0  13319.0  secondary
+largest losses for OD
+         ds       obs        m        n        cls
+coil                                             
+411   0.23   3802.50   1637.0   2765.0   tertiary
+222   0.24  14443.42   6036.0  10432.5  secondary
+53    0.24  11486.50   4130.5   7185.0    primary
+343   0.24   6346.00   1845.0   3216.0    primary
+140   0.25  23327.00  48595.0  27017.5    primary
+394   0.32   3700.00   1655.0   3486.0    primary
+7     0.32   6871.00   1344.0   2831.0    primary
+116   0.38   6267.00    532.0   1282.0    primary
