@@ -3,7 +3,7 @@
 
 fig3_reconstruction : (a) coil 282 withheld from the correction, hourly counts, 10 Feb 2020; (b) daily link flows
 fig4_gps            : (a,b) GPS-matched links in 2020 and 2021; (c) GPS-to-simulation ratio
-fig5_validation     : hourly-share MAE distributions (all days; weekday/weekend)
+fig5_validation     : hourly-share MAE distributions, Forli-Cesena links, all days; fig5b_daytypes: weekdays and weekends
 fig6_diagnostics    : pooled hourly profiles; effect of the correction by distance from the nearest detector
 fig7_volumes        : daily volumes at withheld detectors
 
@@ -43,6 +43,13 @@ def save(fig, name):
     for ext in ("pdf", "png"):
         fig.savefig(FIG / f"{name}.{ext}", bbox_inches="tight", dpi=300)
     plt.close(fig)
+
+
+def fc_metrics(path):
+    """Link metrics restricted to the GPS links of Forli-Cesena."""
+    import gps_validation_split as G
+    m = pd.read_csv(path)
+    return m[m.cid.isin(G.fc_links())]
 
 
 def lines(gdf):
@@ -89,9 +96,9 @@ def fig3(carto):
     gs = fig.add_gridspec(1, 2, width_ratios=[1, 1.25])
     ax = fig.add_subplot(gs[0])
     ax.plot(hrs, obs.values, "o-", ms=3, color=C["gps"], lw=1.2, label=f"Detector {coil}, observed ({obs.sum():,.0f})")
-    ax.plot(hrs, rec.values, "s-", ms=3, color=C["assim"], lw=1.2, label=f"Reconstruction, detector withheld ({rec.sum():,.0f})")
+    ax.plot(hrs, rec.values, "s-", ms=3, color=C["assim"], lw=1.2, label=f"Reconstruction, detector left out ({rec.sum():,.0f})")
     ax.set(xlim=(-0.5, 23.5), xticks=range(0, 24, 3), xlabel="Hour (local time, interval start), 10 February 2020",
-           ylabel="Vehicles per hour, both directions", title="(a) Best case: prediction at a withheld detector")
+           ylabel="Vehicles per hour, both directions", title="(a) Best case: prediction at a left-out detector")
     ax.set_ylim(0, 1.25 * max(obs.max(), rec.max()))
     ax.legend(fontsize=8, frameon=False, loc="upper left")
     ax2 = fig.add_subplot(gs[1])
@@ -121,19 +128,19 @@ def fig4(carto):
     base = lines(carto)
     out = {}
     for j, year in enumerate([2020, 2021]):
-        m = pd.read_csv(PRIV / f"corrected_link_metrics_{year}_all.csv")
+        m = fc_metrics(PRIV / f"corrected_link_metrics_{year}_all.csv")
         ax = fig.add_subplot(gs[j])
         ax.add_collection(LineCollection(base, colors="#9e9e9e", linewidths=0.4, zorder=2))
         sel = carto[carto.poly_cid.isin(m.cid)]
         ax.add_collection(LineCollection(lines(sel), colors=C["assim"], linewidths=1.0, zorder=3))
         ax.autoscale(); ax.set_aspect("equal"); ax.axis("off")
         basemap(ax)
-        ax.set_title(f"({chr(97 + j)}) GPS-matched links, {year} ({len(m)})")
+        ax.set_title(f"({chr(97 + j)}) GPS links of Forlì–Cesena, {year} ({len(m)})")
         out[year] = dict(links=len(m), median_ratio=float((m.gps_total / m.sim_total).median()))
     ax = fig.add_subplot(gs[2])
     bins = np.linspace(-5, 0, 41)
     for year, col in [(2020, C["assim"]), (2021, C["raw"])]:
-        m = pd.read_csv(PRIV / f"corrected_link_metrics_{year}_all.csv")
+        m = fc_metrics(PRIV / f"corrected_link_metrics_{year}_all.csv")
         ax.hist(np.log10(m.gps_total / m.sim_total), bins=bins, histtype="step", lw=1.4, color=col, label=str(year))
     ax.set(xlabel=r"$\log_{10}\eta_i$ (GPS probes / simulated vehicles)", ylabel="Links", title="(c) Probe-to-simulation ratio")
     ax.legend(frameon=False)
@@ -147,25 +154,27 @@ def cdf(ax, v, **kw):
 
 
 def fig5():
-    fig, axes = plt.subplots(2, 2, figsize=(10, 7), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), constrained_layout=True)
+    fig2, axes2 = plt.subplots(1, 2, figsize=(10, 3.6), constrained_layout=True)
     for j, year in enumerate([2020, 2021]):
-        m = pd.read_csv(PRIV / f"corrected_link_metrics_{year}_all.csv")
-        ax = axes[0, j]
+        m = fc_metrics(PRIV / f"corrected_link_metrics_{year}_all.csv")
+        ax = axes[j]
         for col, lab, c, ls in [("mae_pp", "Reconstruction", C["assim"], "-"),
                                 ("mae_pp_od", "OD demand profile", C["od"], ":"), ("mae_pp_mts", "Mean detector profile", C["mts"], "--")]:
             cdf(ax, m[col], color=c, ls=ls, label=lab)
         ax.set(xlim=(0, 6), xlabel="Hourly-share MAE (percentage points)", ylabel="Fraction of links",
                title=f"({chr(97 + j)}) {year}, all days, {len(m)} links")
         ax.legend(fontsize=8, frameon=False)
-        ax = axes[1, j]
+        ax = axes2[j]
         for kind, c in [("weekday", C["assim"]), ("weekend", C["raw"])]:
-            z = pd.read_csv(PRIV / f"corrected_link_metrics_{year}_{kind}.csv")
+            z = fc_metrics(PRIV / f"corrected_link_metrics_{year}_{kind}.csv")
             cdf(ax, z.mae_pp, color=c, label=f"{kind.capitalize()}, reconstruction")
             cdf(ax, z.mae_pp_mts, color=c, ls="--", lw=0.9, label=f"{kind.capitalize()}, detector profile")
         ax.set(xlim=(0, 6), xlabel="Hourly-share MAE (percentage points)", ylabel="Fraction of links",
-               title=f"({chr(99 + j)}) {year}, weekdays and weekends")
+               title=f"({chr(97 + j)}) {year}, weekdays and weekends")
         ax.legend(fontsize=8, frameon=False)
     save(fig, "fig5_validation")
+    save(fig2, "fig5b_daytypes")
 
 
 def fig6():
@@ -216,14 +225,14 @@ def fig7():
         ax.plot(lim, [l * 2 for l in lim], "k:", lw=0.6)
         rho = by.rec.corr(by.obs, method="spearman")
         ax.set(xscale="log", yscale="log", xlim=lim, ylim=[lim[0] / 10, lim[1]],
-               xlabel="Observed daily vehicles", ylabel="Reconstructed daily vehicles, detector withheld",
+               xlabel="Observed daily vehicles", ylabel="Reconstructed daily vehicles, detector left out",
                title=f"({chr(97 + j)}) {year}, {len(by)} detectors, $\\rho_s$ = {rho:.2f}")
         ax.legend(fontsize=8, frameon=False, loc="upper left")
     save(fig, "fig7_volumes")
 
 
 def fig8():
-    """Distributions over all detectors: hourly error before and after the correction, volume ratio by road class."""
+    """Volume ratio by road class over all detectors; also returns the numbers of the hourly error before and after the correction."""
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import detector_baselines as B
     d = pd.read_csv(RES / "loo_detectors.csv").dropna(subset=["raw_abs", "loo_abs"])
@@ -233,17 +242,11 @@ def fig8():
     by["road"] = B.CLS.reindex(B.BAR.reindex(by.coil).values).values
     col = {"2020": "#1F7F8C", "2021": "#C8693F"}
     style = dict(patch_artist=True, widths=0.32, flierprops=dict(marker="o", ms=2.5, mfc="#444444", mec="#444444", mew=0, alpha=0.7), medianprops=dict(color="k", lw=1.2), whiskerprops=dict(lw=0.7), capprops=dict(lw=0.7), boxprops=dict(lw=0.6))
-    fig, (a, b) = plt.subplots(1, 2, figsize=(10, 3.8), constrained_layout=True, width_ratios=[1, 1.3])
-    pos, out = 0, {}
+    fig, b = plt.subplots(figsize=(5.6, 3.4), constrained_layout=True)
+    out = {}
     for y in ("2020", "2021"):
         z = by[by.year == y]
-        p = a.boxplot([z.err_raw, z.err_loo], positions=[pos, pos + 0.45], **style)
-        for box, alpha in zip(p["boxes"], (0.35, 0.9)):
-            box.set(facecolor=col[y], alpha=alpha)
-        a.text(pos + 0.22, -0.13, f"{y}, {len(z)} detectors", ha="center", transform=a.get_xaxis_transform(), fontsize=8)
         out[y] = dict(detectors=int(len(z)), median_raw=float(z.err_raw.median()), median_corrected=float(z.err_loo.median()), iqr_corrected=[float(z.err_loo.quantile(q)) for q in (.25, .75)])
-        pos += 1.2
-    a.set(xticks=[0, 0.45, 1.2, 1.65], xticklabels=["raw", "corrected"] * 2, ylabel="Hourly error at withheld detector (%)", ylim=(0, by[["err_raw", "err_loo"]].max().max() * 1.05), title="(a) Error by detector")
     classes = [c for c in ("trunk", "primary", "secondary", "tertiary") if c in set(by.road)]
     z = by[by.ratio > 0]
     out["zero_simulated"] = int((by.ratio <= 0).sum())
@@ -256,7 +259,7 @@ def fig8():
     b.axhline(1, color="k", lw=0.8, ls="--")
     for v in (0.5, 2):
         b.axhline(v, color="k", lw=0.5, ls=":")
-    b.set(yscale="log", ylim=(0.12, 12), xticks=range(len(classes)), xticklabels=classes, ylabel="Simulated / observed daily volume", title="(b) Volume ratio by road class, raw simulation")
+    b.set(yscale="log", ylim=(0.12, 12), xticks=range(len(classes)), xticklabels=classes, ylabel="Simulated / observed daily volume", title="Volume ratio by road class, raw simulation")
     b.set_yticks([0.25, 0.5, 1, 2, 4, 8], ["0.25", "0.5", "1", "2", "4", "8"])
     b.legend(handles=[plt.Rectangle((0, 0), 1, 1, color=col[y], alpha=0.8, label=y) for y in col], frameon=False, loc="upper right")
     save(fig, "fig8_distributions")

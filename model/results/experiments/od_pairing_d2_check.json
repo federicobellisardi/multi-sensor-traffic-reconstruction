@@ -1,0 +1,243 @@
+{
+ "2020-02-10_r25_0": {
+  "agents": 1585338,
+  "share_moved": 0.5146858272494572,
+  "sources": 8764,
+  "real_sources": 6216,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 12.043628845069518,
+  "mean_km_null": 12.07406803469138,
+  "mean_gap": 0.0025274101363828017,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "medium": 1585338
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-10_r25_1": {
+  "agents": 1585338,
+  "share_moved": 0.5149204775259282,
+  "sources": 8789,
+  "real_sources": 6216,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 12.043628845069518,
+  "mean_km_null": 12.074272819347659,
+  "mean_gap": 0.002544413703905013,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "medium": 1585338
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-10_r25_2": {
+  "agents": 1585338,
+  "share_moved": 0.515321023024743,
+  "sources": 8812,
+  "real_sources": 6216,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 12.043628845069518,
+  "mean_km_null": 12.074765544566251,
+  "mean_gap": 0.0025853253946364063,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "medium": 1585338
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-10_r10_0": {
+  "agents": 1585338,
+  "share_moved": 0.5146858272494572,
+  "sources": 8764,
+  "real_sources": 6216,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 12.043628845069518,
+  "mean_km_null": 12.07406803469138,
+  "mean_gap": 0.0025274101363828017,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "small": 1585338
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-10_r10_1": {
+  "agents": 1585338,
+  "share_moved": 0.5149204775259282,
+  "sources": 8789,
+  "real_sources": 6216,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 12.043628845069518,
+  "mean_km_null": 12.074272819347659,
+  "mean_gap": 0.002544413703905013,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "small": 1585338
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-10_r10_2": {
+  "agents": 1585338,
+  "share_moved": 0.515321023024743,
+  "sources": 8812,
+  "real_sources": 6216,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 12.043628845069518,
+  "mean_km_null": 12.074765544566251,
+  "mean_gap": 0.0025853253946364063,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "small": 1585338
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-15_r25_0": {
+  "agents": 1271997,
+  "share_moved": 0.5168038918330782,
+  "sources": 8907,
+  "real_sources": 6627,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 11.923249924014726,
+  "mean_km_null": 11.953909521849098,
+  "mean_gap": 0.002571412830374431,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "medium": 1271997
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-15_r25_1": {
+  "agents": 1271997,
+  "share_moved": 0.5170004331771223,
+  "sources": 8894,
+  "real_sources": 6627,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 11.923249924014726,
+  "mean_km_null": 11.954804793728723,
+  "mean_gap": 0.0026464990598278337,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "medium": 1271997
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-15_r25_2": {
+  "agents": 1271997,
+  "share_moved": 0.5160884813407579,
+  "sources": 8879,
+  "real_sources": 6627,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 11.923249924014726,
+  "mean_km_null": 11.954660271417202,
+  "mean_gap": 0.002634378009573668,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "medium": 1271997
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-15_r10_0": {
+  "agents": 1271997,
+  "share_moved": 0.5168038918330782,
+  "sources": 8907,
+  "real_sources": 6627,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 11.923249924014726,
+  "mean_km_null": 11.953909521849098,
+  "mean_gap": 0.002571412830374431,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "small": 1271997
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-15_r10_1": {
+  "agents": 1271997,
+  "share_moved": 0.5170004331771223,
+  "sources": 8894,
+  "real_sources": 6627,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 11.923249924014726,
+  "mean_km_null": 11.954804793728723,
+  "mean_gap": 0.0026464990598278337,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "small": 1271997
+  },
+  "G1": true,
+  "G2": true
+ },
+ "2020-02-15_r10_2": {
+  "agents": 1271997,
+  "share_moved": 0.5160884813407579,
+  "sources": 8879,
+  "real_sources": 6627,
+  "origins_identical": true,
+  "destinations_identical": true,
+  "distance_bins_identical_by_interval": true,
+  "mean_km_real": 11.923249924014726,
+  "mean_km_null": 11.954660271417202,
+  "mean_gap": 0.002634378009573668,
+  "self_pairs": 0,
+  "other_sources_identical": true,
+  "total_identical": true,
+  "agents_by_radius_key": {
+   "small": 1271997
+  },
+  "G1": true,
+  "G2": true
+ },
+ "passed": true
+}

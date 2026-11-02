@@ -22,13 +22,13 @@ import radius_scan as S  # noqa: E402
 from paths import ARTICLE  # noqa: E402
 
 N_BOOT, SEED = 2000, 20261047
-GRID = [0.7, 0.8, 0.9, 1.0, 1.1, 1.2]
-SELECTED = {"2020-02-10": 1.0, "2020-02-15": 0.8}
+GRID = S.FINE
+SELECTED = {d: D.k_of(d) for d in C.CAL_DAYS}
 STYLE = {"2020-02-10": ("#1F7F8C", "o", "Weekdays (Monday run)"), "2020-02-15": ("#C8693F", "s", "Weekends (Saturday run)")}
 
 
 def curve():
-    C.BASE = S.BASE / "r20"
+    C.BASE = S.BASE / f"r{int(D.CHERRY_RADIUS_KM)}"
     o, cols = C.load([f"k{k:.1f}" for k in GRID])
     rng = np.random.default_rng(SEED)
     out = {}

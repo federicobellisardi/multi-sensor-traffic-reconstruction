@@ -1,0 +1,291 @@
+{
+ "note": "Separates the OD relations from the province factors using runs that already exist; no new simulation.\n\nThe published comparison (source_value.py) removes the relations and, with them, the province factors. Here:\n  relations_without_factors : frozen model without factors - no relations without factors (the factors enter neither arm)\n  factors_with_relations    : model with factors - frozen model without factors (the relations are in both arms)\n  relations_and_factors     : model with factors - no relations with the same total (the published, confounded comparison)\nThere is no run with factors and no relations in which the factors keep their spatial pattern, because they act on sources\nwith a location, so the interaction of the two cannot be estimated.",
+ "2020-02-10": {
+  "held_out_2020": {
+   "relations_without_factors": {
+    "n": 82,
+    "spearman_a": 0.6011068725226548,
+    "spearman_b": 0.5677887702571804,
+    "spearman_diff": 0.03331810226547438,
+    "spearman_diff_ci95": [
+     -0.02520825069071013,
+     0.088193656927013
+    ],
+    "sd_a": 0.2400045182815901,
+    "sd_b": 0.21018445801681507,
+    "sd_diff": 0.029820060264775045,
+    "sd_diff_ci95": [
+     0.011900086197832721,
+     0.04828955174511944
+    ],
+    "median_abs_a": 0.17510079271717943,
+    "median_abs_b": 0.1341550963225135,
+    "median_abs_diff_ci95": [
+     -0.00035855654499428435,
+     0.0656352993225625
+    ]
+   },
+   "factors_with_relations": {
+    "n": 82,
+    "spearman_a": 0.6542048954626093,
+    "spearman_b": 0.6011068725226548,
+    "spearman_diff": 0.05309802293995447,
+    "spearman_diff_ci95": [
+     -0.00026463027538428245,
+     0.1147456789278351
+    ],
+    "sd_a": 0.2158881341223063,
+    "sd_b": 0.2400045182815901,
+    "sd_diff": -0.0241163841592838,
+    "sd_diff_ci95": [
+     -0.040713419994141214,
+     -0.008726796965475151
+    ],
+    "median_abs_a": 0.14831703967415796,
+    "median_abs_b": 0.17510079271717943,
+    "median_abs_diff_ci95": [
+     -0.06587326868816187,
+     -0.00025264732613326487
+    ]
+   },
+   "relations_and_factors": {
+    "n": 82,
+    "spearman_a": 0.6542048954626093,
+    "spearman_b": 0.5649807903701528,
+    "spearman_diff": 0.08922410509245648,
+    "spearman_diff_ci95": [
+     0.021821173550046327,
+     0.16188507188404552
+    ],
+    "sd_a": 0.2158881341223063,
+    "sd_b": 0.2115946464240357,
+    "sd_diff": 0.0042934876982706205,
+    "sd_diff_ci95": [
+     -0.01415624129703711,
+     0.022733082558241406
+    ],
+    "median_abs_a": 0.14831703967415796,
+    "median_abs_b": 0.140083839080634,
+    "median_abs_diff_ci95": [
+     -0.03147511410236014,
+     0.033661782129216666
+    ]
+   }
+  },
+  "all_2021": {
+   "relations_without_factors": {
+    "n": 76,
+    "spearman_a": 0.5977853725222146,
+    "spearman_b": 0.530416951469583,
+    "spearman_diff": 0.06736842105263163,
+    "spearman_diff_ci95": [
+     -0.026790784087321332,
+     0.1733419535178235
+    ],
+    "sd_a": 0.21097804612172372,
+    "sd_b": 0.17332576524066845,
+    "sd_diff": 0.03765228088105527,
+    "sd_diff_ci95": [
+     0.010059956303155156,
+     0.06629224664326233
+    ],
+    "median_abs_a": 0.15022097679089974,
+    "median_abs_b": 0.11499262290447171,
+    "median_abs_diff_ci95": [
+     -0.00115396138510368,
+     0.06674914370752058
+    ]
+   },
+   "factors_with_relations": {
+    "n": 76,
+    "spearman_a": 0.6228298017771702,
+    "spearman_b": 0.5977853725222146,
+    "spearman_diff": 0.025044429254955536,
+    "spearman_diff_ci95": [
+     -0.06180285613246438,
+     0.10946076641378562
+    ],
+    "sd_a": 0.1840457331898286,
+    "sd_b": 0.21097804612172372,
+    "sd_diff": -0.02693231293189513,
+    "sd_diff_ci95": [
+     -0.04339978761310608,
+     -0.009995246812681883
+    ],
+    "median_abs_a": 0.14497412618893776,
+    "median_abs_b": 0.15022097679089974,
+    "median_abs_diff_ci95": [
+     -0.043475735682780736,
+     0.022886005563687306
+    ]
+   },
+   "relations_and_factors": {
+    "n": 76,
+    "spearman_a": 0.6228298017771702,
+    "spearman_b": 0.5322488038277512,
+    "spearman_diff": 0.09058099794941898,
+    "spearman_diff_ci95": [
+     -0.0007112030214754706,
+     0.19470064232621156
+    ],
+    "sd_a": 0.1840457331898286,
+    "sd_b": 0.1735443689810166,
+    "sd_diff": 0.01050136420881198,
+    "sd_diff_ci95": [
+     -0.011852662812675184,
+     0.03328116050808173
+    ],
+    "median_abs_a": 0.14497412618893776,
+    "median_abs_b": 0.11832701170386342,
+    "median_abs_diff_ci95": [
+     -0.012594528960333362,
+     0.04545026224082474
+    ]
+   }
+  }
+ },
+ "2020-02-15": {
+  "held_out_2020": {
+   "relations_without_factors": {
+    "n": 93,
+    "spearman_a": 0.6285995643221628,
+    "spearman_b": 0.5882993643878129,
+    "spearman_diff": 0.040300199934349856,
+    "spearman_diff_ci95": [
+     -0.007389409795427716,
+     0.09404205534139085
+    ],
+    "sd_a": 0.2766015524862986,
+    "sd_b": 0.23005610269180196,
+    "sd_diff": 0.046545449794496624,
+    "sd_diff_ci95": [
+     0.018128747864671377,
+     0.07420885046220731
+    ],
+    "median_abs_a": 0.17941477322363614,
+    "median_abs_b": 0.15302861544491275,
+    "median_abs_diff_ci95": [
+     -0.001618008354559446,
+     0.06236683925921669
+    ]
+   },
+   "factors_with_relations": {
+    "n": 93,
+    "spearman_a": 0.6512040822416518,
+    "spearman_b": 0.6285995643221628,
+    "spearman_diff": 0.02260451791948903,
+    "spearman_diff_ci95": [
+     -0.024992824744432502,
+     0.07205860820745352
+    ],
+    "sd_a": 0.2575703986717024,
+    "sd_b": 0.2766015524862986,
+    "sd_diff": -0.01903115381459619,
+    "sd_diff_ci95": [
+     -0.03508692460807278,
+     -0.00527176800064338
+    ],
+    "median_abs_a": 0.1390575188547918,
+    "median_abs_b": 0.17941477322363614,
+    "median_abs_diff_ci95": [
+     -0.06611902998243949,
+     -0.007501839584178919
+    ]
+   },
+   "relations_and_factors": {
+    "n": 93,
+    "spearman_a": 0.6512040822416518,
+    "spearman_b": 0.5895676046671242,
+    "spearman_diff": 0.061636477574527615,
+    "spearman_diff_ci95": [
+     0.007088285720658663,
+     0.12146647316128187
+    ],
+    "sd_a": 0.2575703986717024,
+    "sd_b": 0.23087861550195404,
+    "sd_diff": 0.02669178316974835,
+    "sd_diff_ci95": [
+     -0.0023164087354167226,
+     0.05373726200014182
+    ],
+    "median_abs_a": 0.1390575188547918,
+    "median_abs_b": 0.15757836874059789,
+    "median_abs_diff_ci95": [
+     -0.04240384855308729,
+     0.0254089822876948
+    ]
+   }
+  },
+  "all_2021": {
+   "relations_without_factors": {
+    "n": 120,
+    "spearman_a": 0.6249183971109105,
+    "spearman_b": 0.57397141116034,
+    "spearman_diff": 0.050946985950570456,
+    "spearman_diff_ci95": [
+     -0.0063996469795458795,
+     0.11226396400477376
+    ],
+    "sd_a": 0.2365054171995163,
+    "sd_b": 0.20202667998450144,
+    "sd_diff": 0.03447873721501485,
+    "sd_diff_ci95": [
+     0.0149294382123205,
+     0.05496903969661891
+    ],
+    "median_abs_a": 0.18809977773000175,
+    "median_abs_b": 0.13119219389966497,
+    "median_abs_diff_ci95": [
+     0.006432395952884021,
+     0.08116700081626119
+    ]
+   },
+   "factors_with_relations": {
+    "n": 120,
+    "spearman_a": 0.6253420376415028,
+    "spearman_b": 0.6249183971109105,
+    "spearman_diff": 0.00042364053059229523,
+    "spearman_diff_ci95": [
+     -0.044233834577677135,
+     0.046921370776250804
+    ],
+    "sd_a": 0.21111765056621112,
+    "sd_b": 0.2365054171995163,
+    "sd_diff": -0.025387766633305164,
+    "sd_diff_ci95": [
+     -0.03958357020371358,
+     -0.012500951456110748
+    ],
+    "median_abs_a": 0.14348211017387147,
+    "median_abs_b": 0.18809977773000175,
+    "median_abs_diff_ci95": [
+     -0.07258121861953783,
+     -0.00035842639206324267
+    ]
+   },
+   "relations_and_factors": {
+    "n": 120,
+    "spearman_a": 0.6253420376415028,
+    "spearman_b": 0.5747527167741088,
+    "spearman_diff": 0.05058932086739398,
+    "spearman_diff_ci95": [
+     -0.006642184787379923,
+     0.1145028987454337
+    ],
+    "sd_a": 0.21111765056621112,
+    "sd_b": 0.20244153770426468,
+    "sd_diff": 0.008676112861946444,
+    "sd_diff_ci95": [
+     -0.007955027189283505,
+     0.02528782634479454
+    ],
+    "median_abs_a": 0.14348211017387147,
+    "median_abs_b": 0.1362053453487717,
+    "median_abs_diff_ci95": [
+     -0.019745369502560017,
+     0.041073039500466244
+    ]
+   }
+  }
+ }
+}

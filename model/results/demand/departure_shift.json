@@ -1,89 +1,23 @@
 {
- "shift_quarters": 3,
- "k": 1.2,
  "2020-02-10": {
   "detectors": 83,
-  "base": {
-   "pooled_hourly_error_pct": 45.88317562999222,
-   "median_error_pct": 39.493197200341875,
-   "sd_log10_daily": 0.23185989898356635,
-   "peak_am_pm": [
-    7.5,
-    8.75,
-    17.5,
-    18.75
-   ],
-   "share_21h_obs_sim": [
-    0.021464810616714097,
-    0.03956328902791848
-   ],
-   "remaining_best_shift_quarters": 3,
-   "oracle_level_error_pct": 22.266168133788682
-  },
-  "shift": {
-   "pooled_hourly_error_pct": 43.14917151830351,
-   "median_error_pct": 35.79609352267157,
-   "sd_log10_daily": 0.23316703406291855,
-   "peak_am_pm": [
-    7.5,
-    8.0,
-    17.5,
-    18.0
-   ],
-   "share_21h_obs_sim": [
-    0.021464810616714097,
-    0.0299993467041223
-   ],
-   "remaining_best_shift_quarters": 0,
-   "oracle_level_error_pct": 13.677688316479726
-  },
-  "difference_pp": -2.734004111688712,
+  "without_shift": 46.36938070610623,
+  "with_shift": 42.15680687870416,
+  "difference_pp": -4.212573827402068,
   "difference_ci95": [
-   -3.5361934210463173,
-   -1.993096372538727
+   -5.205565463044374,
+   -3.2301632512434737
   ],
   "below_zero": true
  },
  "2020-02-15": {
   "detectors": 95,
-  "base": {
-   "pooled_hourly_error_pct": 50.50630278099483,
-   "median_error_pct": 46.03313754712019,
-   "sd_log10_daily": 0.2487968207761125,
-   "peak_am_pm": [
-    10.75,
-    10.5,
-    17.25,
-    20.75
-   ],
-   "share_21h_obs_sim": [
-    0.028294316962529292,
-    0.05436886104535684
-   ],
-   "remaining_best_shift_quarters": 2,
-   "oracle_level_error_pct": 24.190433016591204
-  },
-  "shift": {
-   "pooled_hourly_error_pct": 51.077875573136346,
-   "median_error_pct": 48.36505897465842,
-   "sd_log10_daily": 0.2490194101981003,
-   "peak_am_pm": [
-    10.75,
-    10.75,
-    17.25,
-    19.25
-   ],
-   "share_21h_obs_sim": [
-    0.028294316962529292,
-    0.042914538577210726
-   ],
-   "remaining_best_shift_quarters": -1,
-   "oracle_level_error_pct": 21.551135522518006
-  },
-  "difference_pp": 0.5715727921415166,
+  "without_shift": 48.186833244547195,
+  "with_shift": 48.18878491324611,
+  "difference_pp": 0.0019516686989149434,
   "difference_ci95": [
-   -0.22565888124779362,
-   1.4721302118907027
+   -0.8052191220595079,
+   0.8708516830458497
   ],
   "below_zero": false
  }

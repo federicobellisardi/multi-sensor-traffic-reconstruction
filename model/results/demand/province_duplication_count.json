@@ -1,0 +1,194 @@
+{
+ "2020-02-10": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 62,
+  "agents_k1": {
+   "scr_dest": 356332,
+   "scr_dest_prov": 67960,
+   "src_rnd": 278064,
+   "rnd_dest": 280304,
+   "rnd_rnd": 456248
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 356332,
+   "scr_dest_prov": 67960,
+   "src_rnd": 266952,
+   "rnd_dest": 269096,
+   "rnd_rnd": 415036
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 41212,
+   "rnd_dest": 11208,
+   "src_rnd": 11112
+  },
+  "province_share_of_agents": 0.04723026072549461,
+  "copy_share_of_agents": 0.04415292708081406,
+  "total_agents_k1": 1438908
+ },
+ "2020-02-11": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 56,
+  "agents_k1": {
+   "scr_dest": 367008,
+   "scr_dest_prov": 70372,
+   "src_rnd": 288284,
+   "rnd_dest": 289512,
+   "rnd_rnd": 467708
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 367008,
+   "scr_dest_prov": 70372,
+   "src_rnd": 276692,
+   "rnd_dest": 277992,
+   "rnd_rnd": 424884
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 42824,
+   "rnd_dest": 11520,
+   "src_rnd": 11592
+  },
+  "province_share_of_agents": 0.04745617324079294,
+  "copy_share_of_agents": 0.04446470526352702,
+  "total_agents_k1": 1482884
+ },
+ "2020-02-12": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 60,
+  "agents_k1": {
+   "scr_dest": 375848,
+   "scr_dest_prov": 71840,
+   "src_rnd": 294588,
+   "rnd_dest": 296076,
+   "rnd_rnd": 474940
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 375848,
+   "scr_dest_prov": 71840,
+   "src_rnd": 282808,
+   "rnd_dest": 284336,
+   "rnd_rnd": 431416
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 43524,
+   "rnd_dest": 11740,
+   "src_rnd": 11780
+  },
+  "province_share_of_agents": 0.04747266224892486,
+  "copy_share_of_agents": 0.04430341269232904,
+  "total_agents_k1": 1513292
+ },
+ "2020-02-13": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 64,
+  "agents_k1": {
+   "scr_dest": 375160,
+   "scr_dest_prov": 72280,
+   "src_rnd": 295340,
+   "rnd_dest": 296224,
+   "rnd_rnd": 482376
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 375160,
+   "scr_dest_prov": 72280,
+   "src_rnd": 283572,
+   "rnd_dest": 284436,
+   "rnd_rnd": 438416
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 43960,
+   "rnd_dest": 11788,
+   "src_rnd": 11768
+  },
+  "province_share_of_agents": 0.04750949795580328,
+  "copy_share_of_agents": 0.044378130381627204,
+  "total_agents_k1": 1521380
+ },
+ "2020-02-14": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 58,
+  "agents_k1": {
+   "scr_dest": 383428,
+   "scr_dest_prov": 75936,
+   "src_rnd": 303004,
+   "rnd_dest": 307144,
+   "rnd_rnd": 492560
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 383428,
+   "scr_dest_prov": 75936,
+   "src_rnd": 290424,
+   "rnd_dest": 294412,
+   "rnd_rnd": 446636
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 45924,
+   "rnd_dest": 12732,
+   "src_rnd": 12580
+  },
+  "province_share_of_agents": 0.048612355896527175,
+  "copy_share_of_agents": 0.04560353171940858,
+  "total_agents_k1": 1562072
+ },
+ "2020-02-15": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 64,
+  "agents_k1": {
+   "scr_dest": 323660,
+   "scr_dest_prov": 73368,
+   "src_rnd": 261656,
+   "rnd_dest": 262516,
+   "rnd_rnd": 441852
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 323660,
+   "scr_dest_prov": 73368,
+   "src_rnd": 249152,
+   "rnd_dest": 249752,
+   "rnd_rnd": 398732
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 43120,
+   "rnd_dest": 12764,
+   "src_rnd": 12504
+  },
+  "province_share_of_agents": 0.05382626634933957,
+  "copy_share_of_agents": 0.05017270067466245,
+  "total_agents_k1": 1363052
+ },
+ "2020-02-16": {
+  "conf_reproduced_by_generator": true,
+  "province_sources": 79,
+  "agents_k1": {
+   "scr_dest": 263352,
+   "scr_dest_prov": 59668,
+   "src_rnd": 202528,
+   "rnd_dest": 199264,
+   "rnd_rnd": 363248
+  },
+  "agents_k1_no_random_copy": {
+   "scr_dest": 263352,
+   "scr_dest_prov": 59668,
+   "src_rnd": 191820,
+   "rnd_dest": 188908,
+   "rnd_rnd": 329780
+  },
+  "copy_in_random_classes": {
+   "rnd_rnd": 33468,
+   "rnd_dest": 10356,
+   "src_rnd": 10708
+  },
+  "province_share_of_agents": 0.05483888756134772,
+  "copy_share_of_agents": 0.05011855963825524,
+  "total_agents_k1": 1088060
+ },
+ "legacy_generator": {
+  "2020-02-10": {
+   "legacy_conf_reproduced": true,
+   "province_agents": 65096
+  },
+  "2020-02-15": {
+   "legacy_conf_reproduced": true,
+   "province_agents": 71140
+  }
+ }
+}

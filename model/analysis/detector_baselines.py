@@ -27,16 +27,17 @@ import demand_scaling as D  # noqa: E402
 import frozen_validation as F  # noqa: E402
 import reconstruct_and_validate as P  # noqa: E402
 from paths import ROOT  # noqa: E402
+from paths import RESULTS as _RES  # noqa: E402
 
 N_BOOT, SEED = 2000, 20261041
-OUT = ROOT / "model/results/corrected"
+OUT = _RES / "corrected"
 RUNS = D.RUNS / "demand/V6_scaled"
 BAR = pd.read_csv(ROOT / "vars/extra/er_barriers_cartodata.csv", sep=";").drop_duplicates("tag").set_index("tag").poly_lid
 
 
 def lid_class():
-    u = pd.read_csv(next(RUNS.glob("sim_200210_uniq_*.csv")), sep=";", usecols=["poly_lid", "poly_cid"]).drop_duplicates("poly_lid")
-    rc = pd.read_csv(ROOT / "model/results/road_class.csv").set_index("poly_cid").road_class
+    u = pd.read_csv(next(iter([*RUNS.glob("sim_200210_uniq_*.csv"), *D.RUNS.glob("radius_scan/r*/k*/sim_200210_uniq_*.csv")])), sep=";", usecols=["poly_lid", "poly_cid"]).drop_duplicates("poly_lid")
+    rc = pd.read_csv(_RES / "road_class.csv").set_index("poly_cid").road_class
     return u.set_index("poly_lid").poly_cid.map(rc)
 
 

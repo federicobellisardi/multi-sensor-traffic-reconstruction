@@ -48,13 +48,13 @@ from paths import ROOT, RESULTS as R1, SIM_ENGINE, SIM_RUNS  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 RERUN = ROOT / "article/python/revision/rerun"
-CONF = RERUN / "work/conf_clean"  # mean OD of 13 Jan - 23 Feb 2020, see build_od_configs.py
+CONF = Path(os.environ.get("DEMAND_CONF", RERUN / "work/conf_clean"))  # mean OD of 13 Jan - 23 Feb 2020, see build_od_configs.py
 RUNS = SIM_RUNS  # simulation outputs (outside the repository)
 OUT = RUNS / "demand"
 RES = R1 / "demand"
 ENGINE = SIM_ENGINE
-CHERRY_RADIUS_KM = 20.0  # radius of the random trip ends and of the spread of the origins (radius_scan.py)
-DEPARTURE_SHIFT_QUARTERS = 3  # departures moved earlier, empirical (departure_shift_test.py)
+CHERRY_RADIUS_KM = float(os.environ.get("CHERRY_RADIUS_KM", 20.0))  # radius of the random trip ends and of the spread of the origins (radius_scan.py)
+DEPARTURE_SHIFT_QUARTERS = int(os.environ.get("DEPARTURE_SHIFT_QUARTERS", 3))  # departures moved earlier, empirical (departure_shift_test.py)
 SPREAD_ORIGIN = True  # origins of the located sources drawn around the point (population score, 10 km), not on one polyline
 ROUTING = RUNS / "routing"
 CLASSES = ["scr_dest", "scr_dest_prov", "src_rnd", "rnd_dest", "rnd_rnd"]
@@ -62,6 +62,7 @@ WEEK = [f"2020-02-{d}" for d in range(10, 17)]  # Monday to Sunday: the demand d
 DAYS = {2020: [f"2020-02-{d}" for d in range(10, 18)],
         2021: ["2021-06-28", "2021-06-29", "2021-06-30", "2021-07-01", "2021-07-02", "2021-07-03", "2021-07-04"]}
 NPROC = 4
+NO_CODE = bool(os.environ.get("NO_CODE"))  # demand without the destination code 000000000 (remove_od_code.py)
 
 
 def tag(day):
@@ -97,6 +98,8 @@ def v6_config(day, variant="V6_gps_usage_classweights", sources=None, basename=N
     sys.path.insert(0, str(HERE))
     import routing_variants as RV
     speeds, a_we, a_s = RV.VARIANTS[variant]
+    if variant == "V6_gps_usage_classweights":
+        a_s = float(os.environ.get("ALPHA_S", a_s))  # cost weight of travel time, re-run without the code
     c = json.load(open(CONF / f"{day}.json"))
     for k in ["file_barrier", "file_score_pop", "file_noturn"]:
         # generator paths point to the rebuilt workspace .../rerun/work/ws/covid_hep/vars/...: use the
@@ -128,6 +131,17 @@ def v6_config(day, variant="V6_gps_usage_classweights", sources=None, basename=N
 
 
 def run(cfg, basename):
+    if NO_CODE and set(cfg["sources"]) == {"LOCALS"}:
+        # runs with only the LOCALS source end with a segmentation fault under long output paths: short directory, linked
+        short = RUNS.parent / f"nr_{RUNS.name[-1]}" / basename.parent.name
+        short.mkdir(parents=True, exist_ok=True)
+        basename.parent.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            basename.parent.symlink_to(short)
+        except FileExistsError:
+            pass
+        basename = short / basename.name
+        cfg["state_basename"] = str(basename)
     basename.parent.mkdir(parents=True, exist_ok=True)
     f = basename.parent / f"{basename.name}.json"
     if list(basename.parent.glob(f"{basename.name}_uniq_*.csv")):
@@ -313,6 +327,8 @@ def province_scaled(src):
     def prov(loc):
         h = shapes[shapes.contains(gpd.points_from_xy([loc["lon"]], [loc["lat"]])[0])]
         return code.get(h.PRO_NAME.iloc[0]) if len(h) else None
+    if not (RES / "province_factors.json").exists():
+        return src  # factors not adopted
     f = json.load(open(RES / "province_factors.json"))
     for s in src.values():
         ends = [f[p] for p in (prov(s[e]) for e in ("source_location", "dest_location") if e in s) if p]

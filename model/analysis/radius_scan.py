@@ -8,6 +8,7 @@
 Outputs: $SIM_RUNS/radius_scan/r<R>/k<K>/
 """
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -24,7 +25,7 @@ BASE = D.RUNS / "radius_scan"
 N_BOOT, SEED = 2000, 20261039
 
 
-FINE = [0.7, 0.8, 0.9, 1.0, 1.1, 1.2]  # refinement around the selected radius
+FINE = [float(x) for x in os.environ.get("K_GRID", "0.7,0.8,0.9,1.0,1.1,1.2").split(",")]  # refinement around the selected radius
 PLAN = {r: FINE for r in (15, 20, 25, 30)}
 
 
@@ -95,7 +96,7 @@ def refine():
     days = {d: (o.day == d).values for d in C.CAL_DAYS}
     best = {r: {d: min(FINE, key=lambda k: msq(sims[r][k][m], obs[m])) for d, m in days.items()} for r in sims}
     bysim = {r: sum(sims[r][best[r][d]] * m for d, m in days.items()) for r in sims}
-    ref = sims[20][1.0] * days[C.CAL_DAYS[0]] + sims[20][0.8] * days[C.CAL_DAYS[1]]
+    ref = bysim[20] if D.NO_CODE else sims[20][1.0] * days[C.CAL_DAYS[0]] + sims[20][0.8] * days[C.CAL_DAYS[1]]
     r_best = min(sims, key=lambda r: msq(bysim[r], obs))
     k_common = min(FINE, key=lambda k: msq(sims[20][k], obs))
     out = {"k_by_day_type": best, "selected_radius": r_best, "reference_r20_k10_k08": report(o, ref),

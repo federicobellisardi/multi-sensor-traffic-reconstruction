@@ -18,16 +18,17 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from paths import ROOT  # noqa: E402
+from paths import RESULTS as _RES  # noqa: E402
 
 N_BOOT, SEED = 2000, 20261043
-PRIV = ROOT / "model/results/private"
-OUT = ROOT / "model/results/corrected"
+PRIV = _RES / "private"
+OUT = _RES / "corrected"
 PAIRS = {"corrected_minus_raw": ("mae_pp", "mae_pp_raw"), "corrected_minus_mts": ("mae_pp", "mae_pp_mts"), "corrected_minus_od": ("mae_pp", "mae_pp_od"),
          "raw_minus_mts": ("mae_pp_raw", "mae_pp_mts"), "raw_minus_od": ("mae_pp_raw", "mae_pp_od")}
 
 
 def fc_links():
-    g = gpd.read_file(ROOT / "model/results/carto_a059fb0.geojson").to_crs(32632)
+    g = gpd.read_file(_RES / "carto_a059fb0.geojson").to_crs(32632)
     prov = gpd.read_file(ROOT / "vars/extra/er-shapes.geojson").to_crs(32632)
     fc = prov[prov.PRO_NAME.str.startswith("Forl")].union_all()
     return set(g.poly_cid[g.geometry.representative_point().within(fc)].astype(int))

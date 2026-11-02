@@ -24,7 +24,7 @@
 \renewcommand{\arraystretch}{1.12}
 
 \title{Supplementary Material for\\
-\emph{A regional traffic simulation from mobile-phone, detector and GPS data: what each source adds, tested on independent observations}}
+\emph{Data-driven regional traffic simulation from heterogeneous mobility sources}}
 \author{Federico Bellisardi, Chiara Mizzi, Alessandro Fabbri and Armando Bazzani}
 \date{}
 
@@ -32,7 +32,7 @@
 \maketitle
 
 
-\noindent This document gives further detail on the data layers, the simulation model, the route-choice variants and the detector correction described in the main manuscript. It also reports additional validation results and lists the commands that reproduce them.
+\noindent This document gives further detail on the data layers, the simulation model, the route-choice variants and the detector correction described in the main manuscript. It also reports additional results and lists the commands that reproduce them.
 
 \section{Data layers}
 \label{sec:data-layers}
@@ -44,14 +44,14 @@
 Layer & Content & Role & Period \\\midrule
 Mobile-phone OD (TIM) & hourly device movements between census areas, aggregated to municipalities and provinces & demand & 13 January--23 February 2020 \\
 Road graph & 3,925 directed links, 2,548 nodes, turn restrictions, derived from OpenStreetMap & network & -- \\
-OSM road classes & motorway to unclassified, nearest ways within 30~m & route-choice parameters & extract of 26/10/2026 \\
-MTS loop detectors & 15-min counts per station and direction & demand scale and demand settings (half of the detectors of February 2020); local correction; volume validation & Feb 2020, Jun--Jul 2021 \\
-Viasat GPS, link counts & hourly probes per matched link & profile validation & 10--17/02/2020, 28/06--04/07/2021 \\
+OSM road classes & motorway to unclassified, nearest ways within 30~m & route-choice parameters & extract of October 2026 \\
+MTS loop detectors & 15-min counts per station and direction & demand scale and demand settings (half of the detectors of February 2020); local correction; volume comparison & Feb 2020, Jun--Jul 2021 \\
+Viasat GPS, link counts & hourly probes per matched link, Forl\`i--Cesena & profile comparison & 10--17/02/2020, 28/06--04/07/2021 \\
 Viasat GPS, raw traces & private-vehicle fixes in Forl\`i--Cesena & speeds and class usage for route choice & same periods \\
 \bottomrule\end{tabularx}
 \end{table}
 
-Demand is generated in five classes. Agents have an observed source and destination between the 50 most active municipalities (16\% of the agents on a Monday) or between them and the provinces of neighbouring regions (3\%), an observed source and a random destination (27\%), a random source and an observed destination (15\%), or a random source and destination (38\%). This last class represents the activity not attributed to the selected relations. Agents with a random end therefore account for 80\% of the 2.01 million agents generated on a Monday, after the province factors. The hour convention of the OD tables is discussed in Section~\ref{sec:further}.
+Demand is generated in five classes, after removing the cells with the destination code 000000000. Agents have an observed source and destination between the 50 most active municipalities (22\% of the agents on a Monday) or between them and the provinces of neighbouring regions (5\%), an observed source and a random destination (20\%), a random source and an observed destination (21\%), or a random source and destination (32\%). This last class represents the activity not attributed to the selected relations, including trips within municipalities outside the 50. Agents with a random end therefore account for 73\% of the 1.99 million agents generated on a Monday, after the province factors. The hour convention of the OD tables is discussed in Section~\ref{sec:further}.
 
 We obtained the MTS counts of 2021 from the monthly open-data files of Regione Emilia-Romagna (dataset DS-1944, CC BY), summing all vehicle classes. The time labels of these files are in local time; converted to UTC, they reproduce the counts of the February 2020 archive used for 2020 (ratio of totals 0.995 on 12 February 2020).
 
@@ -60,42 +60,41 @@ We obtained the MTS counts of 2021 from the monthly open-data files of Regione E
 
 The configuration generator inherited from the operational platform rescaled individual source--destination pairs with ratios between observed and simulated counts at detectors. Because these ratios used the counts of the simulated day itself, the simulation was not independent of the detectors. We switched this rescaling off and instead multiply the demand by a factor $k$ for each day type (main text, Methods). Earlier scans and a fit by demand class, made on a previous version of the engine and demand, are not reported.
 
-The grid of $k$ was evaluated on the calibration detectors at the 20-km radius, without province factors, which leave $k$ unchanged (Fig.~\ref{fig:k_choice}). The selected values, 1.0 on weekdays and 0.8 on weekends, are the minima of the loss and give volume ratios of 1.00 and 0.98. The minima are flat: the loss at $k=1.1$ on weekdays and at $k=0.9$ on weekends cannot be told apart from the selected one (paired 95\% intervals $[-0.004, +0.004]$ and $[-0.005, +0.005]$; each is the best value in 47\% and 45\% of the bootstrap resamples). These neighbours do differ in level, with ratios of 1.10 and 1.10, so the volume ratio supports the selected values as well. The intervals exclude $k\le 0.8$ on weekdays and $k=0.7$ and $k=1.2$ on weekends; $k=1.1$ on weekends just includes zero ($[-0.0001, +0.024]$).
+The grid of $k$ was evaluated on the calibration detectors at the 25-km radius, without province factors, which leave $k$ unchanged (Fig.~\ref{fig:k_choice}). The selected values, 1.4 on weekdays and 1.2 on weekends, are the minima of the loss and give volume ratios of 1.04 and 1.07. The minima are flat: the neighbours cannot be told apart on the loss ($k=1.3$ $[-0.001, +0.005]$ and $k=1.5$ $[-0.002, +0.004]$ on weekdays; $k=1.1$ $[-0.001, +0.006]$ and $k=1.3$ $[-0.002, +0.005]$ on weekends), and the selected values are the best in 64\% and 67\% of the bootstrap resamples. The intervals exclude $k\le 1.1$ and $k=1.8$ on weekdays and $k\le 0.9$ and $k\ge 1.6$ on weekends.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figS_k_choice.pdf}
-\caption{\textbf{Choice of the demand scale $k$.} Calibration detectors, 20-km radius, without province factors; 83 detectors on weekdays (Monday run) and 95 on weekends (Saturday run). \textbf{(a)} Mean squared $\log_{10}$(simulated/observed) of daily volumes; large open markers: selected $k$. \textbf{(b)} Ratio of total simulated to total observed volume. \textbf{(c)} Difference in loss from the selected $k$, with 95\% paired bootstrap intervals over detectors (2,000 resamples, seed 20261047).}
+\caption{\textbf{Choice of the demand scale $k$.} Calibration detectors, 25-km radius, without province factors; 83 detectors on weekdays (Monday run) and 95 on weekends (Saturday run). \textbf{(a)} Mean squared $\log_{10}$(simulated/observed) of daily volumes; large open markers: selected $k$. \textbf{(b)} Ratio of total simulated to total observed volume. \textbf{(c)} Difference in loss from the selected $k$, with 95\% paired bootstrap intervals over detectors (2,000 resamples, seed 20261047).}
 \label{fig:k_choice}
 \end{figure}
 
-Table~\ref{tab:rounds} lists the changes tested on the calibration detectors, in the order in which we tested them, each against the previous configuration. Each rule was fixed before its runs and required the 95\% interval to lie below zero.
+Table~\ref{tab:rounds} lists the changes tested on the calibration detectors, each against the previous configuration. Each rule was fixed before its runs and required the 95\% interval to lie below zero. The first two rows and the trips within the 50 municipalities were structural choices tested on an earlier configuration, with the code 000000000 still in the data, and were not reopened; the others come from the final configuration.
 
 \begin{table}[htbp]\centering
-\caption{Changes tested on the calibration detectors. Difference in the standard deviation of $\log_{10}$(simulated/observed), new minus reference; for the departure shift, difference in the pooled hourly error (pp). Intervals: 95\% paired bootstrap over detectors.}
+\caption{Changes tested on the calibration detectors (the first two rows and the intra-municipal row: earlier configuration). Difference in the standard deviation of $\log_{10}$(simulated/observed), new minus reference; for the departure shift, difference in the pooled hourly error (pp). Intervals: 95\% paired bootstrap over detectors.}
 \label{tab:rounds}
 \begin{tabular}{@{}p{6.6cm}rlll@{}}\toprule
 Change & Difference & Interval & Rule met & Kept \\\midrule
 OD destination drawn around the declared one (correction of a defect) & +0.0047 & [$-0.0037$, +0.0123] & no & yes \\
 Origins spread around the source point & $-0.0187$ & [$-0.0421$, +0.0059] & no & yes \\
-Departures 45 min earlier, Monday (pp) & $-2.73$ & [$-3.54$, $-1.99$] & yes & yes \\
-Departures 45 min earlier, Saturday (pp) & +0.57 & [$-0.23$, +1.47] & no & -- \\
+Departures 45 min earlier, Monday (pp) & $-4.21$ & [$-5.21$, $-3.23$] & yes & yes \\
+Departures 45 min earlier, Saturday (pp) & 0.00 & [$-0.81$, +0.87] & no & -- \\
 Intra-municipal trips added & +0.0105 & [$-0.0011$, +0.0221] & no & no \\
-$k$ by day type at 10 km, against one $k$ & $-0.0032$ & [$-0.0069$, +0.0002] & no & -- \\
-Radius 20 km against 10 km & $-0.0201$ & [$-0.0326$, $-0.0076$] & yes & yes \\
-$k$ 1.0/0.8 at 20 km, against common 0.9 & $-0.0036$ & [$-0.0071$, +0.0002] & no & yes \\
+$k$ by day type at 20 km, against common $k=1.4$ & $-0.0030$ & [$-0.0060$, 0.0000] & no & yes \\
+Radius 25 km against 20 km & $-0.0030$ & [$-0.0110$, +0.0060] & no & yes \\
 \bottomrule\end{tabular}\end{table}
 
-The destination change corrects a verified defect, so we kept it regardless of the result. The origin spreading and the factors by day type did not meet their rules and were kept by decision. The first has no demonstrated effect; the second brings the level of both day types close to one (ratios 1.00 and 0.98, against 0.90 and 1.10) without measurably changing the dispersion. On the test detectors the 20-km radius does not confirm its gain ($-0.005$ [$-0.016$, $+0.007$]).
+The destination change corrects a verified defect, so we kept it regardless of the result. The origin spreading has no demonstrated effect. The factors by day type bring the level of both day types close to one without measurably changing the dispersion. The radius and $k$ follow the minimum of the loss, so the 25-km radius is the selected value of that rule, without a demonstrated gain over 20~km.
 
-\paragraph{Province factors.} The factors were set on the calibration half in two rounds. Dispersion and Spearman correlation are 0.215 and 0.67 without them, 0.195 and 0.71 after the first round, and 0.187 and 0.72 after the second. The evaluation uses the rule stated in the main text, where the outcome is reported. On the test half the rule was met only narrowly, and the dispersion there includes a detector without simulated traffic.
+\paragraph{Province factors.} The factors were set on the calibration half in two rounds. Dispersion and Spearman correlation are 0.217 and 0.68 without them, 0.190 and 0.72 after the first round, and 0.184 and 0.74 after the second. The factors are 1.70 (Piacenza), 1.49 (Parma), 0.53 (Reggio Emilia), 1.31 (Modena), 0.90 (Bologna), 1.44 (Ferrara), 0.88 (Ravenna), 0.73 (Forl\`i--Cesena) and 0.55 (Rimini). The evaluation uses the rule stated in the main text, which is met on the test half and in 2021; the dispersion there includes a detector without simulated traffic.
 
 \section{Simulation model and route-choice variants}
 \label{sec:routing}
 
 Agents move at the speed of their link, $v_i$, which is reduced linearly with density $\rho_i$ below the critical density and set to a critical speed above it. Link speeds are read in km/h from the cartography and assigned by road class from GPS (Table~\ref{tab:classes}). Agents with a random end have a trip-time budget of 5,600~s, while source--destination agents follow the best-path matrix of their type. When the turn-restricted search finds no feasible next node for the cost of their type, these agents use the shortest-distance path matrix. The simulator is deterministic (fixed random seed).
 
-Table~\ref{tab:routing} lists the variants simulated for 10 February 2020. They were run with the demand of the earlier generator, before the demand scale was revised; the selection uses only GPS counts in Forl\`i--Cesena and was not repeated. Speeds alone (second to fourth rows) do not change the distribution of traffic over road classes, because about four fifths of the agents follow transition probabilities rather than best paths. Transition weights by road class (last three rows) raise the share of main roads and the agreement with GPS counts in Forl\`i--Cesena, and the selected variant combines the usage cost of Eq.~\eqref{M-eq:route_cost} with these weights. Table~\ref{tab:routing_volumes} compares shortest-distance and GPS-informed route choice over the full campaigns with the scaled demand, and Table~\ref{tab:routing_shape} shows that route choice hardly changes the hourly profiles.
+Table~\ref{tab:routing} lists the variants simulated for 10 February 2020. They were run with the demand of the earlier generator, before the demand scale was revised; the selection uses only GPS counts in Forl\`i--Cesena. Speeds alone (second to fourth rows) do not change the distribution of traffic over road classes, because most agents follow transition probabilities rather than best paths. Transition weights by road class (last three rows) raise the share of main roads and the agreement with GPS counts in Forl\`i--Cesena, and the selected variant combines the usage cost of Eq.~\eqref{M-eq:route_cost} with these weights. Table~\ref{tab:routing_volumes} compares shortest-distance and GPS-informed route choice over the full campaigns with the scaled demand, and Table~\ref{tab:routing_shape} shows that route choice hardly changes the hourly profiles.
 
 \begin{table}[htbp]\centering
 \caption{Road-class properties from private-vehicle GPS traces in Forl\`i--Cesena, February 2020. Median off-peak speed of links with at least 50 matched points (interquartile range in brackets) and median daily probes per covered link, both applied to all links of each class in the region.}
@@ -114,14 +113,9 @@ Unclassified & 42 & 49 [36--54] & 57 & 14 \\
 \end{tabular}
 \end{table}
 
-The best-path cost of link $i$ in the simulator is
-\begin{equation}
-w_i = L_i\left[\alpha + \alpha_s\,\frac{v_{\min}}{v_i} + (1-\alpha-\alpha_s)\,\frac{1/c_i - 1/c_{\max}}{1/c_{\min} - 1/c_{\max}}\right],
-\label{eq:route_cost_general}
-\end{equation}
-with $v_{\min}=20$~km/h. Equation~(1) of the main text is the case $\alpha=0.5$, $\alpha_s=0$, used for all agents in the final configuration. The variants of Table~\ref{tab:routing} are shortest distance $(\alpha,\alpha_s)=(1,0)$, travel time $(0,1)$, mixed $(0.5,0.5)$ and usage cost $(0.5,0)$.
+The variants of Table~\ref{tab:routing} correspond, in Eq.~\eqref{M-eq:route_cost}, to shortest distance $(\alpha,\alpha_s)=(1,0)$, travel time $(0,1)$, mixed $(0.5,0.5)$ and usage cost $(0.5,0)$. The final configuration uses $(0.5,0.25)$ for all agents.
 
-After the selection on GPS, we simulated a grid of $(\alpha,\alpha_s)$ with all else fixed and compared it with the selected variant on the 100 calibration detectors, for 10 and 15 February 2020 (Table~\ref{tab:routing_grid}). The rule, fixed before the results were seen, was that a variant replaces the selected one only if the 95\% paired bootstrap interval of the change in dispersion lies below zero. No variant met it. The selection on GPS (Spearman 0.54, against 0.47 for shortest-distance routing) was made on an earlier version of the demand, and the grid used a scale of $k=1.5$ and an earlier version of the simulator and demand. Neither was repeated on the final model.
+The cost weights were set in a further step. We simulated a grid of $(\alpha,\alpha_s)$ with all else fixed and compared it with $(0.5,0)$ on the 100 calibration detectors, for 10 and 15 February 2020 (Table~\ref{tab:routing_grid}). Under the rule fixed before the results were seen, a variant replaces the reference if the 95\% paired bootstrap interval of the change in dispersion lies below zero. $(0.5,0.25)$ met it, in one of seven variants and without correction for multiplicity; on independent detectors the interval reached zero in all four comparisons. We applied the rule and repeated all later steps with this cost. The earlier selection on GPS is repeated on the final model in Section~\ref{sec:experiments}.
 
 \input{tables/routing_variants}
 \input{tables/routing_volumes}
@@ -129,20 +123,20 @@ After the selection on GPS, we simulated a grid of $(\alpha,\alpha_s)$ with all 
 
 \begin{table}[htbp]
 \centering
-\caption{Grid of cost weights on the 100 calibration detectors, 10 and 15 February 2020, earlier version of the model at $k=1.5$. Dispersion and Spearman correlation of daily volumes over detector-days; 95\% paired bootstrap interval over detectors of the change in dispersion from the selected variant (2,000 resamples, seed 20261032).}
+\caption{Grid of cost weights on the 100 calibration detectors, 10 and 15 February 2020, without the destination code and before the final choice of cost. Dispersion and Spearman correlation of daily volumes over detector-days; 95\% paired bootstrap interval over detectors of the change in dispersion from the reference.}
 \label{tab:routing_grid}
 \begin{tabular}{@{}rrrrc@{}}
 \toprule
 $\alpha$ & $\alpha_s$ & Dispersion & Spearman & Change in dispersion \\
 \midrule
-0.50 & 0.00 & 0.260 & 0.611 & selected \\
-1.00 & 0.00 & 0.259 & 0.599 & $[-0.008, +0.004]$ \\
-0.75 & 0.25 & 0.259 & 0.603 & $[-0.008, +0.004]$ \\
-0.50 & 0.50 & 0.257 & 0.607 & $[-0.010, +0.001]$ \\
-0.25 & 0.75 & 0.257 & 0.606 & $[-0.010, +0.003]$ \\
-0.00 & 1.00 & 0.257 & 0.602 & $[-0.010, +0.003]$ \\
-0.25 & 0.25 & 0.259 & 0.612 & $[-0.005, +0.002]$ \\
-0.50 & 0.25 & 0.260 & 0.604 & $[-0.007, +0.005]$ \\
+0.50 & 0.00 & 0.189 & 0.736 & reference \\
+1.00 & 0.00 & 0.187 & 0.738 & $[-0.011, +0.008]$ \\
+0.75 & 0.25 & 0.187 & 0.739 & $[-0.009, +0.007]$ \\
+0.50 & 0.50 & 0.186 & 0.741 & $[-0.010, +0.005]$ \\
+0.25 & 0.75 & 0.184 & 0.739 & $[-0.013, +0.003]$ \\
+0.00 & 1.00 & 0.183 & 0.741 & $[-0.017, +0.007]$ \\
+0.25 & 0.25 & 0.187 & 0.736 & $[-0.007, +0.002]$ \\
+0.50 & 0.25 & 0.184 & 0.746 & $[-0.008, -0.001]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -150,18 +144,16 @@ $\alpha$ & $\alpha_s$ & Dispersion & Spearman & Change in dispersion \\
 \section{Detector correction}
 \label{sec:correction}
 
-The correction starts from the increment of Eq.~\eqref{M-eq:coil_residual} on each detector link and hour. The simulated count on a link is the number of distinct agents present on it during the hour, while the detector counts passages at a section; the two coincide for agents that traverse the whole link within the hour. Barrier counts do not enter the correction. Two pairs of detectors (404 and 680; 503 and 685) lie on the same link, and their observations are averaged before the increment is computed. Downstream, the increment of a link is passed to each admissible outgoing link, multiplied by that link's share of the simulated outgoing counts at the node; upstream, the same rule applies to incoming links. Each branch carries its own increment and its own path length. The spreading skips other detector links, which receive their own increment, and stops when the increment is below one vehicle, after three links along the path, at a forbidden turn or at a closed link. Every directed link of the raw simulation is kept in the output, and the hours of the observed table are aligned with the local-time hours of the simulation. In the leave-one-detector-out and depth experiments, all detectors on the withheld link are removed together, so that a co-located detector cannot reproduce the withheld count.
+The correction starts from the increment of Eq.~\eqref{M-eq:coil_residual} on each detector link and hour. The simulated count on a link is the number of distinct agents present on it during the hour, while the detector counts passages at a section; the two coincide for agents that traverse the whole link within the hour. Barrier counts do not enter the correction. Two pairs of detectors (404 and 680; 503 and 685) lie on the same link, and their observations are averaged before the increment is computed. Downstream, the increment of a link is passed to each admissible outgoing link, multiplied by that link's share of the simulated outgoing counts at the node; upstream, the same rule applies to incoming links. Each branch carries its own increment and its own path length. The spreading skips other detector links, which receive their own increment, and stops when the increment is below one vehicle, after three links along the path, at a forbidden turn or at a closed link. Every directed link of the raw simulation is kept in the output, and the hours of the observed table are aligned with the local-time hours of the simulation. In the leave-one-detector-out and depth experiments, all detectors on the left-out link are removed together, so that a co-located detector cannot reproduce the left-out count.
 
-Table~\ref{tab:loo} summarizes the leave-one-detector-out test, Table~\ref{tab:depth} the dependence on the depth of the spreading, and Table~\ref{tab:distance} the effect of the correction on the hourly profiles of GPS links, by network distance from the nearest detector.
+Table~\ref{tab:loo} summarizes the leave-one-detector-out test and Table~\ref{tab:depth} the dependence on the depth of the spreading.
 
 \input{tables/loo}
 \input{tables/depth}
-\input{tables/distance}
 
-Before the province factors, the same rule selected depth 4.
 
-\section{Additional validation results}
-\label{sec:validation}
+\section{Additional results}
+\label{sec:additional}
 
 Table~\ref{tab:probes} reports the profile error by number of probes per link. The error decreases with the number of probes for both the reconstruction and the mean detector profile, as expected if part of the difference is sampling noise in the probe counts. Matched links with zero simulated or GPS total are excluded, and link-hour records absent from the GPS extract are counted as zero.
 
@@ -172,40 +164,61 @@ The ratio between probes $\psi_i$ and simulated vehicles $\phi_i$ on link $i$,
 \eta_i=\frac{\sum_{d,h}\psi_i(d,h)}{\sum_{d,h}\phi_i(d,h)},
 \label{eq:penetration}
 \end{equation}
-describes how GPS samples traffic (Fig.~\ref{fig:viasat}). Figure~\ref{fig:diagnostics} shows the timing and the reach of the correction, and Fig.~\ref{fig:loo_volumes} the daily volumes at withheld detectors.
+describes how GPS samples traffic (Fig.~\ref{fig:viasat}). Figure~\ref{fig:loo_volumes} shows the daily volumes at left-out detectors.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig4_gps.pdf}
-\caption{\textbf{GPS coverage.} \textbf{(a,b)} Usable GPS-matched links (number in parentheses) over the regional network, 10--17 February 2020 and 28 June--4 July 2021. \textbf{(c)} Distribution of the link ratio $\eta_i$ between probe counts and simulated vehicles, Eq.~\eqref{eq:penetration}. Basemap \copyright{} OpenStreetMap contributors \copyright{} CARTO.}
+\caption{\textbf{GPS coverage.} \textbf{(a,b)} Usable GPS-matched links of Forl\`i--Cesena (number in parentheses) over the regional network, 10--17 February 2020 and 28 June--4 July 2021. \textbf{(c)} Distribution of the link ratio $\eta_i$ between probe counts and simulated vehicles, Eq.~\eqref{eq:penetration}. Road network \copyright{} OpenStreetMap contributors.}
 \label{fig:viasat}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{fig6_diagnostics.pdf}
-\caption{\textbf{Timing and reach of the correction.} \textbf{(a,b)} Hourly shares pooled over all usable links: reconstruction, GPS probes and mean detector profile. Pooling weights links by their own volumes, so these curves are not regional traffic shares. \textbf{(c)} Median reduction of the hourly-share error on GPS links by network distance from the nearest detector, in links, for 2020 and 2021.}
-\label{fig:diagnostics}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
 \includegraphics[width=\textwidth]{fig7_volumes.pdf}
-\caption{\textbf{Daily volumes at withheld detectors.} Observed daily volume of each detector (mean over complete days, both directions) against the reconstruction on its link when the detector is withheld and all others are used, \textbf{(a)} 10--17 February 2020 and \textbf{(b)} 28 June--4 July 2021. Detectors reached by the spreading from other detectors are distinguished from those that are not; $\rho_s$, Spearman correlation. Dashed line: equality; dotted lines: factor of two.}
+\caption{\textbf{Daily volumes at left-out detectors.} Observed daily volume of each detector (mean over complete days, both directions) against the reconstruction on its link when the detector is left-out and all others are used, \textbf{(a)} 10--17 February 2020 and \textbf{(b)} 28 June--4 July 2021. Detectors reached by the spreading from other detectors are distinguished from those that are not; $\rho_s$, Spearman correlation. Dashed line: equality; dotted lines: factor of two.}
 \label{fig:loo_volumes}
 \end{figure}
 
-\section{Reproducibility}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig5b_daytypes.pdf}
+\caption{\textbf{Timing on weekdays and weekends.} Error of the hourly shares on the GPS-matched links of Forl\`i--Cesena, as in Fig.~\ref{M-fig:timing_cdf}, for weekdays and weekends separately: reconstruction and mean detector profile. Each curve shows the fraction of links whose error is below the value on the horizontal axis. Weekend curves lie to the right, so errors are larger on weekends. Curves continue beyond the 6~pp limit of the axis.}
+\label{fig:daytypes}
+\end{figure}
+
+\input{tables/od_decomposition}
+
+\paragraph{Further numbers behind the Results of the main text.} \emph{Timing on GPS links of Forl\`i--Cesena.} All days, 2020 and 2021: raw minus mean detector profile $+0.07$ [0.05, 0.09] and $+0.05$ [0.04, 0.07]~pp; corrected minus mean detector profile $+0.01$ [$-0.00$, 0.02] and $+0.02$ [0.01, 0.04]~pp; raw minus OD profile $-0.06$ [$-0.08$, $-0.05$] and $-0.07$ [$-0.10$, $-0.05$]~pp, with the simulation better on weekdays ($-0.10$ and $-0.12$~pp) and worse on weekends ($+0.04$ and $+0.03$~pp). The correction lowers the error by a median of 0.01~pp in 2020 and does not change it in 2021. Because links are spatially correlated, these intervals are optimistic. \emph{Correction.} The reduction at left-out detectors is 2.3 [$-0.5$, 5.2] and 3.1 [1.6, 4.9]~pp on weekdays and weekends in 2020 and 6.1 [1.8, 11.5] and 6.3 [3.9, 9.4]~pp in 2021, on different sets of detectors. Half of the detectors have a corrected error between 23\% and 48\% in 2020 and between 26\% and 54\% in 2021. Cross-validation over 2020 gives 0.9, 1.3, 2.5, 2.6, 3.2 and 3.3~pp at depths 1 to 6; the best depth is the edge of the grid. Detector 349 recorded 19,599 vehicles on 10 February 2020 and the reconstruction with that detector left out gives 19,949 (hourly correlation 0.98). \emph{OD relations.} Removing the relations from the final model, which also removes the regional pattern of the factors, gives Spearman differences of 0.09 [0.03, 0.16] and 0.06 [0.01, 0.12] on the Monday and Saturday of the test half and 0.09 [$-0.00$, 0.19] and 0.05 [$-0.00$, 0.11] in 2021, and dispersion differences of $+0.004$ [$-0.014$, 0.022], $+0.027$ [$-0.002$, 0.055], $+0.010$ [$-0.011$, 0.034] and $+0.009$ [$-0.008$, 0.026]. Spearman correlations with GPS link counts of Forl\`i--Cesena are 0.69--0.73 with and without relations, with all intervals including zero. \emph{Single roads.} The day-to-day deviation of a detector's count from its own mean has a median of 0.017 in $\log_{10}$ units, against a dispersion of 0.168 on the Monday and 0.199 on the Saturday of the calibration half. Without the province factors, province explains 37\% of the variance of the error on the Monday, road class 9\% and observed volume 3\% (47\% together), and detectors less than 5~km apart have correlated errors (0.67, 20 pairs). With the factors, these shares are 9\%, 12\% and 5\% (26\% together), and the correlation is 0.23 below 5~km and $-0.02$ at 10--20~km. The doubtful detectors are two on closed links, one 870~m from its link and two on a road with a different reference; the median distance from the link is 11~m, and on the 193 evaluated detectors not flagged, dispersion remains 0.251 (without province factors, all days).
+
+\section{Final configuration and reproducibility}
 \label{sec:reproducibility}
 
-The code repository contains the simulator and all analysis scripts, and it explains how to build the simulator and set up the Python environment. The results are reproduced in the following order:
+\begin{table}[htbp]\centering
+\caption{Final configuration of the model. Every value is fixed before the final simulations.}
+\label{tab:final_config}
+\begin{tabularx}{\textwidth}{@{}lX@{}}\toprule
+Setting & Value \\\midrule
+Demand & mean OD of 13 January--23 February 2020 by day of the week, without the code 000000000 and without trips within the 50 municipalities; 50 municipalities \\
+Scale $k$ & 1.4 on weekdays, 1.2 on Saturdays and Sundays \\
+Province factors & as in Section~\ref{sec:scale}, two rounds \\
+Random ends and departures & radius 25~km; origins spread around the source; departures 45~min earlier than the OD label \\
+Route choice & $\alpha=0.5$, $\alpha_s=0.25$, GPS class speeds, usage and transition weights by class \\
+Network & 3,925 links, 122 closed, unchanged \\
+Local correction & depth 3, without travel time \\
+Detector split & seed 20261028; 100 calibration, 97 test \\
+\bottomrule\end{tabularx}
+\end{table}
+
+The code repository contains the simulator and all analysis scripts, and it explains how to build the simulator and set up the Python environment. The script \texttt{hpc/run\_all.sh} runs the simulations and analyses of the final configuration in order; the protocols written before the experiments are in \texttt{model/results/experiments}. The results are reproduced in the following order:
 \begin{enumerate}
 \item check the hour convention of the OD tables;
 \item build the road geometry, the road classes and the GPS link speeds;
 \item simulate and select the route-choice variants;
 \item build the 2021 detector table from the open-data files;
-\item build the demand, run the tests of Table~\ref{tab:rounds}, choose $k$ and the province factors, and run the eight simulations of the fifteen validation days;
-\item run the correction, the GPS validation and the leave-one-out test;
+\item build the demand, run the tests of Table~\ref{tab:rounds}, choose $k$ and the province factors, and run the simulations of the fifteen validation days;
+\item run the correction, the GPS comparison and the leave-one-out test;
 \item run the volume tests, the comparison of route choices, the depth selection, the predictors without simulation, the tests of the OD relations and the final tests;
 \item produce the figures and tables.
 \end{enumerate}
@@ -215,7 +228,7 @@ Steps 1--7 require the proprietary inputs (mobile-phone OD tables, Viasat link c
 \section{Further details of data and methods}
 \label{sec:further}
 
-\paragraph{Road classes.} Each link was assigned the OpenStreetMap class of the ways nearest to three points along it (within 30~m; Geofabrik extract of 26 October 2026). This gives 709~km of motorways, 326~km of trunk roads, 2,629~km of primary, 4,673~km of secondary and 2,863~km of tertiary roads.
+\paragraph{Road classes.} Each link was assigned the OpenStreetMap class of the ways nearest to three points along it (within 30~m; Geofabrik extract of October 2026). This gives 709~km of motorways, 326~km of trunk roads, 2,629~km of primary, 4,673~km of secondary and 2,863~km of tertiary roads.
 
 \paragraph{Clock of the OD tables.} The hourly OD labels refer to local time and to the start of the hour. On the days of 10--14 February 2020, the weekday OD profile correlates best with the mean profile of the 90 detectors complete on those days at zero lag (0.96, against 0.94 with the OD profile shifted one hour earlier and 0.74 one hour later), although the mean absolute difference does not separate zero lag from one hour earlier (0.60 and 0.60~pp).
 
@@ -225,10 +238,123 @@ Steps 1--7 require the proprietary inputs (mobile-phone OD tables, Viasat link c
 
 \paragraph{Splits, profiles and bootstrap.} The detector split uses seed 20261028. In the comparison of hourly profiles we exclude links with zero simulated or GPS total and keep only links whose geometry is identical in the graph used for map matching; the mean detector profile is the mean normalized profile of the detector directions complete on all days of the subset. Comparisons between route choices use 2,000 paired bootstrap resamples of detectors (seed 20261029; 5,000 in Table~\ref{tab:routing_volumes}, on all complete detectors). Intervals of the predictors without simulation use 2,000 resamples (seed 20261041). The depth of the correction is selected with seed 20261033, and the effect of the correction on GPS links is summarized by the minimum number of links between a link and any detector link.
 
-\paragraph{More OD relations.} These tests were made without province factors and not repeated with them. On the calibration detectors, $N=100$ raises the Spearman correlation from 0.669 to 0.726 (difference interval $[0.017, 0.104]$), but dispersion goes from 0.215 to 0.232 ($[-0.003, 0.035]$), so it does not beat the model; it was not adopted and the 2021 detectors were not used. The result is hard to interpret, because the share of agents with a random end falls as $N$ grows, which does not separate the information in the relations from the amount of random traffic. We ranked the municipalities of the region by trips in and out; relations among the top $N$ keep both ends, and the other classes follow the same definitions as in the model. Treating activity with no identified destination as an error in the tables, we dropped it and multiplied the remaining classes so that the number of agents is unchanged. The ranking has no sharp cutoff in the useful range (cumulative activity 73\%, 85\% and 92\% at $N=100$, 150 and 200). For each $N$ a multiplier of $k$ (1.0, 1.15 or 1.3) is chosen per day type by the same criterion as $k$, and the selected $N$ is the smallest whose dispersion is not significantly above the lowest. It beats the model if it has lower dispersion, or a higher Spearman correlation with dispersion not higher. $N=150$ gives a Spearman correlation of 0.749 and a dispersion of 0.247, and $N=200$ gives 0.743 and 0.276, both with the multiplier at the edge of the grid; $N=100$ is selected at multiplier 1.15. If that activity is instead kept as trips with a random destination, without retuning $k$, $N=347$ gives a Spearman correlation of 0.745 and a dispersion of 0.204 (intervals $[0.015, 0.141]$ and $[-0.037, 0.011]$). The share of agents with a random end on a Monday falls from 79\% in the model to 49\% at $N=100$ and 11\% at $N=347$, both without that activity.
+\paragraph{More OD relations.} On an earlier configuration, without province factors and with the destination code in the data, $N=100$ raised the Spearman correlation on the calibration detectors from 0.669 to 0.726 (difference interval $[0.017, 0.104]$), but dispersion went from 0.215 to 0.232 ($[-0.003, 0.035]$), so it did not beat the model. The result is hard to interpret, because the share of agents with a random end falls as $N$ grows, which does not separate the information in the relations from the amount of random traffic. Section~\ref{sec:experiments} repeats the test on the final model.
 
-\paragraph{Value of the OD relations, further results.} Before the province factors the relations met their rule in no comparison: without them the Spearman correlation with detectors was lower by 0.02--0.05, with intervals that include zero, and dispersion was lower by 0.02--0.04, with intervals that exclude zero. Across the variants without relations, with more relations or with shortest-distance routing, also before the factors, the error of a detector correlates at 0.79--0.94 with that of the reference model. The simulations with and without relations are very alike. Before the province factors, across the 3,803 links with traffic, their daily volumes have a Spearman correlation of 0.99 and differ by a median factor of 1.2.
+\paragraph{Value of the OD relations, further results.} Table~\ref{tab:od_decomposition} separates the relations from the province factors using runs without the regional pattern; its last block also removes that pattern, and Section~\ref{sec:experiments} gives the complete design. Without factors, the Spearman differences are 0.03--0.07 with intervals that include zero, and dispersion is larger with relations, with all intervals above zero.
 
-\paragraph{Direction of travel.} For each detector we computed the correlation over the 24 hours between the observed and the simulated difference of the two directions. After seeing this measure on the calibration half, and before reading the test half, we fixed a rule: the OD relations carry directional information if, on the test half, the 95\% interval of the difference in median correlation between $N=100$ and the model lies above zero. The test is exploratory, changes no setting and was made without province factors. The gain with $N=100$ on the calibration detectors (0.12) does not hold on the test half (0.05 against 0.04, difference $[-0.03, 0.08]$), so the rule is not met. An error in the mapping between detector and link directions, which we could not check independently, would produce the same weak signal. On the calibration detectors, volumes by direction have a dispersion of 0.239 against 0.215 for the two directions summed, so most of the error lies at the level of the road. The observed daily split is close to even (standard deviation of the share of one direction 0.017), and the simulated split is off by a median of 5 percentage points. The median correlation of hourly differences is 0.00 in the model and $-0.02$ without OD relations; with $N=100$ the calibration difference from the model is $[0.04, 0.16]$. The bootstrap uses seed 20261046. Detector shares and medians are computed over the rows of the two simulated day types.
+\paragraph{Direction of travel.} For each detector we computed the correlation over the 24 hours between the observed and the simulated difference of the two directions. The test is exploratory and changes no setting. Its rule required, on the test half, that the 95\% interval of the difference in median correlation between $N=100$ and the model lie above zero; it is not met on the final model (Section~\ref{sec:experiments}). An error in the mapping between detector and link directions, which we could not check independently, would produce the same weak signal. Comparisons of volumes in this paper therefore sum the two directions.
+
+\section{Experiments on the final model}
+\label{sec:experiments}
+
+These experiments followed protocols written before their runs, in the code repository. They change no setting of the model and are exploratory, because the data had been seen. A run with the same engine and configuration reproduced the final Monday simulation byte for byte.
+
+\paragraph{How much of the OD table is kept.} On a Monday the table has 3.15 million entries per day, of which 44\% are within a municipality: 38\% within the 50 municipalities, left out; 5\% within other municipalities, kept in the class with two random ends, of which they are about a third; and the rest in the code 000000000. Of the inter-municipal trips (9,003 pairs), 19.6\% keep their relation (476 pairs with agents after rounding), 50.3\% have a known relation that is discarded, and 30.1\% have the destination code 000000000, removed from the model; its meaning is not documented in the data we received. The relations kept are 28\% of the trips with a known destination, but only 6\% of the 7,711 pairs with a known destination, because trips concentrate on few pairs. They are short: mean 13~km, and 87\% lie below 20~km on a Monday. Saturday is similar.
+
+\paragraph{Relations and province factors.} Figure~\ref{fig:factorial} shows the complete design. Table~\ref{tab:od} gives the differences. The interaction in dispersion is negative in all four comparisons ($[-0.022, -0.002]$, $[-0.023, -0.002]$, $[-0.029, -0.007]$, $[-0.024, -0.004]$), so the factors reduce the spread more with relations. In the simulation without relations the regional pattern acts only through random ends.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_factorial.pdf}
+\caption{\textbf{OD relations and province factors, $2\times 2$ design.} Dispersion (top) and Spearman correlation (bottom) of daily volumes in the four simulations. Parallel lines mean no interaction. Dispersion excludes detectors with no simulated traffic.}
+\label{fig:factorial}
+\end{figure}
+
+\paragraph{OD pairings.} Table~\ref{tab:exp_pairing} gives the results. Origins, destinations and the total are identical to the real arm in every interval, and null D keeps the distance classes exactly. Null M raises the mean trip to 66--68~km at 50 municipalities (real 13~km) and 84--86~km at 347 (real 12~km). Null D moves 51\% of agents at 50 municipalities and 67\% at 347; more swaps add little, because the constraints leave many pairs no alternative. The six runs of null M at 347 municipalities (about 89,000 sources) ended with a segmentation fault within the memory limit; the cause is not confirmed, and we did not change the simulator or redefine the null. The 347 arm has a larger dispersion than the 50 arm (0.28--0.36 against 0.19--0.26), so it is used only for this comparison. The twin test takes a real run as the truth and asks whether a real run with another seed beats the nulls; it has no model error, so it overstates the power. Spearman correlations with GPS link counts of Forl\`i--Cesena differ from the real arm by at most 0.008 at 50 municipalities and 0.003 at 347.
+
+\begin{table}[htbp]
+\centering
+\caption{OD pairings: real against null M and D, at 50 or 347 municipalities. Differences: real minus mean of three rearrangements; 95\% paired bootstrap over detectors (2,000 resamples, seed 20261061). Sens.: median $|\log_{10}|$(real/null) of daily volume at detectors. Twin: difference in dispersion with a real run as the truth.}
+\label{tab:exp_pairing}
+\resizebox{\textwidth}{!}{\input{tables/od_pairing}}
+\end{table}
+
+\paragraph{Route choice on the final model.} The selected form stands: no other has an interval above zero on both days (Table~\ref{tab:exp_routing}). No other cost weight replaces $(0.5,0.25)$ on the calibration detectors (Table~\ref{tab:exp_alpha}). Table~\ref{tab:exp_separation} separates speeds and usage weights at detectors.
+
+\begin{table}[htbp]
+\centering
+\caption{Route-choice variants on the final model: Spearman correlation with GPS counts in Forl\`i--Cesena, and 95\% interval of the difference from the selected variant, paired over links.}
+\label{tab:exp_routing}
+\resizebox{\textwidth}{!}{\input{tables/experiments_routing}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Speeds and usage weights at detectors outside Forl\`i--Cesena, final model: Spearman correlation and 95\% paired intervals. V0: shortest distance, default speeds. V1: shortest distance, GPS speeds. D1: usage cost and class weights, default speeds. V6: usage cost and class weights, GPS speeds.}
+\label{tab:exp_separation}
+\resizebox{\textwidth}{!}{\input{tables/experiments_separation}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Cost weights on the calibration detectors, final model (selected: dispersion 0.184, Spearman 0.741). Weights: $100\alpha$ and $100\alpha_s$. Interval of the change in dispersion from the selected weights, 95\% paired.}
+\label{tab:exp_alpha}
+\input{tables/experiments_alpha}
+\end{table}
+
+\paragraph{Scale $k$ with province factors.} The selected values remain the minima of the grid (ratios 1.01 and 1.04). The neighbours cannot be told apart on the loss: $k=1.3$ $[-0.001, +0.004]$ and $k=1.5$ $[-0.001, +0.003]$ on weekdays, $k=1.1$ $[-0.002, +0.004]$ and $k=1.3$ $[-0.001, +0.005]$ on weekends.
+
+\paragraph{How many detectors.} With 200 random subsets of the calibration half, 25 detectors choose the selected $k$ or a neighbour in 75\% of cases on weekdays and 77\% on weekends, and 50 detectors in 97\% and 99\%; the mean loss on the test half changes by at most 0.001 between 25 and 50 detectors. Province factors from 25 calibration detectors give a larger dispersion than those from 100 in 8 of 12 comparisons over three subsets, and those from 50 in about half. The values for a single province vary strongly between subsets: Modena from 0.50 to 1.88 and Piacenza from 1.38 to 2.50, against 1.31 and 1.70 with all 100 detectors. Table~\ref{tab:exp_curve} gives the correction with subsets of detectors. It uses a fixed 20\% of detectors held out on single days, so it is not comparable in size with the leave-one-out test.
+
+\begin{table}[htbp]
+\centering
+\caption{Correction with subsets of detectors, depth 3, five repeats, on a fixed 20\% of complete detectors held out. Hourly error of the held-out detectors.}
+\label{tab:exp_curve}
+\input{tables/experiments_curve}
+\end{table}
+
+\paragraph{More relations with province factors.} $N=100$, with a multiplier of 1.15 on both day types, does not beat the model on the calibration half: dispersion 0.201 against 0.184 ($[-0.001, 0.032]$), Spearman 0.781 against 0.741 ($[-0.002, 0.090]$). The 2021 detectors were not used. The direction of travel does not meet its rule on the test half (median signal 0.051 against 0.028, $[-0.033, 0.096]$).
+
+\paragraph{2021 without calibration detectors.} The 141 detectors of 2021 include 60 of the calibration half. All detectors, and in brackets the 81 others: volume ratio 1.10 (1.11, interval [0.99, 1.23]), Spearman correlation 0.66 (0.65, [0.50, 0.76]), median $|\log_{10}|$ ratio 0.143 (0.149, [0.122, 0.192]), within a factor of two 85\% (83\%, [74, 90]).
+
+\paragraph{Variability between runs.} Between four seeds, the ranges are at most 0.002 for the volume ratio, 0.006 for the Spearman correlation, 0.003 for dispersion and 0.007 for the median error.
+
+\paragraph{What explains the error at single roads.} This diagnostic followed a protocol in the code repository, written before it was computed, and uses no simulations. The outcome is $\log_{10}$(simulated/observed) of daily volume and its absolute value, raw simulation. Table~\ref{tab:road_error} gives the out-of-fold $R^2$ lost when a group of predictors is removed from an ordinary least squares model (5 folds, 100 repeats), with permutation $p$ values Holm-adjusted within outcome. By its rule, a group is relevant if on the Monday it loses at least 0.05 with adjusted $p<0.05$, and at least 0.02 in 2021. Only road class meets it, on the signed error: primary roads are overestimated (median $+0.055$, 94 detectors) and secondary roads underestimated ($-0.046$, 53), while trunk roads have an unstable value ($-0.243$ with 12 detectors, $-0.040$ with 6 in 2021). The full model has an out-of-fold $R^2$ of 0.09 on the Monday, 0.13 on the Saturday and $-0.10$ in 2021, and $-0.28$ on the Monday when one province is left out in turn; a random forest gives 0.04 out of bag on the Monday. No group predicts the absolute error under the rule. The measure of omitted roads counts their length within 1~km, and does not show whether a given road takes traffic from the detector's road. 2021 is not an independent replication, since detectors and demand are the same.
+
+\begin{table}[htbp]
+\centering
+\caption{Out-of-fold $R^2$ lost when a group of predictors is removed, signed error, with Holm-adjusted permutation $p$. Omitted: OpenStreetMap roads farther than 30~m from any model link, within 1~km. Parallel: model links within 1~km with a similar bearing. Activity: population and OpenStreetMap points of activity within 1 and 5~km.}
+\label{tab:road_error}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Group & Monday (164) & $p$ & 2021 (122) & $p$ \\
+\midrule
+Road class & 0.194 & 0.007 & 0.089 & 0.042 \\
+Province & 0.060 & 0.078 & $-0.048$ & 0.70 \\
+Length and centrality & $-0.019$ & 1.00 & $-0.010$ & 0.74 \\
+Parallel roads & $-0.026$ & 1.00 & $-0.022$ & 0.74 \\
+Omitted roads & $-0.009$ & 0.80 & $-0.058$ & 0.74 \\
+Activity & 0.006 & 1.00 & $-0.007$ & 0.45 \\
+Distance from the regional boundary & $-0.014$ & 1.00 & $-0.010$ & 0.74 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Route weights by link.} Following a protocol written before the runs, 398 links of Forl\`i--Cesena with at least 50 probes in February 2020 received a weight from their own GPS count, on the scale of the class weights, with everything else unchanged, for one Monday and one Saturday. The simulation moves towards GPS on those links (Spearman from 0.66 to 0.77, in sample). At the detectors of the province, which did not enter the weights, the Spearman differences have intervals that include zero, and the dispersion falls on the Monday of February 2020 (0.227 to 0.178, $[-0.092, -0.012]$, 18 detectors) but not on the Saturday (0.309 to 0.316, $[-0.050, +0.050]$, 19) or in 2021 (Monday 0.177 to 0.190, $[-0.032, +0.051]$, 7; Saturday 0.216 to 0.197, $[-0.063, +0.034]$, 11). The rule is not met, and the model keeps the class weights. With so few detectors the test is inconclusive.
+
+\section{Value of the OD relations}
+\label{sec:od_value}
+
+To measure the value of the OD relations, we ran one simulation per day type without them. We kept the number of agents per interval and $k$, but drew all origins and destinations from population. The province factors act through sources with a location, so this simulation loses them too. Under a rule fixed before the runs, the relations are supported if, on the test half of 2020 or on the detectors of 2021, the 95\% interval of the Spearman difference is above zero or that of the dispersion difference is below zero. We also compared with GPS link counts, and we repeated the runs with further seeds to measure the variability between them. We also tried more relations: on the calibration detectors only, we let the relations among the 100 most active municipalities keep both ends, with a new multiplier of $k$ (Section~\ref{sec:experiments}).
+
+Further experiments followed protocols written before their runs (Section~\ref{sec:experiments}). They are exploratory, because the data had already been seen, and they do not change the model. To separate relations from factors, we ran the simulation without relations with node scores multiplied by the square root of the province factor, which gives a trip the geometric mean of the factors of its ends, and we completed a $2\times 2$ design. To isolate the pairings, we rearranged the destinations of agents with located relations within each 15-min interval, three times per case, at 50 and 347 municipalities. Origins, destinations and the total are unchanged. In null M the rearrangement is random, while in null D each agent stays in the distance class of its real trip (0--5, 5--10, 10--20, 20--50, above 50~km). Real pairs are supported if they beat null D in at least two of four comparisons on the same metric.
+
+We now ask what the OD relations themselves add. Only part of the table can answer: on a Monday, 20\% of inter-municipal trips keep their relation, and these are 28\% of the trips with a known destination (Section~\ref{sec:experiments}). Removing the relations from the final model takes away the regional pattern of the factors as well. That comparison raises the Spearman correlation on the test half (0.09 [0.03, 0.16] on the Monday and 0.06 [0.01, 0.12] on the Saturday), which meets the rule fixed before the runs, while the 2021 intervals reach zero and dispersion does not improve (Section~\ref{sec:additional}). When the same pattern is kept in the simulation without relations, the Spearman differences stay positive with intervals that include zero, and the model with relations has a larger spread of errors in all four comparisons, with intervals that exclude zero in two (Fig.~\ref{fig:od}, top; Table~\ref{tab:od}). The factors reduce the spread more when relations are present (Section~\ref{sec:experiments}). Chance between runs is small compared with these differences.
+
+Removing relations also changes how many trips start and end in each place. To isolate the pairings, we kept these numbers exact in each 15-min interval and rearranged only who goes where. Random pairs make the trips far too long, and they raise dispersion, with intervals that exclude zero in two of four comparisons (Fig.~\ref{fig:od}, middle); agreement in ranking does not change measurably. When distances are kept, real and rearranged pairs can hardly be told apart (Fig.~\ref{fig:od}, bottom). At 50 municipalities one dispersion interval excludes zero and at 347 none does, so the rule fixed before the runs (two of four) is not met. Agreement with GPS link counts does not change either. These tests have limited power: rearranging with distances kept changes the volume at the median detector by only 1--3\%, and a test with a simulated run as the truth shows that the expected effect at 50 municipalities is about as small as the intervals (Section~\ref{sec:experiments}). Extending the relations to 100 municipalities with province factors does not beat the model under its rule (Section~\ref{sec:experiments}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_od.pdf}
+\caption{\textbf{What the OD relations add.} Each row compares the model with real relations with a version without them: the marker is the estimated change and the bar its 95\% bootstrap interval, so a bar crossing the dashed line means that the data cannot establish a change. Blue circles: test half, 2020; orange squares: all detectors, 2021; Monday and Saturday simulations. \textbf{Relations removed, factors kept}: no located relations, with the regional pattern of the factors kept in the random ends. \textbf{Null M}: destinations rearranged at random within each 15-min interval, so that origins and destinations by municipality are exact and distances are lost. \textbf{Null D}: the same, with each agent kept in the distance class of its real trip. The null rows are the mean of three rearrangements. \textbf{(a)} Spread of the error between roads. \textbf{(b)} Ranking of roads. Real relations tend to have a lower spread than random pairs, and cannot be told apart from pairs with the same distances.}
+\label{fig:od}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{OD relations and province factors in a complete $2\times 2$ design: difference from removing the relations with the factors kept in the random ends, and from adding the factors to the simulation without relations. Positive Spearman differences and negative dispersion differences mean a gain from adding the source. Intervals: 95\% paired bootstrap over detectors. Exploratory.}
+\label{tab:od}
+\input{tables/od_factorial}
+\end{table}
 
 \end{document}

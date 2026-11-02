@@ -1,0 +1,206 @@
+{
+ "N50_2020-02-10": {
+  "real": {
+   "agents": 2027746,
+   "distance": [
+    [
+     0.0617,
+     0.4067,
+     0.3982,
+     0.1303,
+     0.003
+    ],
+    12.64
+   ]
+  },
+  "M": {
+   "agents": 458255,
+   "share_moved": 0.9553327295937851,
+   "sources": 2441,
+   "real_sources": 689,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.0056,
+     0.0688,
+     0.0966,
+     0.3067,
+     0.5224
+    ],
+    65.53
+   ]
+  },
+  "D": {
+   "agents": 458255,
+   "share_moved": 0.5095198088400563,
+   "sources": 1108,
+   "real_sources": 689,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.0617,
+     0.4067,
+     0.3982,
+     0.1303,
+     0.003
+    ],
+    14.05
+   ]
+  }
+ },
+ "N50_2020-02-15": {
+  "real": {
+   "agents": 1653234,
+   "distance": [
+    [
+     0.0601,
+     0.4075,
+     0.3999,
+     0.1292,
+     0.0033
+    ],
+    12.6
+   ]
+  },
+  "M": {
+   "agents": 355290,
+   "share_moved": 0.9589574713614231,
+   "sources": 2434,
+   "real_sources": 796,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.0048,
+     0.0628,
+     0.092,
+     0.2908,
+     0.5496
+    ],
+    68.21
+   ]
+  },
+  "D": {
+   "agents": 355290,
+   "share_moved": 0.5080441329618058,
+   "sources": 1123,
+   "real_sources": 796,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.0601,
+     0.4075,
+     0.3999,
+     0.1292,
+     0.0033
+    ],
+    13.93
+   ]
+  }
+ },
+ "N347_2020-02-10": {
+  "real": {
+   "agents": 1860536,
+   "distance": [
+    [
+     0.053,
+     0.3974,
+     0.4462,
+     0.1024,
+     0.0011
+    ],
+    12.04
+   ]
+  },
+  "M": {
+   "agents": 1585338,
+   "share_moved": 0.9884245504744099,
+   "sources": 87062,
+   "real_sources": 6216,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.0015,
+     0.0192,
+     0.0606,
+     0.2494,
+     0.6693
+    ],
+    83.73
+   ]
+  },
+  "D": {
+   "agents": 1585338,
+   "share_moved": 0.6683634657088898,
+   "sources": 15251,
+   "real_sources": 6216,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.053,
+     0.3974,
+     0.4462,
+     0.1024,
+     0.0011
+    ],
+    13.72
+   ]
+  }
+ },
+ "N347_2020-02-15": {
+  "real": {
+   "agents": 1511795,
+   "distance": [
+    [
+     0.054,
+     0.4046,
+     0.443,
+     0.0972,
+     0.0012
+    ],
+    11.92
+   ]
+  },
+  "M": {
+   "agents": 1271997,
+   "share_moved": 0.9900487186683616,
+   "sources": 88488,
+   "real_sources": 6627,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.0013,
+     0.0178,
+     0.0574,
+     0.2405,
+     0.6829
+    ],
+    85.77
+   ]
+  },
+  "D": {
+   "agents": 1271997,
+   "share_moved": 0.6694473336022019,
+   "sources": 14377,
+   "real_sources": 6627,
+   "margins_identical": true,
+   "total_identical": true,
+   "distance": [
+    [
+     0.054,
+     0.4046,
+     0.443,
+     0.0972,
+     0.0012
+    ],
+    13.56
+   ]
+  }
+ }
+}

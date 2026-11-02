@@ -1,4 +1,4 @@
-"""Locations used by the Article 1 analysis scripts (all relative to the repository, overridable by environment).
+"""Locations used by the analysis scripts (all relative to the repository, overridable by environment).
 
 ROOT     repository root
 ARTICLE  manuscript directory (figures/ and tables/ included in the paper)
@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ARTICLE = ROOT / "model" / "manuscript"
+ARTICLE = Path(os.environ.get("ARTICLE_DIR", ROOT / "model" / "manuscript"))
 RESULTS = Path(os.environ.get("RESULTS_DIR", ROOT / "model/results"))
 SIM_RUNS = Path(os.environ.get("SIM_RUNS", ROOT / "sim_runs"))
 DATA_CACHE = Path(os.environ.get("DATA_CACHE", ROOT / "data/cache"))  # downloaded public data (MTS monthly tables, OSM extract)

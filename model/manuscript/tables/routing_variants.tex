@@ -1,7 +1,7 @@
 \begin{table}[htbp]\centering
 \caption{Route-choice variants simulated for 10 February 2020. Calibration: Spearman correlation between simulated daily link volumes and GPS counts on Forl\`i--Cesena links. Detectors: Spearman correlation with the daily volumes of the detectors outside Forl\`i--Cesena complete on that day (not used for selection). Main roads: share of simulated vehicle-kilometres on motorway, trunk and primary links.}
 \label{tab:routing}
-\begin{tabular}{@{}lrrrrr@{}}\toprule
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}lrrrrr@{}}\toprule
 Variant & GPS links & Calibration $\rho_s$ & Detectors & Detector $\rho_s$ & Main roads \\\midrule
 Shortest distance, default speeds & 814 & 0.474 & 53 & 0.198 & 0.39 \\
 Shortest distance, GPS speeds & 814 & 0.478 & 53 & 0.190 & 0.38 \\
@@ -10,4 +10,4 @@ Mixed distance/time, GPS speeds & 814 & 0.484 & 53 & 0.175 & 0.37 \\
 Travel time + class transition weights & 814 & 0.537 & 53 & 0.109 & 0.47 \\
 Travel time + damped class weights & 814 & 0.532 & 53 & 0.105 & 0.42 \\
 Usage cost + class transition weights (selected) & 814 & 0.542 & 53 & 0.176 & 0.48 \\
-\bottomrule\end{tabular}\end{table}
+\bottomrule\end{tabular}}\end{table}

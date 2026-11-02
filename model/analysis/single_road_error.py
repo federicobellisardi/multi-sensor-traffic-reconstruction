@@ -85,6 +85,8 @@ def main(adopted=False):
     res["variance_explained_monday"] = {"road_class": r2(y, road), "province": r2(y, prov), "observed_volume": r2(y, logo), "all_three": r2(y, np.column_stack([road, prov, logo]))}
     res["same_detector_across_runs"] = {}
     for name, f in ({} if adopted else RUNS).items():
+        if not list(f(MON).glob(f"sim_{D.tag(MON)}_uniq_*.csv")):
+            continue
         o = {}
         for d in C.CAL_DAYS:
             x = resid(t, f, d)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assimilation, GPS validation and leave-one-detector-out test for the corrected reconstruction.
 
-Pipeline (run from the repository root after run_corrected_sims.py):
+Pipeline (run from the repository root after the final simulations):
   1. assimilate every simulated day with analysis/correction_fixed.py and the observed MTS
      coil tables (UTC, converted to local time inside the correction);
   2. compare hourly shares with the Viasat GPS extracts on all usable matched links, with

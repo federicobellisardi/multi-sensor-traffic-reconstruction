@@ -37,9 +37,10 @@ import demand_scaling as D  # noqa: E402
 import demand_scan_eval as E  # noqa: E402
 import source_value as V  # noqa: E402
 from paths import ROOT  # noqa: E402
+from paths import RESULTS as _RES  # noqa: E402
 
 OUT = D.RUNS / "od_matrix"
-FROZEN = D.RUNS / "radius_scan/r20"
+FROZEN = D.RUNS / f"radius_scan/r{int(D.CHERRY_RADIUS_KM)}"
 NS, RADII = (50, 100, 200, 347), (5, 20)
 PRIMARY = [f"N{n}_r{r}_x" for n in NS for r in RADII]
 GRID = [f"N{n}_r{r}" for n in NS for r in RADII] + PRIMARY
@@ -76,7 +77,7 @@ def quarters(hourly, k):
 
 
 def nodes():
-    g = json.load(open(ROOT / "model/results/carto_a059fb0.geojson"))["features"]
+    g = json.load(open(_RES / "carto_a059fb0.geojson"))["features"]
     p = {tuple(f["geometry"]["coordinates"][i]) for f in g for i in (0, -1)}
     return np.radians(np.array(sorted(p))[:, ::-1])
 
@@ -117,7 +118,7 @@ def sources(name, day, m=1.0):
             else:
                 loc[h] += v
     kept = sum(v.sum() for v in rel.values()) + sum(v.sum() for v in org.values()) + sum(v.sum() for v in dst.values()) + loc.sum()
-    f = m * (kept + dropped) / kept
+    f = m * (kept + dropped) / kept if not D.NO_CODE else m  # without the code in the model, k is already set on the demand without it
     k *= f
     for b in src.values():
         b["creation_rate"] = [int(round(f * v)) for v in b["creation_rate"]]

@@ -12,7 +12,8 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "model/results/corrected"
+_RES = Path(__import__("os").environ.get("RESULTS_DIR", ROOT / "model/results"))
+OUT = _RES / "corrected"
 N_BOOT, SEED = 2000, 20261037
 
 

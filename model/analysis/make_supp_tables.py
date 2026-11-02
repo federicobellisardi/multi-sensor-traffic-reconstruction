@@ -20,9 +20,9 @@ NAMES = {"V0_default_distance": "Shortest distance, default speeds",
 
 def table(name, caption, label, header, rows, align):
     t = [r"\begin{table}[htbp]\centering", rf"\caption{{{caption}}}", rf"\label{{{label}}}",
-         rf"\begin{{tabular}}{{@{{}}{align}@{{}}}}\toprule", header + r" \\\midrule"]
+         rf"\resizebox{{\textwidth}}{{!}}{{\begin{{tabular}}{{@{{}}{align}@{{}}}}\toprule", header + r" \\\midrule"]
     t += [" & ".join(map(str, r)) + r" \\" for r in rows]
-    t += [r"\bottomrule\end{tabular}\end{table}"]
+    t += [r"\bottomrule\end{tabular}}\end{table}"]
     (TAB / name).write_text("\n".join(t) + "\n")
 
 
@@ -45,14 +45,14 @@ def main():
                      f"{d['volume_spearman']:.2f}", f"{d['loo_volume_spearman']:.2f}"))
     table("loo.tex",
           "Leave-one-detector-out test. Errors are $\\sum|\\tilde u-c|/\\sum c$ in percent of the observed volume, "
-          "pooled over detectors or as the median over detectors; reached: share of withheld detectors whose link is modified by "
+          "pooled over detectors or as the median over detectors; reached: share of left-out detectors whose link is modified by "
           "the spreading from other detectors; improved/worse: share with lower/higher error than the simulation before correction; "
-          "$\\rho_s$: Spearman correlation of daily volumes with the observed ones before correction and with the detector withheld.",
+          "$\\rho_s$: Spearman correlation of daily volumes with the observed ones before correction and with the detector left-out.",
           "tab:loo", "Year & Detectors & Detector-days & Pooled raw & Pooled LOO & Median raw & Median LOO & Reached (\\%) & Improved (\\%) & Worse (\\%) & $\\rho_s$ raw & $\\rho_s$ LOO",
           rows, "lrrrrrrrrrrr")
     s = json.load(open(RES / "corrected/depth_selection.json"))
     table("depth.tex",
-          "Reduction of the pooled error (percentage points of observed volume) on withheld detectors, 5-fold cross-validation over "
+          "Reduction of the pooled error (percentage points of observed volume) on left-out detectors, 5-fold cross-validation over "
           f"the {s['detectors']} detectors of 2020 complete on each day, with bootstrap 95\\% intervals over detectors; difference: paired with "
           f"the selected depth {s['selected_depth']}, the smallest within one standard error ({s['se_of_best']:.1f} pp) of the best depth. "
           f"Raw error: {s['raw_error_pct']:.1f}\\%.",
@@ -60,32 +60,6 @@ def main():
           [(k, f"{v:.1f}", "[{:.1f}, {:.1f}]".format(*s["ci95"][k]),
             *((f"{s['paired_vs_selected'][k]['diff_pp']:+.1f}", "[{:+.1f}, {:+.1f}]".format(*s["paired_vs_selected"][k]["ci95"]))
               if k in s["paired_vs_selected"] else ("--", "--"))) for k, v in s["reduction_pp"].items()], "rrlrl")
-    e = pd.read_csv(RES / "corrected/error_vs_detector_distance.csv")
-    table("distance.tex",
-          "Median hourly-share MAE (pp) of the raw and corrected reconstruction on GPS links by network distance "
-          "from the nearest detector (links).",
-          "tab:distance", "Year & Distance & Links & Raw & Corrected & Reduction",
-          [(int(v.year), v.hop_class, int(v.links), f"{v.mae_raw:.2f}", f"{v.mae_assim:.2f}", f"{v.gain_pp:.2f}")
-           for v in e.itertuples()], "lrrrrr")
-    val = json.load(open(RES / "corrected/validation_summary.json"))
-    rows = []
-    for y in ("2020", "2021"):
-        for k, d in val[y]["probe_strata"].items():
-            rows.append((y, k, d["links"], f"{d['mae_pp']:.2f}", f"{d['mae_pp_mts']:.2f}", f"{d['pearson']:.2f}"))
-    table("probe_strata.tex",
-          "Hourly-share MAE (pp) by number of GPS probes per link and campaign: reconstruction, mean detector profile and "
-          "hourly correlation of the reconstruction (medians).",
-          "tab:probes", "Campaign & Probes & Links & Reconstruction & Mean detector & Correlation", rows, "llrrrr")
-    base = json.load(open(RES / "baseline_v0/validation_summary.json"))
-    rows = []
-    for y in ("2020", "2021"):
-        for lab, src in [("shortest distance", base), ("GPS-informed", val)]:
-            d = src[y]["day_types"]["all"]
-            rows.append((y, lab, d["links"], f"{d['mae_pp_raw']['median']:.2f}"))
-    table("routing_shape.tex",
-          "Median hourly-share MAE (pp) of the simulation before detector correction on all usable GPS links, with "
-          "shortest-distance and GPS-informed route choice.", "tab:routing_shape",
-          "Campaign & Route choice & Links & MAE (pp)", rows, "llrr")
     cmp = json.load(open(RES / "corrected/routing_comparison.json"))
     rows = []
     for y, d in cmp.items():
@@ -100,12 +74,6 @@ def main():
           "simulated to observed volume.", "tab:routing_volumes",
           "Campaign & Detectors & $\\rho_s$ distance & $\\rho_s$ GPS & Difference & $|\\log_{10}|$ distance & $|\\log_{10}|$ GPS",
           rows, "lrrrlrr")
-    sc = pd.read_csv(RES / "demand/calibration_curve.csv")
-    table("demand_scan.tex",
-          "Daily volumes on the calibration detectors (mean of February 2020 weekdays and weekend days) for common demand factors $k$: "
-          "mean squared $\\log_{10}$ ratio, the loss that selects $k$; median absolute $\\log_{10}$ ratio; pooled simulated/observed ratio.",
-          "tab:scan", "$k$ & Mean squared $\\log_{10}$ & $|\\log_{10}|$ & Ratio",
-          [(f"{v.k:.1f}", f"{v.mean_sq_log10:.3f}", f"{v.median_abs_log10:.2f}", f"{v.volume_ratio:.2f}") for v in sc.itertuples()], "rrrr")
     print("tables written")
 
 

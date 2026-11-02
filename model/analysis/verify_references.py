@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Save authoritative Crossref metadata and BibTeX for the selected bibliography.
 
-An API failure is recorded and never replaced by invented metadata. The original
-bibliography is untouched. Run before compiling model/manuscript/main.tex.
+An API failure is recorded and never replaced by invented metadata. WARNING: this
+rewrites model/manuscript/references.bib from its own list of keys, which is shorter
+than the bibliography of the manuscript; restore the file with git after running it.
 """
 import json
 from pathlib import Path

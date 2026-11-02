@@ -49,7 +49,7 @@ def daily():
     o = g[~g.coil.isin(calib)].reset_index(drop=True)
     get = lambda base, k, d: D.link_daily(next((base / f"k{k:.1f}").glob(f"sim_{D.tag(d)}_uniq_*.csv")))
     new = np.array([D.link_daily(next(FROZEN.glob(f"sim_{D.tag(d)}_uniq_*.csv"))).get(l, 0.0) for d, l in o[["day", "poly_lid"]].values])
-    ref = np.array([get(REF, 1.2, d).get(l, 0.0) for d, l in o[["day", "poly_lid"]].values])
+    ref = new if D.NO_CODE else np.array([get(REF, 1.2, d).get(l, 0.0) for d, l in o[["day", "poly_lid"]].values])
     obs, coil = o.obs.values, o.coil.values
     def m(s, b):
         lr = np.log10(np.clip(s[b], 1, None) / obs[b])

@@ -35,11 +35,12 @@ import reconstruct_and_validate as P  # noqa: E402
 import source_value as V  # noqa: E402
 import gps_validation_split as G  # noqa: E402
 from paths import ROOT  # noqa: E402
+from paths import RESULTS as _RES  # noqa: E402
 
 N_BOOT, N_PERM, SEED = 5000, 20000, 20261047
 LOW, HIGH = 0.80, 1.25
 PROV = pd.read_csv(ROOT / "vars/extra/er_barriers.csv", sep=";").set_index("ID").PRO
-OUT = ROOT / "model/results/corrected"
+OUT = _RES / "corrected"
 
 
 def geh(m, c):
@@ -126,7 +127,7 @@ def volumes(r, hours, rng):
 
 
 def shape(year):
-    m = pd.read_csv(ROOT / f"model/results/private/corrected_link_metrics_{year}_all.csv").dropna(subset=["mae_pp_raw", "mae_pp_flat"])
+    m = pd.read_csv(_RES / f"private/corrected_link_metrics_{year}_all.csv").dropna(subset=["mae_pp_raw", "mae_pp_flat"])
     m = m[~m.cid.isin(G.fc_links())]
     d = m.mae_pp_raw - m.mae_pp_flat
     return {"links": int(len(m)), "median_raw": float(m.mae_pp_raw.median()), "median_flat": float(m.mae_pp_flat.median()), "share_better": float((d < 0).mean()), "T4_p": float(wilcoxon(d, alternative="less").pvalue)}

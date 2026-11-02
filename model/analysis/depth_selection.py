@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Propagation depth of the correction estimated by cross-validation over detectors (Part B, step 3).
 
-sensitivity_fixed.py compared depths 1, 3 and 5 on one 20% hold-out. Here the 2020 detectors that are complete
+An earlier test compared depths 1, 3 and 5 on one 20% hold-out. Here the 2020 detectors that are complete
 on each validation day are split in 5 folds; every fold is withheld in turn (together with the detectors
 sharing its link), the correction is run with the remaining detectors for every depth 1..6, and the absolute
 hourly error is measured on the withheld detectors (raw simulation vs corrected). Held-out detectors never

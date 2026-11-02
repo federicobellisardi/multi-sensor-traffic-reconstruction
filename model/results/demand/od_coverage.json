@@ -1,50 +1,136 @@
 {
  "Monday": {
-  "municipalities_in_table": 1303,
-  "active_municipalities": 50,
+  "table_trips_per_day": 3152600.0,
   "relations_nonzero": 9330,
-  "relations_located": 600,
-  "share_of_table": {
-   "intra_municipal": 0.4390213897523737,
-   "located_relations_both_ends": 0.11008199581297977,
-   "active_to_active_not_located": 3.404597263634249e-05,
-   "active_origin_only": 0.16837731819239143,
-   "active_destination_only": 0.09087604939838019,
-   "both_ends_outside_active_inter_municipal": 0.19160920087123853
+  "active_municipalities": 50,
+  "classes": {
+   "code_000000000": {
+    "trips": 560128.6666666667,
+    "share_of_table": 0.17767197445494726,
+    "relations": 1293
+   },
+   "intra_active_discarded": {
+    "trips": 1197096.1666666667,
+    "share_of_table": 0.379717111801899,
+    "relations": 50
+   },
+   "intra_other_random_both_ends": {
+    "trips": 159887.1666666667,
+    "share_of_table": 0.050715969887288805,
+    "relations": 276
+   },
+   "relation_kept": {
+    "trips": 346678.6666666666,
+    "share_of_table": 0.10996595402736364,
+    "relations": 476
+   },
+   "active_to_active_lost_to_rounding": {
+    "trips": 473.16666666666663,
+    "share_of_table": 0.0001500877582524477,
+    "relations": 215
+   },
+   "active_origin_random_destination": {
+    "trips": 284275.6666666667,
+    "share_of_table": 0.09017181585569584,
+    "relations": 1421
+   },
+   "active_destination_random_origin": {
+    "trips": 286495.8333333334,
+    "share_of_table": 0.09087604939838019,
+    "relations": 1475
+   },
+   "both_outside_random_both_ends": {
+    "trips": 317564.6666666666,
+    "share_of_table": 0.10073103681617288,
+    "relations": 4124
+   }
   },
-  "table_total_per_day": 3152600.0,
-  "lost_to_integer_truncation_share": 0.014258389900399626,
-  "agents_injected_k1": {
+  "inter_municipal_with_code": {
+   "trips": 1768541.1666666665,
+   "relations": 9003,
+   "share_relation_kept": 0.1960252173943364,
+   "share_code": 0.30140840185889556,
+   "share_relation_not_used": 0.5025663807467681
+  },
+  "inter_municipal_without_code": {
+   "trips": 1235488.0,
+   "relations": 7711,
+   "share_trips_relation_kept": 0.28060059398931164,
+   "share_relations_kept": 0.061729996109454024
+  },
+  "agents_k1": {
    "rnd_dest": 280304,
-   "src_rnd": 523856,
-   "rnd_rnd": 763516,
+   "src_rnd": 278064,
+   "rnd_rnd": 456248,
    "scr_dest": 356332,
    "scr_dest_prov": 67960
-  },
-  "share_nonintra_with_relation_kept": 0.1962320733840236
+  }
  },
  "Saturday": {
-  "municipalities_in_table": 1339,
-  "active_municipalities": 50,
+  "table_trips_per_day": 2998841.666666667,
   "relations_nonzero": 10421,
-  "relations_located": 599,
-  "share_of_table": {
-   "intra_municipal": 0.4290590533567126,
-   "located_relations_both_ends": 0.10722701265210734,
-   "active_to_active_not_located": 9.392515443462891e-05,
-   "active_origin_only": 0.17163899394488424,
-   "active_destination_only": 0.08981601229363559,
-   "both_ends_outside_active_inter_municipal": 0.20216500259822542
+  "active_municipalities": 50,
+  "classes": {
+   "code_000000000": {
+    "trips": 564305.3333333334,
+    "share_of_table": 0.188174434017579,
+    "relations": 1308
+   },
+   "intra_active_discarded": {
+    "trips": 1109660.0,
+    "share_of_table": 0.3700295391831846,
+    "relations": 50
+   },
+   "intra_other_random_both_ends": {
+    "trips": 152052.8333333333,
+    "share_of_table": 0.05070385509960789,
+    "relations": 284
+   },
+   "relation_kept": {
+    "trips": 320861.8333333334,
+    "share_of_table": 0.10699525650181597,
+    "relations": 450
+   },
+   "active_to_active_lost_to_rounding": {
+    "trips": 976.6666666666666,
+    "share_of_table": 0.0003256813047259914,
+    "relations": 389
+   },
+   "active_origin_random_destination": {
+    "trips": 268475.8333333334,
+    "share_of_table": 0.089526511625322,
+    "relations": 1669
+   },
+   "active_destination_random_origin": {
+    "trips": 269344.0,
+    "share_of_table": 0.08981601229363559,
+    "relations": 1684
+   },
+   "both_outside_random_both_ends": {
+    "trips": 313165.1666666666,
+    "share_of_table": 0.10442870997412887,
+    "relations": 4587
+   }
   },
-  "table_total_per_day": 2998841.666666667,
-  "lost_to_integer_truncation_share": 0.016250496719566798,
-  "agents_injected_k1": {
+  "inter_municipal_with_code": {
+   "trips": 1712161.5,
+   "relations": 10086,
+   "share_relation_kept": 0.1874016168062028,
+   "share_code": 0.3150041628666455,
+   "share_relation_not_used": 0.49759422032715184
+  },
+  "inter_municipal_without_code": {
+   "trips": 1172823.5,
+   "relations": 8779,
+   "share_trips_relation_kept": 0.27358066523507873,
+   "share_relations_kept": 0.051258685499487415
+  },
+  "agents_k1": {
    "rnd_dest": 262516,
-   "src_rnd": 507200,
-   "rnd_rnd": 753652,
+   "src_rnd": 261656,
+   "rnd_rnd": 441852,
    "scr_dest": 323660,
    "scr_dest_prov": 73368
-  },
-  "share_nonintra_with_relation_kept": 0.18780753645805806
+  }
  }
 }

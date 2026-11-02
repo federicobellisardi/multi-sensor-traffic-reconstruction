@@ -1,6 +1,6 @@
 # Multi-sensor traffic reconstruction
 
-Regional traffic reconstruction for Emilia-Romagna (Italy) from mobile-phone origin–destination
+Regional traffic simulation for Emilia-Romagna (Italy) from mobile-phone origin–destination
 demand, an agent-based simulator on an OpenStreetMap-derived road graph, inductive loop detectors
 (MTS) and GPS probes, with the analyses and manuscripts built on it.
 

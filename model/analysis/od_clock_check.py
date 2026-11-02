@@ -4,7 +4,7 @@
 Compares the hourly share of all OD activity (raw hourly tables data/tables_rpc-rpc/<yymmddHH00>.csv,
 weekdays 10-14 Feb 2020) with the local-time, start-labelled hourly share of the MTS coils complete
 on the same days. The best agreement at lag 0 (OD label h = local interval [h, h+1)) supports the
-fixed_clock mapping used in run_corrected_sims.py.
+fixed_clock mapping used in the simulations.
 """
 import numpy as np, pandas as pd, glob, os
 from pathlib import Path

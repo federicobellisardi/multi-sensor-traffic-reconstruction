@@ -1,0 +1,50 @@
+{
+ "Monday": {
+  "municipalities_in_table": 1303,
+  "active_municipalities": 50,
+  "relations_nonzero": 9330,
+  "relations_located": 600,
+  "share_of_table": {
+   "intra_municipal": 0.4390213897523737,
+   "located_relations_both_ends": 0.11008199581297977,
+   "active_to_active_not_located": 3.404597263634249e-05,
+   "active_origin_only": 0.16837731819239143,
+   "active_destination_only": 0.09087604939838019,
+   "both_ends_outside_active_inter_municipal": 0.19160920087123853
+  },
+  "table_total_per_day": 3152600.0,
+  "lost_to_integer_truncation_share": 0.014258389900399626,
+  "agents_injected_k1": {
+   "rnd_dest": 280304,
+   "src_rnd": 523856,
+   "rnd_rnd": 763516,
+   "scr_dest": 356332,
+   "scr_dest_prov": 67960
+  },
+  "share_nonintra_with_relation_kept": 0.1962320733840236
+ },
+ "Saturday": {
+  "municipalities_in_table": 1339,
+  "active_municipalities": 50,
+  "relations_nonzero": 10421,
+  "relations_located": 599,
+  "share_of_table": {
+   "intra_municipal": 0.4290590533567126,
+   "located_relations_both_ends": 0.10722701265210734,
+   "active_to_active_not_located": 9.392515443462891e-05,
+   "active_origin_only": 0.17163899394488424,
+   "active_destination_only": 0.08981601229363559,
+   "both_ends_outside_active_inter_municipal": 0.20216500259822542
+  },
+  "table_total_per_day": 2998841.666666667,
+  "lost_to_integer_truncation_share": 0.016250496719566798,
+  "agents_injected_k1": {
+   "rnd_dest": 262516,
+   "src_rnd": 507200,
+   "rnd_rnd": 753652,
+   "scr_dest": 323660,
+   "scr_dest_prov": 73368
+  },
+  "share_nonintra_with_relation_kept": 0.18780753645805806
+ }
+}

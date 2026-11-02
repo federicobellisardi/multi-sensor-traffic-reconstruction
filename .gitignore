@@ -81,3 +81,18 @@ digital_twin/platform/frontend/node_modules/
 digital_twin/platform/frontend/dist/
 digital_twin/platform/frontend/test-results/
 digital_twin/platform/frontend/playwright-report/
+
+# LaTeX build files and local submission notes
+model/manuscript/*.aux
+model/manuscript/*.bbl
+model/manuscript/*.blg
+model/manuscript/*.fdb_latexmk
+model/manuscript/*.fls
+model/manuscript/*.log
+model/manuscript/*.out
+model/manuscript/*.synctex.gz
+model/manuscript/supplementary/*.aux
+model/manuscript/supplementary/*.log
+model/manuscript/supplementary/*.out
+model/submission/
+digital_twin/notes/

@@ -1,293 +1,293 @@
 coil,poly_cid,prov,dist_link_m,dist_other_link_m,nearest_other_link,road_class,link_ref,osm_ref,osm_name,link_km,parallel_links,far,other_link_closer,road_differs,no_road,closed,province,doubtful,log10_ratio
-7,3108,BO,6.797275216299904,255.13255803686104,262647,primary,SS64,SS64,Via Nazionale,1.4199662571373817,0,False,False,False,False,False,False,False,-0.6943177028032929
-52,94530,BO,4.893169354521202,inf,-1,primary,SP253,SP253,Via San Vitale,4.470555189078341,0,False,False,False,False,False,False,False,
-152,214297,BO,13.873318243801094,inf,-1,trunk,SS569,SS569,SS569 di Vignola,1.9386786248490615,0,False,False,False,False,False,False,False,-0.2952555704709183
-153,417739,BO,7.7071148483249114,55.98806322371341,415557,secondary,,,Via Porrettana,4.6209404884558065,0,False,False,False,False,True,False,True,-4.036423507578577
-154,93148,BO,9.049807269848507,inf,-1,primary,SS65bis,SS65bis,Via Alcide De Gasperi,4.874432721792501,0,False,False,False,False,False,False,False,0.31001529259496835
-155,151832,BO,7.322686870009503,inf,-1,primary,,,Via Emilia,4.789997836065625,0,False,False,False,False,False,False,False,
-156,179909,BO,9.174083786295613,inf,-1,primary,SS253,SS253,Via Bruno Tosarelli,3.389441106867705,0,False,False,False,False,False,False,False,
-157,160322,BO,4.572658087281349,inf,-1,primary,,,Via San Donato,3.689776224812719,0,False,False,False,False,False,False,False,0.3821445213744682
-158,160413,BO,7.28229944800307,inf,-1,primary,SS64,SS64,Via Ferrarese,2.3369825909292805,0,False,False,False,False,False,False,False,0.2811255143839454
-160,236386,BO,9.422848126403089,inf,-1,secondary,SP18,,Via Papa Giovanni Paolo II,9.234442432497238,0,False,False,False,False,False,False,False,-0.13295225434632515
-161,215558,BO,8.813594978333285,inf,-1,primary,SS568,SS568,Via Persiceto,9.937714506413071,0,False,False,False,False,False,False,False,
-177,146451,BO,8.1161213222891,39.6819671381322,132558,trunk,NSA313,NSA313,Complanare Sud,3.0070309972877065,0,False,False,False,False,False,False,False,
+7,3108,BO,6.797275216299904,255.13255803686104,262647,primary,SS64,SS64,Via Nazionale,1.4199662571373959,0,False,False,False,False,False,False,False,-0.7254214236605143
+52,94530,BO,4.893169354521202,inf,-1,primary,SP253,SP253,Via San Vitale,4.470555189078324,0,False,False,False,False,False,False,False,
+152,214297,BO,13.873318243801094,inf,-1,trunk,SS569,SS569,SS569 di Vignola,1.9386786248490606,0,False,False,False,False,False,False,False,-0.27561703243959423
+153,417739,BO,7.7071148483249114,55.98806322371341,415557,secondary,,,Via Porrettana,4.620940488455803,0,False,False,False,False,True,False,True,-4.036423507578577
+154,93148,BO,9.049807269848507,inf,-1,primary,SS65bis,SS65bis,Via Alcide De Gasperi,4.874432721792499,0,False,False,False,False,False,False,False,0.2985999621490858
+155,151832,BO,7.322686870009503,inf,-1,primary,,,Via Emilia,4.789997836065918,0,False,False,False,False,False,False,False,
+156,179909,BO,9.174083786295613,inf,-1,primary,SS253,SS253,Via Bruno Tosarelli,3.389441106867706,0,False,False,False,False,False,False,False,
+157,160322,BO,4.572658087281349,inf,-1,primary,,,Via San Donato,3.6897762248127206,0,False,False,False,False,False,False,False,0.34534732693666265
+158,160413,BO,7.28229944800307,inf,-1,primary,SS64,SS64,Via Ferrarese,2.336982590929342,0,False,False,False,False,False,False,False,0.2541264980205462
+160,236386,BO,9.422848126403089,inf,-1,secondary,SP18,,Via Papa Giovanni Paolo II,9.234442432497216,0,False,False,False,False,False,False,False,-0.11141775044984345
+161,215558,BO,8.813594978357676,inf,-1,primary,SS568,SS568,Via Persiceto,9.937714506413181,0,False,False,False,False,False,False,False,
+177,146451,BO,8.1161213222891,39.6819671381322,132558,trunk,NSA313,NSA313,Complanare Sud,3.0070309972877074,0,False,False,False,False,False,False,False,
 215,64390,BO,7.625901468020007,inf,-1,primary,SS253bis,SS253bis,Trasversale di Pianura,2.07170507984985,0,False,False,False,False,False,False,False,
-243,147694,BO,8.40997455922871,inf,-1,secondary,SP27,SP27,Via Cassola,3.6084354528573135,0,False,False,False,False,False,False,False,0.13084813051160363
-244,78963,BO,7.341507585315852,inf,-1,secondary,SP569R,SP569R,Via Provinciale,5.013447457401357,0,False,False,False,False,False,False,False,0.05495535919908657
-245,78679,BO,9.868990634841431,93.5638455693678,79385,primary,SS569bis,SS569bis,Via Claudia,2.0559747921969413,0,False,False,False,False,False,False,False,0.27023261572628154
-246,215489,BO,6.297334402141789,172.66635827263016,236136,primary,SP255,SP255,Via Cento,2.852826257155199,0,False,False,False,False,False,False,False,-0.0034160965120296092
-247,61345,BO,8.385479924632708,inf,-1,primary,SP255,SP255,Via Modena,2.8663117598382,0,False,False,False,False,False,False,False,0.305415830411208
-251,417142,BO,5.656964517861082,inf,-1,primary,SP610,SP610,Via Montanara,8.186053243179659,0,False,False,False,False,False,False,False,
-252,234842,BO,6.967258716408612,inf,-1,primary,SS253bis,SS253bis,Strada statale 253 bis Trasversale di Pianura,8.093962985261165,0,False,False,False,False,False,False,False,0.3189372873232465
-253,159493,BO,7.834653642341417,inf,-1,primary,SP253,SP253,Via San Vitale Ovest,8.715356882843253,0,False,False,False,False,False,False,False,
+243,147694,BO,8.409974559322514,inf,-1,secondary,SP27,SP27,Via Cassola,3.608435452857288,0,False,False,False,False,False,False,False,0.1264917705700398
+244,78963,BO,7.341507585315852,inf,-1,secondary,SP569R,SP569R,Via Provinciale,5.0134474574013925,0,False,False,False,False,False,False,False,0.06547852407268549
+245,78679,BO,9.868990634841431,93.5638455693678,79385,primary,SS569bis,SS569bis,Via Claudia,2.0559747921969547,0,False,False,False,False,False,False,False,0.3174689330998198
+246,215489,BO,6.2973344022496756,172.66635827269818,236136,primary,SP255,SP255,Via Cento,2.8528262571551477,0,False,False,False,False,False,False,False,0.010644449552934563
+247,61345,BO,8.385479924632708,inf,-1,primary,SP255,SP255,Via Modena,2.8663117598382,0,False,False,False,False,False,False,False,0.3158194294645319
+251,417142,BO,5.656964517965276,inf,-1,primary,SP610,SP610,Via Montanara,8.186053243179648,0,False,False,False,False,False,False,False,
+252,234842,BO,6.967258716408612,inf,-1,primary,SS253bis,SS253bis,Strada statale 253 bis Trasversale di Pianura,8.093962985261067,0,False,False,False,False,False,False,False,0.3339418787860804
+253,159493,BO,7.834653642341417,inf,-1,primary,SP253,SP253,Via San Vitale Ovest,8.71535688284325,0,False,False,False,False,False,False,False,
 254,249675,BO,7.4206918468785235,inf,-1,primary,SS9,SS9,Via Emilia,8.464967519601126,0,False,False,False,False,False,False,False,
-255,230811,BO,9.505128054560636,inf,-1,primary,SS9,SS9,Via Emilia Levante,4.894448371522869,0,False,False,False,False,False,False,False,
-274,183140,BO,7.4407042462451765,inf,-1,primary,SS64,SS64,Via Nazionale,3.873118009148582,0,False,False,False,False,False,False,False,0.17804047848345583
-275,182409,BO,3.3618125419661307,inf,-1,secondary,SP5,SP5,Via Savena Superiore,5.181933054550418,0,False,False,False,False,False,False,False,-0.06859711879509693
-276,406909,BO,10.225525349434445,106.67217782274638,406918,primary,SS253bis,SS253bis,Via Guglielmo Marconi,0.4650090045970235,0,False,False,False,False,False,False,False,0.2270758958343328
-277,235648,BO,3.8606776717291083,inf,-1,secondary,SP6,SP6,Via Zenzalino Nord,14.086404307263265,0,False,False,False,False,False,False,False,0.0875245869759208
-278,160189,BO,5.27987532358057,inf,-1,trunk,SP6,SP6,Via Zenzalino Sud,6.217224030907634,0,False,False,False,False,False,False,False,0.14521188709505978
-279,232080,BO,8.587632031667306,inf,-1,secondary,SP31,SP31,Via Stradelli Guelfi,4.143669745737941,0,False,False,False,False,False,False,False,-0.17152194724020636
-280,213774,BO,6.128393312498878,171.7198730151356,232182,secondary,SP26,SP26,Via Gesso,4.134980732740241,0,False,False,False,False,False,False,False,
-281,59901,BO,9.28866507101887,inf,-1,secondary,SP78,SP78,Viale Matilde di Canossa,3.795541590851766,0,False,False,False,False,False,False,False,0.04978207917752624
-282,214686,BO,7.884353425079996,inf,-1,primary,SS9,SS9,Via Cocchi Variante SS9,7.4912969996101095,0,False,False,False,False,False,False,False,0.1805248113579484
-285,183332,BO,8.2642129256896,inf,-1,secondary,SP1,SP1,Via Mezzo Levante,6.2553934729350615,0,False,False,False,False,False,False,False,0.03319019931415182
-288,11824,BO,7.855320608886284,inf,-1,secondary,SP42,SP42,Via Provinciale Bologna,3.301174199547915,0,False,False,False,False,False,False,False,-0.3422546601115526
-290,61563,BO,4.299477789332385,inf,-1,secondary,SP11,SP11,VIa San Benedetto,7.663080032798666,0,False,False,False,False,False,False,False,0.10338156363231665
-291,163435,BO,9.8176392129485,inf,-1,secondary,SP4,SP4,Via Galliera Nord,4.344618059243118,0,False,False,False,False,False,False,False,-0.11085604819900831
-292,80950,BO,5.8097306004907425,inf,-1,secondary,SP4,SP4,Via Poggiorenatico,5.751418755506988,0,False,False,False,False,False,False,False,-0.28835073589572785
-330,250581,BO,8.341192548285107,inf,-1,primary,SS64,SS64,,9.376689585380726,0,False,False,False,False,False,False,False,
-331,226695,BO,12.27634083612731,134.49044126087486,203285,primary,SP325,SP325,Via Val di Setta,4.909319512188639,0,False,False,False,False,False,False,False,
-501,81081,BO,9.508278759240039,inf,-1,primary,SS568,SS568,,2.625521671313818,0,False,False,False,False,False,False,False,
-502,166428,BO,6.321321363979175,181.7063702329057,166423,secondary,SP26,SP26,Via Rigosa,0.6257077665221027,0,False,False,False,False,False,False,False,
-503,55412,BO,6.3646227589924225,inf,-1,secondary,SP26,SP26,Via Lavino,21.580560445545103,0,False,False,False,False,False,False,False,
-504,156481,BO,8.055426438021572,inf,-1,secondary,SP7,SP7,Via Idice,23.199773746552452,0,False,False,False,False,False,False,False,-0.2037145368632815
-505,83885,BO,7.948877637615327,inf,-1,primary,,,Via Provinciale Selice,4.0458701641594725,0,False,False,False,False,False,False,False,0.15242343667349728
-600,251715,BO,9.264085840196966,inf,-1,trunk,SP19,SP19,Via San Carlo,5.109969136545428,0,False,False,False,False,False,False,False,0.2994072000560006
-601,246585,BO,3.385845156194567,inf,-1,secondary,SP21,SP21,Via Viara,22.625257940080452,0,False,False,False,False,False,False,False,
-602,164288,BO,6.748565304825607,inf,-1,secondary,,,Via del Papa,7.476435638318912,0,False,False,False,False,False,False,False,
-603,163245,BO,12.668998697120927,inf,-1,secondary,SP10,SP10,SP10,6.3708226471052924,0,False,False,False,False,False,False,False,
-604,220128,BO,7.953149696041418,inf,-1,secondary,SP37,SP37,Via del Sasso,4.785758381530042,0,False,False,False,False,False,False,False,0.12848657286563353
-605,224276,BO,3.930319875240535,inf,-1,primary,SS623,SS623,Via Papa Giovanni XXIII,3.123523138139503,0,False,False,False,False,False,False,False,-0.6857030488273359
-627,73457,BO,7.207273957986058,inf,-1,primary,SS64,SS64,Strada Statale 64 Porrettana,6.841779044145345,0,False,False,False,False,False,False,False,-0.3990411375545062
-660,237128,BO,5.2122298458791985,inf,-1,secondary,SP25,SP25,Via Imperiale,8.03613453650454,0,False,False,False,False,False,False,False,
-683,412275,BO,17.336618666708283,inf,-1,primary,SP86,SP86,,5.675295720242227,0,False,False,False,False,False,False,False,
-684,414069,BO,1.2458900031776161,inf,-1,primary,SP87,SP87,Strada Provinciale Nuova Galliera,6.157223980533,0,False,False,False,False,False,False,False,
-685,55412,BO,6.950103017142638,inf,-1,secondary,SP26,SP26,Via Lavino,21.580560445545103,0,False,False,False,False,False,False,False,
-16,240871,FE,3.9299088516983782,inf,-1,primary,SP69,SP69,Via Virgiliana,13.139802023475717,0,False,False,False,False,False,False,False,
-53,130735,FE,6.6657996662548475,inf,-1,primary,SS309,SS309,Via Romea,5.636097133847236,0,False,False,False,False,False,False,False,-0.34132682020684324
-115,116828,FE,3.6683929780467803,inf,-1,secondary,SP68,SP68,Via per Ariano,2.725804973585638,0,False,False,False,False,False,False,False,
-287,12407,FE,6.233781333936462,inf,-1,secondary,SP6,SP6,Via Nuova,4.516477947438689,0,False,False,False,False,False,False,False,-0.2016343643662327
-289,12614,FE,7.868176094059614,inf,-1,primary,SP66,SP66,Via Statale,7.412071477303325,0,False,False,False,False,False,False,False,-0.07330505053120186
-376,162678,FE,5.181668177232061,inf,-1,primary,SS495,SS495,Strada Portomaggiore,7.505979540952816,0,False,False,False,False,False,False,False,
-377,99755,FE,7.998390550780721,inf,-1,secondary,SP18,SP18,Via per Zerbinate,7.187203103630546,0,False,False,False,False,False,False,False,-0.1757510361774095
-410,83643,FE,9.1860871262208,inf,-1,tertiary,SP54,SP54,,2.701583926565764,0,False,False,False,False,False,False,False,-0.44475692523115845
-411,115750,FE,7.69148034875109,inf,-1,tertiary,SP53,SP53,Via Valle Oppio,7.397398194340514,0,False,False,False,False,False,False,False,-0.3649606416719428
-606,149801,FE,3.66723776041232,230.08153857212903,115399,primary,SP70,SP70,Asse Viario Cispadano,5.419729605680051,0,False,False,False,False,False,False,False,
-628,267482,FE,7.626660072435169,inf,-1,primary,SS309,SS309,Via Romea,12.568204203256169,0,False,False,False,False,False,False,False,-0.1333818752436043
-652,114398,FE,10.837634457537918,inf,-1,primary,SS16,SS16,Via Nazionale Levante,6.152306735150594,0,False,False,False,False,False,False,False,-0.08285386528025013
-661,239304,FE,8.217977217398284,inf,-1,primary,SP15,SP15,Via del Mare,10.45672739755913,0,False,False,False,False,False,False,False,
-662,99166,FE,5.097364000138719,inf,-1,primary,SP2,SP2,Via Primicello,5.998441004272286,0,False,False,False,False,False,False,False,0.02743882466244671
-663,185426,FE,5.5013346722551875,inf,-1,primary,SS309dir/a,SS309dir/a,,5.28178214050733,0,False,False,False,False,False,False,False,
-9,152233,FO,9.181383605223957,inf,-1,primary,SS67,SS67,Via Tosco Romagnola,7.682688388219663,0,False,False,False,False,False,False,False,
-116,434828,FO,2.4919764248185863,221.96788537650082,434148,primary,,,,2.9014350789500023,0,False,False,False,False,False,False,False,-1.0535499299715412
-170,86838,FO,7.9552216275602525,inf,-1,primary,SS67,SS67,Via Firenze,2.679387961135355,0,False,False,False,False,False,False,False,0.07001979326934463
-171,105192,FO,8.156418058585215,inf,-1,secondary,SP56,SP56,Via del Partigiano,5.110970943784585,0,False,False,False,False,False,False,False,-0.022056711407532036
-173,105009,FO,7.734923819815742,inf,-1,primary,SP4,,Via Maglianella,6.39765559575951,0,False,False,False,False,False,False,False,-0.10405322879456932
-174,104671,FO,7.944727341434834,inf,-1,primary,SS9,SS9,Via Emilia,1.5937672264541205,0,False,False,False,False,False,False,False,-0.09329938155531167
-175,186269,FO,15.543998533885024,158.67524357884008,410652,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,1.2690033883166854,0,False,False,False,False,False,False,False,
-176,409022,FO,8.11702648662384,inf,-1,secondary,SP2,SP2,Via Cervese,3.2636865501141914,0,False,False,False,False,False,False,False,-0.006237164334346179
-258,191061,FO,9.551710898645377,inf,-1,primary,SS9,SS9,Via Emilia,2.9809328797561103,0,False,False,False,False,False,False,False,-0.006354641616300762
-259,36459,FO,11.265161815537647,169.42934330251114,31690,primary,SP7,SP7,Via del Sale,1.1616230258427,0,False,False,False,False,False,False,False,0.27454183743922095
-260,117586,FO,7.723181021637766,inf,-1,secondary,,,Via Cesenatico,1.6902612754694253,0,False,False,False,False,False,False,False,0.048706966991553094
-261,48501,FO,7.572553289150194,inf,-1,primary,SS9,SS9,Via Emilia Levante,1.6919763360802886,0,False,False,False,False,False,False,False,0.07262674571942465
-262,66202,FO,9.015913578838292,inf,-1,primary,SS9,SS9,SS9 Via Emilia,3.1001787482641934,0,False,False,False,False,False,False,False,0.3732721781517703
-339,21087,FO,9.22385436929268,inf,-1,secondary,SP3,,Via Provinciale,6.856337348892334,0,False,False,False,False,False,False,False,-0.10824419714061134
-340,51577,FO,6.649237854977174,inf,-1,secondary,SP72,SP72,Via Monda,4.829437285178305,0,False,False,False,False,False,False,False,-0.16117283936882892
-342,48905,FO,5.416337173394829,63.538384676525546,48913,secondary,SP33,SP33,Via Secondo Casadei,0.5203391094410372,0,False,False,False,False,False,False,False,-0.052561726405703994
-343,277472,FO,6.758708406017646,inf,-1,primary,SP4,SP4,Strada Provinciale 4 Galeata - Santa Sofia,6.131595395498185,0,False,False,False,False,False,False,False,-0.3625763934965237
-344,120806,FO,11.231884810462553,187.06559675244745,120888,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,4.083917395125405,0,False,False,False,False,False,False,False,-0.7107648872253296
-345,434354,FO,9.564272266604448,inf,-1,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,5.200513113805365,0,False,False,False,False,False,False,False,
-348,137887,FO,10.564927712197056,inf,-1,secondary,SP10,SP10,Via Cagnona,5.8160805808131615,0,False,False,False,False,False,False,False,0.18972603283580056
-349,73053,FO,9.982872685641038,inf,-1,primary,SS16,SS16,Strada Statale 16 Adriatica,4.420404859582916,0,False,False,False,False,False,False,False,0.038147208678842436
-425,169551,FO,6.1526820948910315,21.909742637553965,103905,primary,SS67,SS67,Via Enrico Mattei,2.1309509274308547,0,False,False,False,False,False,False,False,
-435,123187,FO,7.307088871267316,88.40576943825383,123369,secondary,SP37,SP37,Via Meldola,3.331176881257717,0,False,False,False,False,False,False,False,
-436,33403,FO,5.757705745840182,inf,-1,tertiary,SP26,SP26,Strada Carnaio,5.2346207539076985,0,False,False,False,False,False,False,False,
-607,45828,FO,8.292132288927546,inf,-1,secondary,SP1,SP1,Via Lughese,4.033613190003248,0,False,False,False,False,False,False,False,
-608,123776,FO,5.708778254704375,254.45299593216845,415680,secondary,SP140,SP140,Via San Giuseppe,1.76002973483664,0,False,False,False,False,False,False,False,-0.25526995535641006
-629,18516,FO,6.915677803293554,inf,-1,trunk,SS727,SS727,Tangenziale di Forlì,2.375181387483977,0,False,False,False,False,False,False,False,0.02308277390213435
-630,402448,FO,11.364899240078605,inf,-1,trunk,SS726,SS726,Via Ugo La Malfa,1.6295831225580895,0,False,False,False,False,False,False,False,
-631,408847,FO,12.00696646134565,31.56936863592084,406633,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,1.9024361155330953,0,False,False,False,False,False,False,False,
-650,37080,FO,7.795891779210939,inf,-1,primary,,,Viale Bologna,1.757269373202712,0,False,False,False,False,False,False,False,
-666,37032,FO,10.058320386076241,285.46885375468054,51577,primary,,,Viale della Costituzione,1.3670863252299696,0,False,False,False,False,False,False,False,
-6,154267,MO,7.502841468191577,inf,-1,primary,SS12,SS12,Via Giardini,7.648755210352171,0,False,False,False,False,False,False,False,
-17,14882,MO,8.56313410651786,inf,-1,primary,SS12,SS12,,4.924223240450397,0,False,False,False,False,False,False,False,
+255,230811,BO,9.505128054560636,inf,-1,primary,SS9,SS9,Via Emilia Levante,4.894448371522875,0,False,False,False,False,False,False,False,
+274,183140,BO,7.440704246168156,inf,-1,primary,SS64,SS64,Via Nazionale,3.873118009148585,0,False,False,False,False,False,False,False,0.1688215091947764
+275,182409,BO,3.3618125419661307,inf,-1,secondary,SP5,SP5,Via Savena Superiore,5.181933054550372,0,False,False,False,False,False,False,False,-0.02958482201441382
+276,406909,BO,10.225525349434445,106.67217782274638,406918,primary,SS253bis,SS253bis,Via Guglielmo Marconi,0.46500900459702277,0,False,False,False,False,False,False,False,0.25324336934721947
+277,235648,BO,3.860677671644519,inf,-1,secondary,SP6,SP6,Via Zenzalino Nord,14.086404307263258,0,False,False,False,False,False,False,False,0.1286529834052149
+278,160189,BO,5.27987532358057,inf,-1,trunk,SP6,SP6,Via Zenzalino Sud,6.217224030907623,0,False,False,False,False,False,False,False,0.1187489493747367
+279,232080,BO,8.587632031596078,inf,-1,secondary,SP31,SP31,Via Stradelli Guelfi,4.143669745737942,0,False,False,False,False,False,False,False,-0.22589254808333886
+280,213774,BO,6.128393312498878,171.7198730151356,232182,secondary,SP26,SP26,Via Gesso,4.134980732740257,0,False,False,False,False,False,False,False,
+281,59901,BO,9.28866507101887,inf,-1,secondary,SP78,SP78,Viale Matilde di Canossa,3.795541590851847,0,False,False,False,False,False,False,False,0.08316743320915841
+282,214686,BO,7.884353425079996,inf,-1,primary,SS9,SS9,Via Cocchi Variante SS9,7.491296999610117,0,False,False,False,False,False,False,False,0.19488680385498092
+285,183332,BO,8.264212925705914,inf,-1,secondary,SP1,SP1,Via Mezzo Levante,6.255393472935061,0,False,False,False,False,False,False,False,0.013957126541871078
+288,11824,BO,7.855320608886284,inf,-1,secondary,SP42,SP42,Via Provinciale Bologna,3.3011741995479205,0,False,False,False,False,False,False,False,-0.23145937246656734
+290,61563,BO,4.299477789375573,inf,-1,secondary,SP11,SP11,VIa San Benedetto,7.6630800327986925,0,False,False,False,False,False,False,False,0.14362638212777104
+291,163435,BO,9.8176392129485,inf,-1,secondary,SP4,SP4,Via Galliera Nord,4.344618059243125,0,False,False,False,False,False,False,False,-0.03739796900084727
+292,80950,BO,5.809730600378604,inf,-1,secondary,SP4,SP4,Via Poggiorenatico,5.7514187555069505,0,False,False,False,False,False,False,False,-0.16469159160967559
+330,250581,BO,8.341192548285107,inf,-1,primary,SS64,SS64,,9.376689585380706,0,False,False,False,False,False,False,False,
+331,226695,BO,12.27634083612731,134.49044126087486,203285,primary,SP325,SP325,Via Val di Setta,4.909319512188661,0,False,False,False,False,False,False,False,
+501,81081,BO,9.508278759240039,inf,-1,primary,SS568,SS568,,2.625521671313774,0,False,False,False,False,False,False,False,
+502,166428,BO,6.321321363944571,181.7063702329057,166423,secondary,SP26,SP26,Via Rigosa,0.6257077665221015,0,False,False,False,False,False,False,False,
+503,55412,BO,6.3646227589924225,inf,-1,secondary,SP26,SP26,Via Lavino,21.58056044554504,0,False,False,False,False,False,False,False,
+504,156481,BO,8.055426438021572,inf,-1,secondary,SP7,SP7,Via Idice,23.199773746552406,0,False,False,False,False,False,False,False,-0.21787952457341603
+505,83885,BO,7.948877637616355,inf,-1,primary,,,Via Provinciale Selice,4.045870164159418,0,False,False,False,False,False,False,False,0.10200717173710308
+600,251715,BO,9.264085840251022,inf,-1,trunk,SP19,SP19,Via San Carlo,5.109969136545491,0,False,False,False,False,False,False,False,0.29056566964396024
+601,246585,BO,3.3858451563087346,inf,-1,secondary,SP21,SP21,Via Viara,22.62525794008027,0,False,False,False,False,False,False,False,
+602,164288,BO,6.748565304825607,inf,-1,secondary,,,Via del Papa,7.476435638318938,0,False,False,False,False,False,False,False,
+603,163245,BO,12.66899869700607,inf,-1,secondary,SP10,SP10,SP10,6.370822647105296,0,False,False,False,False,False,False,False,
+604,220128,BO,7.953149696041418,inf,-1,secondary,SP37,SP37,Via del Sasso,4.785758381530032,0,False,False,False,False,False,False,False,0.18456472299544033
+605,224276,BO,3.930319875240535,inf,-1,primary,SS623,SS623,Via Papa Giovanni XXIII,3.123523138139521,0,False,False,False,False,False,False,False,-0.6670064715382593
+627,73457,BO,7.207273957056316,inf,-1,primary,SS64,SS64,Strada Statale 64 Porrettana,6.8417790441453485,0,False,False,False,False,False,False,False,-0.3286356708265986
+660,237128,BO,5.2122298458791985,inf,-1,secondary,SP25,SP25,Via Imperiale,8.036134536504514,0,False,False,False,False,False,False,False,
+683,412275,BO,17.336618666708283,inf,-1,primary,SP86,SP86,,5.675295720242238,0,False,False,False,False,False,False,False,
+684,414069,BO,1.2458900031776161,inf,-1,primary,SP87,SP87,Strada Provinciale Nuova Galliera,6.157223980532973,0,False,False,False,False,False,False,False,
+685,55412,BO,6.950103017142638,inf,-1,secondary,SP26,SP26,Via Lavino,21.58056044554504,0,False,False,False,False,False,False,False,
+16,240871,FE,3.9299088516983782,inf,-1,primary,SP69,SP69,Via Virgiliana,13.139802023475731,0,False,False,False,False,False,False,False,
+53,130735,FE,6.6657996662548475,inf,-1,primary,SS309,SS309,Via Romea,5.636097133847188,0,False,False,False,False,False,False,False,-0.423185361451525
+115,116828,FE,3.6683929780467803,inf,-1,secondary,SP68,SP68,Via per Ariano,2.725804973585632,0,False,False,False,False,False,False,False,
+287,12407,FE,6.233781333936462,inf,-1,secondary,SP6,SP6,Via Nuova,4.5164779474386805,0,False,False,False,False,False,False,False,-0.21865913476669574
+289,12614,FE,7.868176094059614,inf,-1,primary,SP66,SP66,Via Statale,7.412071477303336,0,False,False,False,False,False,False,False,-0.08132444636872418
+376,162678,FE,5.181668177221794,inf,-1,primary,SS495,SS495,Strada Portomaggiore,7.5059795409528025,0,False,False,False,False,False,False,False,
+377,99755,FE,7.998390550780721,inf,-1,secondary,SP18,SP18,Via per Zerbinate,7.187203103630521,0,False,False,False,False,False,False,False,-0.1788226798951109
+410,83643,FE,9.1860871262208,inf,-1,tertiary,SP54,SP54,,2.7015839265658768,0,False,False,False,False,False,False,False,-0.5348822417641647
+411,115750,FE,7.69148034875109,inf,-1,tertiary,SP53,SP53,Via Valle Oppio,7.397398194340529,0,False,False,False,False,False,False,False,-0.4581812376213549
+606,149801,FE,3.66723776041232,230.08153857212903,115399,primary,SP70,SP70,Asse Viario Cispadano,5.419729605680042,0,False,False,False,False,False,False,False,
+628,267482,FE,7.626660072435169,inf,-1,primary,SS309,SS309,Via Romea,12.568204203256244,0,False,False,False,False,False,False,False,-0.16192586533066572
+652,114398,FE,10.837634457537918,inf,-1,primary,SS16,SS16,Via Nazionale Levante,6.152306735150497,0,False,False,False,False,False,False,False,-0.06498789834843176
+661,239304,FE,8.217977217398284,inf,-1,primary,SP15,SP15,Via del Mare,10.456727397559131,0,False,False,False,False,False,False,False,
+662,99166,FE,5.0973640001357,inf,-1,primary,SP2,SP2,Via Primicello,5.998441004272296,0,False,False,False,False,False,False,False,-0.0834097923660342
+663,185426,FE,5.501334672258241,inf,-1,primary,SS309dir/a,SS309dir/a,,5.28178214050733,0,False,False,False,False,False,False,False,
+9,152233,FO,9.181383605223957,inf,-1,primary,SS67,SS67,Via Tosco Romagnola,7.682688388219611,0,False,False,False,False,False,False,False,
+116,434828,FO,2.4919764248185863,221.96788537650082,434148,primary,,,,2.901435078949997,0,False,False,False,False,False,False,False,-1.038905072732581
+170,86838,FO,7.95522162755239,inf,-1,primary,SS67,SS67,Via Firenze,2.679387961135238,0,False,False,False,False,False,False,False,0.09516156078983823
+171,105192,FO,8.156418058585215,inf,-1,secondary,SP56,SP56,Via del Partigiano,5.110970943784571,0,False,False,False,False,False,False,False,0.010311767580242305
+173,105009,FO,7.734923819815742,inf,-1,primary,SP4,,Via Maglianella,6.3976555957595345,0,False,False,False,False,False,False,False,-0.03270693761210969
+174,104671,FO,7.944727341434834,inf,-1,primary,SS9,SS9,Via Emilia,1.593767226454131,0,False,False,False,False,False,False,False,-0.027226414338108747
+175,186269,FO,15.543998533885024,158.67524357884008,410652,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,1.2690033883166856,0,False,False,False,False,False,False,False,
+176,409022,FO,8.11702648662384,inf,-1,secondary,SP2,SP2,Via Cervese,3.2636865501141923,0,False,False,False,False,False,False,False,0.03693949449493196
+258,191061,FO,9.551710898645377,inf,-1,primary,SS9,SS9,Via Emilia,2.9809328797561183,0,False,False,False,False,False,False,False,0.06813456197766435
+259,36459,FO,11.265161815537647,169.42934330251114,31690,primary,SP7,SP7,Via del Sale,1.1616230258426998,0,False,False,False,False,False,False,False,0.25842466661567
+260,117586,FO,7.723181021637766,inf,-1,secondary,,,Via Cesenatico,1.690261275469405,0,False,False,False,False,False,False,False,0.07692884158817999
+261,48501,FO,7.572553289161317,inf,-1,primary,SS9,SS9,Via Emilia Levante,1.691976336080287,0,False,False,False,False,False,False,False,0.1569300031882976
+262,66202,FO,9.015913578838292,inf,-1,primary,SS9,SS9,SS9 Via Emilia,3.1001787482640464,0,False,False,False,False,False,False,False,0.4940074662619156
+339,21087,FO,9.22385436929268,inf,-1,secondary,SP3,,Via Provinciale,6.856337348892346,0,False,False,False,False,False,False,False,-0.09485002244142558
+340,51577,FO,6.649237854977174,inf,-1,secondary,SP72,SP72,Via Monda,4.829437285178277,0,False,False,False,False,False,False,False,-0.18044731290216487
+342,48905,FO,5.416337173490735,63.538384676525546,48913,secondary,SP33,SP33,Via Secondo Casadei,0.5203391094410394,0,False,False,False,False,False,False,False,-0.034183042958966584
+343,277472,FO,6.758708406017646,inf,-1,primary,SP4,SP4,Strada Provinciale 4 Galeata - Santa Sofia,6.13159539549809,0,False,False,False,False,False,False,False,-0.3763775412758421
+344,120806,FO,11.231884810462553,187.06559675244745,120888,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,4.083917395125409,0,False,False,False,False,False,False,False,-0.6621216156561449
+345,434354,FO,9.564272266604448,inf,-1,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,5.200513113805449,0,False,False,False,False,False,False,False,
+348,137887,FO,10.564927712114764,inf,-1,secondary,SP10,SP10,Via Cagnona,5.816080580813117,0,False,False,False,False,False,False,False,0.20281285503829286
+349,73053,FO,9.982872685641038,inf,-1,primary,SS16,SS16,Strada Statale 16 Adriatica,4.420404859582932,0,False,False,False,False,False,False,False,0.0723093069749299
+425,169551,FO,6.1526820948910315,21.909742637553965,103905,primary,SS67,SS67,Via Enrico Mattei,2.130950927430901,0,False,False,False,False,False,False,False,
+435,123187,FO,7.307088871267316,88.40576943825383,123369,secondary,SP37,SP37,Via Meldola,3.331176881257714,0,False,False,False,False,False,False,False,
+436,33403,FO,5.757705745840182,inf,-1,tertiary,SP26,SP26,Strada Carnaio,5.234620753907521,0,False,False,False,False,False,False,False,
+607,45828,FO,8.292132288927546,inf,-1,secondary,SP1,SP1,Via Lughese,4.033613190003249,0,False,False,False,False,False,False,False,
+608,123776,FO,5.708778254704375,254.45299593216845,415680,secondary,SP140,SP140,Via San Giuseppe,1.7600297348366385,0,False,False,False,False,False,False,False,-0.21041788042140383
+629,18516,FO,6.915677803233525,inf,-1,trunk,SS727,SS727,Tangenziale di Forlì,2.375181387483977,0,False,False,False,False,False,False,False,0.05709503754298849
+630,402448,FO,11.364899240078605,inf,-1,trunk,SS726,SS726,Via Ugo La Malfa,1.6295831225580015,0,False,False,False,False,False,False,False,
+631,408847,FO,12.006966461299971,31.56936863592084,406633,trunk,SS3bis,SS3bis,Strada Statale 3 bis Tiberina,1.902436115533098,0,False,False,False,False,False,False,False,
+650,37080,FO,7.795891779210939,inf,-1,primary,,,Viale Bologna,1.7572693732027118,0,False,False,False,False,False,False,False,
+666,37032,FO,10.058320386076241,285.46885375468054,51577,primary,,,Viale della Costituzione,1.36708632522997,0,False,False,False,False,False,False,False,
+6,154267,MO,7.502841468210452,inf,-1,primary,SS12,SS12,Via Giardini,7.648755210352343,0,False,False,False,False,False,False,False,
+17,14882,MO,8.56313410651786,inf,-1,primary,SS12,SS12,,4.924223240450387,0,False,False,False,False,False,False,False,
 29,32576,MO,5.787681388545222,inf,-1,primary,SS9,SS9,Via Emilia Ovest,3.20594302290422,0,False,False,False,False,False,False,False,
-146,198114,MO,6.5112449512199335,inf,-1,primary,SS12,SS12,Strada Statale 12 dell'Abetone e del Brennero,5.9690886923957285,0,False,False,False,False,False,False,False,0.20637527261496152
-147,60387,MO,5.521778820006879,inf,-1,primary,SS623,SS623,Via Modenese,5.107450678979588,0,False,False,False,False,False,False,False,0.2096264168840603
-148,254415,MO,10.04789828924299,inf,-1,primary,SS9,SS9,Via Emilia,7.4849930654231995,0,False,False,False,False,False,False,False,
-149,40774,MO,8.559409442320744,inf,-1,primary,SP255,SP255,Via Nonantolana,0.7041994471757862,0,False,False,False,False,False,False,False,-0.11928051422874345
-150,129798,MO,8.814740009458923,inf,-1,primary,SS12,SS12,Strada Nazionale del Canaletto Nord,5.996015398660862,0,False,False,False,False,False,False,False,0.08819259821069408
-151,130004,MO,5.757318935005868,inf,-1,primary,SS413,SS413,,5.4002518931991945,0,False,False,False,False,False,False,False,0.1756024790316816
-162,148062,MO,7.097674675702013,inf,-1,primary,SS9,SS9,Via Emilia,5.465251639202091,0,False,False,False,False,False,False,False,
-236,29843,MO,4.26164577689335,inf,-1,primary,SS468,SS468,Via Correggio-Reno Centese,3.4973117910837703,0,False,False,False,False,False,False,False,0.26297510582333117
-242,197790,MO,7.943996415273063,inf,-1,primary,SS12,SS12,Strada Statale 12 dell'Abetone e del Brennero,3.5861757531736624,0,False,False,False,False,False,False,False,
-269,436854,MO,6.366816752970646,117.9167583432529,62660,primary,SS12,SS12,Via Statale,0.5972238733547631,0,False,False,False,False,False,False,False,-0.0554907525700597
-319,402247,MO,4.645750632302465,inf,-1,secondary,SP15,SP15,Strada Provinciale Di Magreta,10.80587414555892,0,False,False,False,False,False,False,False,
-321,25932,MO,12.385035246873677,60.17233317360591,38782,primary,SP467,,,1.0357026079291296,0,False,False,False,False,False,False,False,0.14893667954074735
-323,406749,MO,12.054546922606981,inf,-1,primary,SP467R,SP467R,,3.06111157531265,0,False,False,False,False,False,False,False,0.14340787411471942
-328,129474,MO,2.619973893955572,inf,-1,secondary,SP486R,SP486R,Via Pietro Giardini,3.7506310503405245,0,False,False,False,False,False,False,False,-0.0782229661876926
-381,198490,MO,15.399152727679528,inf,-1,trunk,SS724,SS724,Tangenziale Nord Luigi Pirandello,3.5504287575532385,0,False,False,False,False,False,False,False,
-453,129271,MO,14.603780499638324,inf,-1,trunk,SS724,SS724,strada Modena-Sassuolo,5.515644825236625,0,False,False,False,False,False,False,False,-0.22830355820712045
-609,195775,MO,4.031298654349124,inf,-1,secondary,SP4,SP4,,6.375911351054613,0,False,False,False,False,False,False,False,
-632,198230,MO,6.945328686762724,36.701075384279676,167130,trunk,SS724dir,SS724dir,Complanare Luigi Einaudi,4.034388703722983,1,False,False,False,False,False,False,False,
-633,198329,MO,9.585284130731017,39.798680269233955,167130,trunk,SS724dir,SS724dir,Complanare Luigi Einaudi,3.921366702414029,1,False,False,False,False,False,False,False,
-634,125882,MO,9.922979763247788,inf,-1,primary,SS12,SS12,Via Giardini Sud,2.502606383443562,0,False,False,False,False,False,False,False,-0.38042625905049376
-664,436116,MO,8.797009865696761,inf,-1,secondary,,,,1.33282750740281,0,False,False,False,False,False,False,False,
-682,61698,MO,9.392789173816958,inf,-1,secondary,SP2,SP2,Via Reduci dalla prigionia,2.682732509028799,0,False,False,False,False,False,False,False,
-19,387570,PA,5.025508063217489,inf,-1,primary,SS343,SS343,Via Po,3.6306503680750457,0,False,False,False,False,False,False,False,-0.11182114119152546
-25,380329,PA,9.391930679175168,inf,-1,primary,SS9,SS9,Via Emilio Lepido,3.193970819823599,0,False,False,False,False,False,False,False,-0.12857879312942538
+146,198114,MO,6.5112449512199335,inf,-1,primary,SS12,SS12,Strada Statale 12 dell'Abetone e del Brennero,5.969088692395714,0,False,False,False,False,False,False,False,0.12601632780289113
+147,60387,MO,5.521778820006879,inf,-1,primary,SS623,SS623,Via Modenese,5.107450678979582,0,False,False,False,False,False,False,False,0.24307465862927036
+148,254415,MO,10.04789828924299,inf,-1,primary,SS9,SS9,Via Emilia,7.484993065423193,0,False,False,False,False,False,False,False,
+149,40774,MO,8.559409442320744,inf,-1,primary,SP255,SP255,Via Nonantolana,0.7041994471757862,0,False,False,False,False,False,False,False,-0.08146149225573227
+150,129798,MO,8.814740009458923,inf,-1,primary,SS12,SS12,Strada Nazionale del Canaletto Nord,5.9960153986609,0,False,False,False,False,False,False,False,0.07596896396835581
+151,130004,MO,5.757318935005868,inf,-1,primary,SS413,SS413,,5.400251893199224,0,False,False,False,False,False,False,False,0.22201510974955813
+162,148062,MO,7.097674675702013,inf,-1,primary,SS9,SS9,Via Emilia,5.465251639202094,0,False,False,False,False,False,False,False,
+236,29843,MO,4.26164577689335,inf,-1,primary,SS468,SS468,Via Correggio-Reno Centese,3.49731179108377,0,False,False,False,False,False,False,False,0.28474457305440815
+242,197790,MO,7.943996415273063,inf,-1,primary,SS12,SS12,Strada Statale 12 dell'Abetone e del Brennero,3.586175753173671,0,False,False,False,False,False,False,False,
+269,436854,MO,6.366816752867207,117.91675834319555,62660,primary,SS12,SS12,Via Statale,0.5972238733547631,0,False,False,False,False,False,False,False,-0.10821571392113222
+319,402247,MO,4.645750632302465,inf,-1,secondary,SP15,SP15,Strada Provinciale Di Magreta,10.805874145558903,0,False,False,False,False,False,False,False,
+321,25932,MO,12.385035246873677,60.17233317360591,38782,primary,SP467,,,1.0357026079291296,0,False,False,False,False,False,False,False,0.2321661952567281
+323,406749,MO,12.054546922606981,inf,-1,primary,SP467R,SP467R,,3.0611115753126534,0,False,False,False,False,False,False,False,0.15286104272503748
+328,129474,MO,2.619973893955572,inf,-1,secondary,SP486R,SP486R,Via Pietro Giardini,3.7506310503405067,0,False,False,False,False,False,False,False,0.07162662578062655
+381,198490,MO,15.399152727679528,inf,-1,trunk,SS724,SS724,Tangenziale Nord Luigi Pirandello,3.5504287575532403,0,False,False,False,False,False,False,False,
+453,129271,MO,14.603780499750087,inf,-1,trunk,SS724,SS724,strada Modena-Sassuolo,5.515644825236627,0,False,False,False,False,False,False,False,-0.2531925080945816
+609,195775,MO,4.031298654349124,inf,-1,secondary,SP4,SP4,,6.3759113510545875,0,False,False,False,False,False,False,False,
+632,198230,MO,6.945328686762724,36.701075384279676,167130,trunk,SS724dir,SS724dir,Complanare Luigi Einaudi,4.034388703723003,1,False,False,False,False,False,False,False,
+633,198329,MO,9.585284130728128,39.798680269233955,167130,trunk,SS724dir,SS724dir,Complanare Luigi Einaudi,3.921366702414029,1,False,False,False,False,False,False,False,
+634,125882,MO,9.922979763247788,inf,-1,primary,SS12,SS12,Via Giardini Sud,2.502606383443536,0,False,False,False,False,False,False,False,-0.43162940647616166
+664,436116,MO,8.797009865696761,inf,-1,secondary,,,,1.3328275074027882,0,False,False,False,False,False,False,False,
+682,61698,MO,9.392789173816958,inf,-1,secondary,SP2,SP2,Via Reduci dalla prigionia,2.682732509028786,0,False,False,False,False,False,False,False,
+19,387570,PA,5.025508063217489,inf,-1,primary,SS343,SS343,Via Po,3.6306503680750457,0,False,False,False,False,False,False,False,-0.12733770642453562
+25,380329,PA,9.391930679175168,inf,-1,primary,SS9,SS9,Via Emilio Lepido,3.193970819823717,0,False,False,False,False,False,False,False,-0.0432491887910645
 104,276517,PA,9.785957708882043,38.97913166498361,275796,secondary,,SP33,,0.385551640984189,0,False,False,False,False,False,False,False,
-129,287876,PA,2.399077376753488,inf,-1,trunk,SS9var,SS9var,Tangenziale Nord \ Tangenziale Unione Europea,1.0947381074815212,0,False,False,False,False,False,False,False,
-130,284140,PA,9.213889382878518,150.79202494709196,284123,primary,SS62,SS62,Strada Statale 62 della Cisa,1.2273094915585534,0,False,False,False,False,False,False,False,-0.11156216164919198
-131,344352,PA,9.088674690562016,inf,-1,primary,SP665R,SP665R,Strada Langhirano,8.908262949771606,0,False,False,False,False,False,False,False,-0.19176212995114042
-132,344274,PA,6.426389764831888,inf,-1,secondary,SP513R,SP513R,Strada Traversetolo,5.101747604867244,0,False,False,False,False,False,False,False,-0.27534196782238385
-133,353618,PA,4.961465524109382,inf,-1,primary,SP62R,SP62R,Via Mantova,5.158233525169217,0,False,False,False,False,False,False,False,0.01847241659041799
-134,328022,PA,8.444464970816199,inf,-1,primary,SS343,SS343,Via Colorno,4.970979623072128,0,False,False,False,False,False,False,False,-0.19619092775120467
-135,292739,PA,8.553159878267882,inf,-1,tertiary,,SP10,Via Cremonese,5.637792647905494,0,False,False,False,False,False,False,False,-0.14510928290951683
-218,386746,PA,4.543396224296394,inf,-1,secondary,SP10,SP10,Via Provinciale,8.687249450302463,0,False,False,False,False,False,False,False,
-221,289872,PA,5.984984225326562,inf,-1,primary,SS9,SS9,Via Emilia,6.399347746956719,0,False,False,False,False,False,False,False,-0.23816382068156805
-222,350578,PA,10.1579949795858,inf,-1,secondary,SP359,SP359,Strada Provinciale di Salsomaggiore-Bardi,2.254847580907756,0,False,False,False,False,False,False,False,-0.48677813557789246
-223,287936,PA,9.235972704549873,inf,-1,tertiary,SS357,SS357,Via Giacomo Matteotti,6.323186900576431,0,False,False,False,False,False,False,False,-0.4872687955028061
-226,283205,PA,7.804700309671014,inf,-1,secondary,SP32,SP32,Via Pedemontana Est,3.3774328541813032,0,False,False,False,False,False,False,False,-0.2743731831456015
-227,399729,PA,4.261424330757135,inf,-1,secondary,SP34,,Via Martiri della Libertà,4.062670686524395,0,False,False,False,False,False,False,False,
-295,351546,PA,8.427693781789957,inf,-1,secondary,,,Strada Provinciale per Torrile,2.8313244417233907,0,False,False,False,False,False,False,False,0.15009244813196243
-298,386538,PA,9.434603433926213,inf,-1,secondary,SP588R,SP588R,Strada Provinciale 588 R dei Due Ponti,7.717654156718413,0,False,False,False,False,False,False,False,
-302,220654,PA,7.812473609134995,inf,-1,tertiary,SP12,SP12,Strada di Chiusa Ferranda,4.21389778823011,0,False,False,False,False,False,False,False,-0.3354733795058086
-394,298334,PA,5.996654035642592,inf,-1,primary,SS523,SS523,Strada statale 523 del Colle di Cento Croci,11.269004074682696,0,False,False,False,False,False,False,False,-0.43148115691058825
-395,372397,PA,6.3903137082165395,inf,-1,primary,SS308,SS308,Strada Fondovalle,4.6873528155471895,0,False,False,False,False,False,False,False,
-396,367422,PA,6.801956237753293,inf,-1,secondary,SP28,SP28,,6.614199415623506,0,False,False,False,False,False,False,False,-0.5550859986665502
-397,330946,PA,11.820649863615918,inf,-1,secondary,SP12,SP12,Via San Michele Campagna,1.448644515081046,0,False,False,False,False,False,False,False,
-398,273720,PA,4.7729325862728444,inf,-1,secondary,SP11,SP11,Strada Farnesiana,3.8709878003594294,0,False,False,False,False,False,False,False,0.12337762324746751
-399,328456,PA,7.782777478426133,inf,-1,tertiary,SP43,SP43,,3.2635175946851795,0,False,False,False,False,False,False,False,
-400,313400,PA,5.704450448747876,inf,-1,secondary,SP10,SP10,Via Cremonese,9.10392656932876,0,False,False,False,False,False,False,False,-0.08085449839527073
-401,409938,PA,4.7259793767908365,inf,-1,secondary,SP513R,SP513R,Via Pedemontana Est,3.1205018426580953,0,False,False,False,False,False,False,False,-0.1904006523840673
-402,380036,PA,10.825384217246043,inf,-1,secondary,SP18,SP18,Strada Montechiarugolo,2.2277682948741986,0,False,False,False,False,False,False,False,-0.13580359977436274
-403,383730,PA,7.8615608959182595,inf,-1,secondary,SP72,,Burla,8.627217579469265,0,False,False,False,False,False,False,False,0.08813426814541776
-404,400398,PA,869.5851712316263,inf,-1,secondary,SP121R,,Via Boccette,5.7313589680109365,0,True,False,False,True,False,False,True,-0.09843118612858921
-405,284202,PA,7.101787546330329,inf,-1,secondary,SP15,SP15,Strada Provinciale 15,4.620344426592364,0,False,False,False,False,False,False,False,-0.011598844288708773
-610,241520,PA,6.174375373871316,inf,-1,tertiary,SP11,,SP11,8.118350907372912,0,False,False,False,False,False,False,False,
-611,270967,PA,4.242094275248641,inf,-1,primary,SS357,SS357,Via della Repubblica,5.506910183893009,0,False,False,False,False,False,False,False,-0.16685864444867413
-612,395130,PA,8.184042547514036,inf,-1,primary,SP665R,SP665R,Strada Provinciale Massese,7.808654981467925,0,False,False,False,False,False,False,False,-0.2882562506861575
-613,373709,PA,12.03457298501645,inf,-1,secondary,SP16,SP16,Via Argini,12.685646974137999,0,False,False,False,False,False,False,False,0.13904199812217927
-636,326614,PA,15.524538008168594,129.43927873223993,326583,trunk,SS 9 var,,Tangenziale Nord,0.5946638423028502,0,False,False,False,False,False,False,False,-0.5232684846708353
-637,306791,PA,7.773718039698429,inf,-1,primary,SS62,SS62,Via Nazionale Ozzano Taro,10.962590591109315,0,False,False,False,False,False,False,False,-0.043234234826206565
-680,400398,PA,6.774925577939604,inf,-1,secondary,SP121R,SP121R,Nuova Pedemontana,5.7313589680109365,0,False,False,False,False,False,False,False,
-95,276469,PI,11.3386642216117,inf,-1,primary,SS10,SS10,Via Emilia Piacentina,3.8792782043989105,0,False,False,False,False,False,False,False,-0.04802977553012779
-108,260156,PI,4.597651025344657,inf,-1,primary,SP412 R,SP412 R,Via Dogana Po,2.0683839145770735,0,False,False,False,False,False,False,False,-0.3770965887890843
-118,365271,PI,3.1164895867996347,inf,-1,primary,SS45,SS45,,4.397744275060783,0,False,False,False,False,False,False,False,
-122,294363,PI,11.114408299886753,inf,-1,primary,SS10,,Via Emilia Pavese,2.4061592225396162,0,False,False,False,False,False,False,False,-0.1360107030078313
-123,352591,PI,7.256643977744807,inf,-1,secondary,SP28,SP28,Strada Agazzana,9.134257315139221,0,False,False,False,False,False,False,False,-0.2054502024653877
-124,329689,PI,8.217174556824514,inf,-1,primary,SS45,SS45,Strada Statale di Val Trebbia,7.9428810810463295,0,False,False,False,False,False,False,False,-0.04229962246876256
-125,399935,PI,9.255642095837416,inf,-1,primary,SS654,SS654,Strada statale 654 di Val Nure,7.892733760083989,0,False,False,False,False,False,False,False,-0.2769486523530058
-126,387957,PI,11.63866894603751,inf,-1,secondary,SP6,SP6,SP6 - Strada Farnesiana,6.999159147844017,0,False,False,False,False,False,False,False,-0.3780195001287182
-127,400184,PI,9.003342445615528,inf,-1,primary,SS9,SS9,Strada Statale 9 Via Emilia Parmense,5.257229013620068,0,False,False,False,False,False,False,False,-0.249389614274449
-128,331063,PI,10.859362181146683,inf,-1,primary,SS10,SS10,Via Caorsana,1.0574867885094263,0,False,False,False,False,False,False,False,-0.06851989823668159
-219,311714,PI,9.3621300114833,inf,-1,primary,SS9,SS9,Via Emilia,3.5075413067962917,0,False,False,False,False,False,False,False,-0.2735542201540598
-220,351036,PI,5.194048353175315,inf,-1,primary,SS9,SS9,Via Rimale,4.187942594372734,0,False,False,False,False,False,False,False,-0.17866989409932577
-300,352091,PI,16.161167012777145,inf,-1,secondary,SP462R,,Via Leonardo da Vinci,4.020876333771318,0,False,False,False,False,False,False,False,-0.2313390298968487
-301,310260,PI,6.377545015347874,inf,-1,secondary,SP4,SP4,Via Provinciale 4 di Bardi,5.258541574849987,0,False,False,False,False,False,False,False,
-303,292228,PI,10.926182674695932,inf,-1,secondary,SP11,SP11,,7.93256406429699,0,False,False,False,False,False,False,False,-0.20633147462468307
-304,385496,PI,6.960581495759471,162.4987426587102,398932,tertiary,,,Via Guglielmo Marconi,4.86609625120604,0,False,False,False,False,False,False,False,
-305,309057,PI,4.314436228815503,207.6629353656735,311834,secondary,SP6Bis,SP6Bis,SP6Bis di Castell'Arquato,9.90788622254317,0,False,False,False,False,False,False,False,-0.09720660876227337
-306,310680,PI,9.502699697967438,72.63153304869317,308557,primary,SS654,SS654,Strada statale 654 di Val Nure,6.6941805754768255,0,False,False,False,False,False,False,False,-0.07918124604762482
-307,291188,PI,3.4455160356223904,inf,-1,primary,,,Strada Statale di Val Trebbia,6.8625296867338506,0,False,False,False,False,False,False,False,-0.11469242637481937
-308,259627,PI,6.983242688755144,inf,-1,primary,SS412,SS412,,3.4528817091215487,0,False,False,False,False,False,False,False,-0.26758673184525644
-309,313284,PI,9.718801666159075,85.08814956319998,330553,primary,SS10,SS10,Via Breda,2.378446063807554,0,False,False,False,False,False,False,False,-0.27900040899624656
-385,400118,PI,3.1046191850812854,inf,-1,primary,SS10,,Via Emilia Pavese,2.983602302761575,0,False,False,False,False,False,False,False,-0.37785368048671675
-388,308077,PI,6.36287963591027,inf,-1,tertiary,SP31,SP31,SP31 - Strada Salsediana,5.955168235975133,0,False,False,False,False,False,False,False,
-389,387777,PI,8.76198242498679,inf,-1,secondary,SP588R,SP588R,Strada dei Due Ponti,4.77727292856006,0,False,False,False,False,False,False,False,
-390,293144,PI,8.897735228158595,inf,-1,secondary,SP462R,SP462R,SP462 di Val d'Arda,3.3667834411167687,0,False,False,False,False,False,False,False,-0.07409304522991393
-391,352470,PI,8.330593106405752,inf,-1,primary,SS10,SS10,Via Statale,2.964289620821051,0,False,False,False,False,False,False,False,-0.6491287844352391
-393,293445,PI,7.015626621244239,226.48916260304685,353742,primary,SS10,SS10,Via Caorsana,7.568065714881583,0,False,False,False,False,False,False,False,0.10627690867035613
+129,287876,PA,2.399077376753488,inf,-1,trunk,SS9var,SS9var,Tangenziale Nord \ Tangenziale Unione Europea,1.0947381074815208,0,False,False,False,False,False,False,False,
+130,284140,PA,9.213889382878518,150.79202494709196,284123,primary,SS62,SS62,Strada Statale 62 della Cisa,1.2273094915585656,0,False,False,False,False,False,False,False,-0.12043425454978265
+131,344352,PA,9.088674690562016,inf,-1,primary,SP665R,SP665R,Strada Langhirano,8.908262949771613,0,False,False,False,False,False,False,False,-0.1696103373361058
+132,344274,PA,6.426389764831888,inf,-1,secondary,SP513R,SP513R,Strada Traversetolo,5.101747604867249,0,False,False,False,False,False,False,False,-0.2598966307251936
+133,353618,PA,4.961465524109382,inf,-1,primary,SP62R,SP62R,Via Mantova,5.158233525169217,0,False,False,False,False,False,False,False,-0.003093332796636033
+134,328022,PA,8.444464970816199,inf,-1,primary,SS343,SS343,Via Colorno,4.970979623072132,0,False,False,False,False,False,False,False,-0.22093609870826553
+135,292739,PA,8.553159878267882,inf,-1,tertiary,,SP10,Via Cremonese,5.637792647905481,0,False,False,False,False,False,False,False,-0.14062291327196688
+218,386746,PA,4.543396224296394,inf,-1,secondary,SP10,SP10,Via Provinciale,8.68724945030242,0,False,False,False,False,False,False,False,
+221,289872,PA,5.984984225326562,inf,-1,primary,SS9,SS9,Via Emilia,6.399347746956716,0,False,False,False,False,False,False,False,-0.2162404432209817
+222,350578,PA,10.1579949795858,inf,-1,secondary,SP359,SP359,Strada Provinciale di Salsomaggiore-Bardi,2.254847580907756,0,False,False,False,False,False,False,False,-0.49320210863637115
+223,287936,PA,9.235972704549873,inf,-1,tertiary,SS357,SS357,Via Giacomo Matteotti,6.3231869005763945,0,False,False,False,False,False,False,False,-0.4740912311838415
+226,283205,PA,7.804700309671014,inf,-1,secondary,SP32,SP32,Via Pedemontana Est,3.3774328541812992,0,False,False,False,False,False,False,False,-0.22944640672596775
+227,399729,PA,4.261424330757135,inf,-1,secondary,SP34,,Via Martiri della Libertà,4.062670686524407,0,False,False,False,False,False,False,False,
+295,351546,PA,8.427693781789957,inf,-1,secondary,,,Strada Provinciale per Torrile,2.8313244417233996,0,False,False,False,False,False,False,False,0.14189059994338807
+298,386538,PA,9.434603433926213,inf,-1,secondary,SP588R,SP588R,Strada Provinciale 588 R dei Due Ponti,7.717654156718368,0,False,False,False,False,False,False,False,
+302,220654,PA,7.812473609134995,inf,-1,tertiary,SP12,SP12,Strada di Chiusa Ferranda,4.213897788230122,0,False,False,False,False,False,False,False,-0.2993334548037144
+394,298334,PA,5.996654035642592,inf,-1,primary,SS523,SS523,Strada statale 523 del Colle di Cento Croci,11.269004074682693,0,False,False,False,False,False,False,False,-0.397060573038613
+395,372397,PA,6.3903137082165395,inf,-1,primary,SS308,SS308,Strada Fondovalle,4.687352815547187,0,False,False,False,False,False,False,False,
+396,367422,PA,6.801956237753293,inf,-1,secondary,SP28,SP28,,6.614199415623513,0,False,False,False,False,False,False,False,-0.5458320373599308
+397,330946,PA,11.820649863615918,inf,-1,secondary,SP12,SP12,Via San Michele Campagna,1.4486445150809997,0,False,False,False,False,False,False,False,
+398,273720,PA,4.7729325862728444,inf,-1,secondary,SP11,SP11,Strada Farnesiana,3.870987800359389,0,False,False,False,False,False,False,False,0.13713084555495447
+399,328456,PA,7.782777478426133,inf,-1,tertiary,SP43,SP43,,3.263517594685071,0,False,False,False,False,False,False,False,
+400,313400,PA,5.704450448747876,inf,-1,secondary,SP10,SP10,Via Cremonese,9.103926569328753,0,False,False,False,False,False,False,False,-0.09452319854665904
+401,409938,PA,4.72597937667571,inf,-1,secondary,SP513R,SP513R,Via Pedemontana Est,3.1205018426580926,0,False,False,False,False,False,False,False,-0.09562508043989677
+402,380036,PA,10.825384217246043,inf,-1,secondary,SP18,SP18,Strada Montechiarugolo,2.22776829487422,0,False,False,False,False,False,False,False,-0.09185166289186049
+403,383730,PA,7.8615608959182595,inf,-1,secondary,SP72,,Burla,8.627217579469258,0,False,False,False,False,False,False,False,0.05526999328483542
+404,400398,PA,869.5851712316263,inf,-1,secondary,SP121R,,Via Boccette,5.731358968010936,0,True,False,False,True,False,False,True,-0.060619109822019145
+405,284202,PA,7.101787546330329,inf,-1,secondary,SP15,SP15,Strada Provinciale 15,4.620344426592359,0,False,False,False,False,False,False,False,-0.025060744132129494
+610,241520,PA,6.174375373871316,inf,-1,tertiary,SP11,,SP11,8.118350907372823,0,False,False,False,False,False,False,False,
+611,270967,PA,4.242094275248641,inf,-1,primary,SS357,SS357,Via della Repubblica,5.506910183892995,0,False,False,False,False,False,False,False,-0.1678491859128607
+612,395130,PA,8.184042547514036,inf,-1,primary,SP665R,SP665R,Strada Provinciale Massese,7.808654981467898,0,False,False,False,False,False,False,False,-0.2164900435705518
+613,373709,PA,12.03457298501645,inf,-1,secondary,SP16,SP16,Via Argini,12.685646974138086,0,False,False,False,False,False,False,False,0.18423464453637675
+636,326614,PA,15.524538008168594,129.43927873223993,326583,trunk,SS 9 var,,Tangenziale Nord,0.5946638423028502,0,False,False,False,False,False,False,False,-0.5473244331633831
+637,306791,PA,7.773718039698429,inf,-1,primary,SS62,SS62,Via Nazionale Ozzano Taro,10.96259059110929,0,False,False,False,False,False,False,False,-0.012100776295657886
+680,400398,PA,6.774925577939604,inf,-1,secondary,SP121R,SP121R,Nuova Pedemontana,5.731358968010936,0,False,False,False,False,False,False,False,
+95,276469,PI,11.3386642216117,inf,-1,primary,SS10,SS10,Via Emilia Piacentina,3.8792782043989105,0,False,False,False,False,False,False,False,-0.07586575250090265
+108,260156,PI,4.597651025344657,inf,-1,primary,SP412 R,SP412 R,Via Dogana Po,2.068383914577074,0,False,False,False,False,False,False,False,-0.22608819726759816
+118,365271,PI,3.1164895867996347,inf,-1,primary,SS45,SS45,,4.397744275060799,0,False,False,False,False,False,False,False,
+122,294363,PI,11.114408299886753,inf,-1,primary,SS10,,Via Emilia Pavese,2.4061592225396162,0,False,False,False,False,False,False,False,-0.17377845769271894
+123,352591,PI,7.256643977743935,inf,-1,secondary,SP28,SP28,Strada Agazzana,9.134257315139214,0,False,False,False,False,False,False,False,-0.22790968491679175
+124,329689,PI,8.217174556824514,inf,-1,primary,SS45,SS45,Strada Statale di Val Trebbia,7.942881081046328,0,False,False,False,False,False,False,False,-0.06388004721733237
+125,399935,PI,9.255642095837416,inf,-1,primary,SS654,SS654,Strada statale 654 di Val Nure,7.892733760084042,0,False,False,False,False,False,False,False,-0.28895091440717724
+126,387957,PI,11.63866894603751,inf,-1,secondary,SP6,SP6,SP6 - Strada Farnesiana,6.999159147843998,0,False,False,False,False,False,False,False,-0.38696531249330546
+127,400184,PI,9.003342445615528,inf,-1,primary,SS9,SS9,Strada Statale 9 Via Emilia Parmense,5.257229013620068,0,False,False,False,False,False,False,False,-0.15448333356033667
+128,331063,PI,10.859362181152193,inf,-1,primary,SS10,SS10,Via Caorsana,1.0574867885094261,0,False,False,False,False,False,False,False,-0.11646702493144287
+219,311714,PI,9.3621300114833,inf,-1,primary,SS9,SS9,Via Emilia,3.5075413067962926,0,False,False,False,False,False,False,False,-0.09747032599618852
+220,351036,PI,5.194048353175315,inf,-1,primary,SS9,SS9,Via Rimale,4.187942594372735,0,False,False,False,False,False,False,False,-0.15026453429531017
+300,352091,PI,16.161167012777145,inf,-1,secondary,SP462R,,Via Leonardo da Vinci,4.020876333771318,0,False,False,False,False,False,False,False,-0.22898411526476287
+301,310260,PI,6.377545015347874,inf,-1,secondary,SP4,SP4,Via Provinciale 4 di Bardi,5.258541574849984,0,False,False,False,False,False,False,False,
+303,292228,PI,10.926182674695932,inf,-1,secondary,SP11,SP11,,7.93256406429699,0,False,False,False,False,False,False,False,-0.08091006665566883
+304,385496,PI,6.960581495759471,162.49874265864108,398932,tertiary,,,Via Guglielmo Marconi,4.866096251206035,0,False,False,False,False,False,False,False,
+305,309057,PI,4.314436228815503,207.6629353656735,311834,secondary,SP6Bis,SP6Bis,SP6Bis di Castell'Arquato,9.907886222543148,0,False,False,False,False,False,False,False,-0.09845853952804418
+306,310680,PI,9.502699697965094,72.63153304869317,308557,primary,SS654,SS654,Strada statale 654 di Val Nure,6.694180575476792,0,False,False,False,False,False,False,False,-0.0939817039141132
+307,291188,PI,3.4455160356223904,inf,-1,primary,,,Strada Statale di Val Trebbia,6.862529686733873,0,False,False,False,False,False,False,False,-0.10944865563343902
+308,259627,PI,6.983242688755144,inf,-1,primary,SS412,SS412,,3.4528817091215487,0,False,False,False,False,False,False,False,-0.1872284802666713
+309,313284,PI,9.718801666159075,85.08814956319998,330553,primary,SS10,SS10,Via Breda,2.378446063807554,0,False,False,False,False,False,False,False,-0.2428047151908324
+385,400118,PI,3.1046191850812854,inf,-1,primary,SS10,,Via Emilia Pavese,2.983602302761575,0,False,False,False,False,False,False,False,-0.22786948901059123
+388,308077,PI,6.36287963591027,inf,-1,tertiary,SP31,SP31,SP31 - Strada Salsediana,5.955168235975138,0,False,False,False,False,False,False,False,
+389,387777,PI,8.76198242498679,inf,-1,secondary,SP588R,SP588R,Strada dei Due Ponti,4.777272928560086,0,False,False,False,False,False,False,False,
+390,293144,PI,8.897735228158595,inf,-1,secondary,SP462R,SP462R,SP462 di Val d'Arda,3.3667834411167727,0,False,False,False,False,False,False,False,-0.045334916266833905
+391,352470,PI,8.330593106405752,inf,-1,primary,SS10,SS10,Via Statale,2.9642896208210514,0,False,False,False,False,False,False,False,-0.6148718750868366
+393,293445,PI,7.015626621244239,226.48916260304685,353742,primary,SS10,SS10,Via Caorsana,7.568065714881586,0,False,False,False,False,False,False,False,0.062430273754235335
 447,311244,PI,5.4519033480609,107.40162163868722,311463,secondary,SP28,SP28,Strada Agazzana,7.5789332169642325,0,False,False,False,False,False,False,False,
-614,313229,PI,9.410759533585328,67.71336506431317,313238,secondary,SP587R,SP587R,Via Piacenza,0.23385429941236902,0,False,False,False,False,False,False,False,-0.1437962798532619
-615,313993,PI,0.032719260190194784,49.273862330209795,419493,primary,SS9,SS9,Via Emilia,0.22939619164946115,1,False,False,False,False,False,False,False,-0.3884497416417432
-616,313924,PI,5.303089217275094,183.3650062278521,313979,secondary,SP588R,SP588R,Strada Provinciale 588 R dei Due Ponti,0.8813380138993921,0,False,False,False,False,False,False,False,-0.13507828718724815
-617,419425,PI,5.409483560598596,101.46604813540073,419378,secondary,SP7;SP11,SP7; SP11,,3.17635027437087,0,False,False,False,False,False,False,False,-0.02713142065414085
-635,329894,PI,13.865893470059063,inf,-1,trunk,SS725,SS725,Tangenziale di Piacenza,2.161317871531357,0,False,False,False,False,False,False,False,-0.491557112617251
-665,400297,PI,4.285237700653858,inf,-1,secondary,,,Strada Gragnana,6.290822819337757,0,False,False,False,False,False,False,False,-0.11561383517853382
-98,19348,RA,4.076600482885013,inf,-1,primary,SP302,SP302,Via Castellina,10.593784332510573,0,False,False,False,False,False,False,False,
-256,154811,RA,7.542792169398913,inf,-1,primary,SP302,SP302,Via Firenze,8.744995216554315,0,False,False,False,False,False,False,False,-0.06338290545373507
-257,241835,RA,8.469485626910997,88.38061434887258,185831,primary,SP302,SP302,Via Ravegnana,1.931897192623309,0,False,False,False,False,False,False,False,
-332,90511,RA,6.895688261058851,inf,-1,secondary,SP306,SP306,Via Casolana,4.58390067206701,0,False,False,False,False,False,False,False,-0.07996467158585963
-333,107005,RA,6.605047935780978,86.28309824643794,154740,primary,SS9,,Via Emilia Levante,2.883650001322074,0,False,False,False,False,False,False,False,
-334,279436,RA,3.9828978091499145,inf,-1,secondary,SP8,SP8,Strada Provinciale Naviglio,2.1853498602496217,0,False,False,False,False,False,False,False,-0.28551835613473553
-335,249480,RA,5.01030682255653,inf,-1,secondary,SP7,SP7,Via Corriera,3.4800310054794776,0,False,False,False,False,False,False,False,
-336,410524,RA,5.90299914342759,inf,-1,primary,SP253,SP253,Via Chiusa,1.9587798074002916,0,False,False,False,False,False,False,False,0.07259884239646275
-337,280489,RA,14.809017706160642,inf,-1,secondary,,,Strada Provinciale Quarantola,3.4257029875532536,0,False,False,False,False,False,False,False,-0.18788319157761446
-357,21551,RA,7.835744108325148,inf,-1,secondary,SP306,SP306,Via del Senio,8.079267187577866,0,False,False,False,False,False,False,False,
-380,151209,RA,6.999215521984792,inf,-1,primary,SS309dir,SS309dir,Via San Vitale,3.8937159906272583,0,False,False,False,False,False,False,False,
-442,409089,RA,7.734022318934796,125.55783459346756,409015,secondary,SP118,SP118,Via Dismano,2.494749312956457,0,False,False,False,False,False,False,False,0.1695645983192282
-443,191274,RA,3.7102423695238085,inf,-1,secondary,SP16,SP16,Via Modigliana,8.242075486329302,0,False,False,False,False,False,False,False,
-444,108873,RA,4.473541511088243,inf,-1,secondary,SP5,SP5,Via Molinaccio,3.426197411651345,0,False,False,False,False,False,False,False,
-445,110133,RA,5.514265781099484,inf,-1,primary,SP610,SP610,Via Selice,4.756781985004278,0,False,False,False,False,False,False,False,0.41537879441201886
-446,253395,RA,12.242151317208673,inf,-1,secondary,SP13,SP13,Via Bastia,3.0145608929509327,0,False,False,False,False,False,False,False,-0.2040738748290521
-618,46521,RA,8.449912415063451,298.8484889851852,46477,primary,SP253,SP253,Via Albergone,1.637198378512286,0,False,False,False,False,False,False,False,0.33028258552115697
-619,25532,RA,2.874756214637539,inf,-1,secondary,SP8/B,SP8/B,Via Sinistra Canale Inferiore,5.7837393295644635,0,False,False,False,False,False,False,False,0.28002858825302523
-651,90882,RA,8.608797210322626,inf,-1,primary,SS9,SS9,Via Emilia Ponente,4.633462529624671,0,False,False,False,False,False,False,False,0.07377897752615531
-653,8693,RA,6.145948829819942,inf,-1,secondary,SP254,SP254,Via Salara Statale,3.5136699662377415,0,False,False,False,False,False,False,False,
-654,3583,RA,6.241684318858937,262.8953761386803,51763,primary,SP71bis,SP71bis,Via Bollana,1.7193569954669088,0,False,False,False,False,False,False,False,0.1597463124650321
-655,126804,RA,5.030022499653113,inf,-1,primary,,,Via Faentina,1.159126174911727,0,False,False,False,False,False,False,False,0.01769872573883457
-675,128842,RA,3.7252896916805818,inf,-1,primary,SS309,SS309,Via Romea Nord,9.555441696983403,0,False,False,False,False,False,False,False,0.0030820867114428217
-676,165890,RA,1.1657966527307877,inf,-1,primary,,,Via Reale,4.070513565095901,0,False,False,False,False,False,False,False,-0.09395965911574733
-677,174037,RA,1.9777934154519838,inf,-1,primary,SS67,SS67,Via Ravegnana,5.839205097518628,0,False,False,False,False,False,False,False,0.23835246748922975
-678,6591,RA,8.8285616585765,inf,-1,primary,SS16,SS16,,1.7431070516955733,0,False,False,False,False,False,False,False,-0.23465450712723135
-107,26913,RE,3.608615131066032,195.40214807932486,46225,secondary,RE85,RE85,Via Fontana,2.0187907452387033,0,False,False,False,False,False,False,False,0.17559327972675642
-112,99714,RE,6.293565017145494,inf,-1,primary,SP111,SP358R,Strada Provinciale 358R di Castelnovo,2.4292442553092006,0,False,False,True,False,False,False,True,-0.11865930271868802
-117,314724,RE,11.54935317842251,108.25714066266127,315170,primary,SS63,SS63,Strada Statale 63 del Valico del Cerreto,7.184348653514939,0,False,False,False,False,False,False,False,
-137,114629,RE,9.116723834841382,140.71373440327145,95725,primary,,,Via Carlo Teggi,0.934032213512855,0,False,False,False,False,False,False,False,0.011433610015792824
-138,403645,RE,9.516456503692071,inf,-1,primary,SS63,SS63,Via della Repubblica,3.774952871964063,0,False,False,False,False,False,False,False,0.11943792578012567
-139,198745,RE,5.355479699173268,inf,-1,primary,SP467R,SP467R,Via Bosco,4.598961154906989,0,False,False,False,False,False,False,False,0.16792363676646604
-140,254601,RE,8.30483051979126,inf,-1,primary,SS9,SS9,Via Federico Garcia Lorca,5.12911426687206,0,False,False,False,False,False,False,False,0.18727171004047952
-141,255809,RE,7.2713359724274484,inf,-1,secondary,,,Via Vladimir Il'ic Lenin,3.0066854057672416,0,False,False,False,False,False,False,False,
-143,152060,RE,10.057373081306867,295.2494932734572,167355,primary,SP63R,SP63R,Via dei Gonzaga,1.0111317586284272,0,False,False,False,False,False,False,False,-0.04931993855444455
-228,398407,RE,7.073532345830129,inf,-1,primary,SP62R,SP62R,Strada Statale n. 62 della Cisa,6.018177896000465,0,False,False,False,False,False,False,False,0.21191146017094614
-229,98755,RE,9.718765978316197,inf,-1,primary,SP358R,SP358R,Via Matteotti,3.850643446835094,0,False,False,False,False,False,False,False,0.06369552229514347
-230,116519,RE,8.816977270160901,inf,-1,trunk,SP62Rvar,SP62Rvar,Variante Strada Statale 62,4.164527612553351,0,False,False,False,False,False,False,False,-0.00481710048212622
-231,184514,RE,5.600692305668066,inf,-1,primary,SP63R,SP63R,Strada Statale 63,3.19627490908426,0,False,False,False,False,False,False,False,
-237,95819,RE,9.744155700736593,135.65423438858215,80601,primary,SP23,SP23,Via Filippo Turati,1.5592416673509915,0,False,False,False,False,False,False,False,0.009800296220947044
-238,148260,RE,7.4728236610223355,291.32704692770085,255153,primary,SP37,SP37,Via Matteotti,3.3838847430893706,0,False,False,False,False,False,False,False,0.22148604730793953
-239,253502,RE,11.277568221561928,inf,-1,primary,SP486R,,Via Radici in Monte,10.793861731707281,0,False,False,False,False,False,False,False,-0.06666073527503895
-294,98540,RE,10.934644221068778,inf,-1,primary,SP111,,Via Val D'Enza,4.3810941884814465,0,False,False,False,False,False,False,False,0.254940367936041
-310,163610,RE,3.7059762441624136,inf,-1,primary,SP358R,SP358R,Strada Provinciale 358R di Castelnovo,4.81229475043423,0,False,False,False,False,False,False,False,
-311,201099,RE,9.358703066463791,inf,-1,primary,SP62Rvar,SP62Rvar,Variante Strada Statale 62,5.844516186514371,0,False,False,False,False,False,False,False,0.0026838408245290686
-312,200433,RE,6.0657204731941965,inf,-1,primary,SP42,SP42,Via Massimo D'Azeglio,1.8329696266868716,0,False,False,False,False,False,False,False,-0.037188587037064416
-314,31267,RE,5.7101549040268,inf,-1,secondary,SP2,SP2,Via Guastalla,4.7343813639975805,0,False,False,False,False,False,False,False,-0.175837684551915
-318,40624,RE,10.814266151155834,inf,-1,secondary,RE51,RE51,Circonvallazione di Salvaterra,5.559321941518498,0,False,False,False,False,False,False,False,0.13609227294028128
-356,45173,RE,7.488824626038269,inf,-1,secondary,SP2,SP48,Strada Pascoletto,1.1525770701825377,0,False,False,True,False,False,False,True,-0.16401090316186265
-383,199040,RE,18.766313690490712,77.22777442775163,255809,trunk,SS722,SS722,Viale Martiri di Piazza Tien An Men,1.797979279521786,0,False,False,False,False,False,False,False,-0.0688370948647147
-426,113792,RE,7.3357118143752915,209.94589460361132,39137,primary,SS63,SS63,Via Roma Nord,6.247139536768469,0,False,False,False,False,False,False,False,-0.20702072236260388
-427,180931,RE,7.069117635862299,237.0037889787384,254188,secondary,SP7,SP7,Via delle Scuole,9.209780647818201,0,False,False,False,False,False,False,False,
-428,157396,RE,11.29128244478694,96.26004469474383,157489,secondary,SP19,SP19,Via Malpasso,2.679856954743835,0,False,False,False,False,False,False,False,
-429,254868,RE,7.233008497348822,inf,-1,primary,SP12,SP12,Strada San Polo,6.656689646115628,0,False,False,False,False,False,False,False,
+614,313229,PI,9.410759533585328,67.71336506431317,313238,secondary,SP587R,SP587R,Via Piacenza,0.23385429941236902,0,False,False,False,False,False,False,False,-0.13792472122851343
+615,313993,PI,0.032719260190194784,49.273862330209795,419493,primary,SS9,SS9,Via Emilia,0.22939619164946115,1,False,False,False,False,False,False,False,-0.4049550271659459
+616,313924,PI,5.303089217275094,183.3650062278521,313979,secondary,SP588R,SP588R,Strada Provinciale 588 R dei Due Ponti,0.8813380138993921,0,False,False,False,False,False,False,False,-0.11577313199186152
+617,419425,PI,5.409483560598596,101.46604813540073,419378,secondary,SP7;SP11,SP7; SP11,,3.17635027437087,0,False,False,False,False,False,False,False,-0.06907033617356736
+635,329894,PI,13.865893470059063,inf,-1,trunk,SS725,SS725,Tangenziale di Piacenza,2.161317871531357,0,False,False,False,False,False,False,False,-0.4965483740498893
+665,400297,PI,4.285237700653858,inf,-1,secondary,,,Strada Gragnana,6.290822819337755,0,False,False,False,False,False,False,False,-0.06792873152555273
+98,19348,RA,4.076600482885013,inf,-1,primary,SP302,SP302,Via Castellina,10.593784332510465,0,False,False,False,False,False,False,False,
+256,154811,RA,7.542792169398913,inf,-1,primary,SP302,SP302,Via Firenze,8.744995216554353,0,False,False,False,False,False,False,False,-0.04875900103077939
+257,241835,RA,8.469485626910997,88.38061434887258,185831,primary,SP302,SP302,Via Ravegnana,1.931897192623319,0,False,False,False,False,False,False,False,
+332,90511,RA,6.895688261058851,inf,-1,secondary,SP306,SP306,Via Casolana,4.583900672067014,0,False,False,False,False,False,False,False,-0.051717415064908186
+333,107005,RA,6.605047935778044,86.28309824643794,154740,primary,SS9,,Via Emilia Levante,2.883650001322079,0,False,False,False,False,False,False,False,
+334,279436,RA,3.9828978091499145,inf,-1,secondary,SP8,SP8,Strada Provinciale Naviglio,2.1853498602495707,0,False,False,False,False,False,False,False,-0.2151039551929691
+335,249480,RA,5.01030682255653,inf,-1,secondary,SP7,SP7,Via Corriera,3.480031005479458,0,False,False,False,False,False,False,False,
+336,410524,RA,5.902999143398949,inf,-1,primary,SP253,SP253,Via Chiusa,1.9587798074002918,0,False,False,False,False,False,False,False,0.11202163586038616
+337,280489,RA,14.809017706160642,inf,-1,secondary,,,Strada Provinciale Quarantola,3.425702987553261,0,False,False,False,False,False,False,False,-0.14911368476917491
+357,21551,RA,7.835744108325148,inf,-1,secondary,SP306,SP306,Via del Senio,8.079267187577788,0,False,False,False,False,False,False,False,
+380,151209,RA,6.999215521984792,inf,-1,primary,SS309dir,SS309dir,Via San Vitale,3.893715990627254,0,False,False,False,False,False,False,False,
+442,409089,RA,7.734022318934796,125.55783459346756,409015,secondary,SP118,SP118,Via Dismano,2.494749312956454,0,False,False,False,False,False,False,False,0.2477310598677679
+443,191274,RA,3.7102423695238085,inf,-1,secondary,SP16,SP16,Via Modigliana,8.24207548632919,0,False,False,False,False,False,False,False,
+444,108873,RA,4.473541511088243,inf,-1,secondary,SP5,SP5,Via Molinaccio,3.42619741165134,0,False,False,False,False,False,False,False,
+445,110133,RA,5.514265781099484,inf,-1,primary,SP610,SP610,Via Selice,4.756781985004306,0,False,False,False,False,False,False,False,0.39765932224301187
+446,253395,RA,12.242151317309434,inf,-1,secondary,SP13,SP13,Via Bastia,3.01456089295092,0,False,False,False,False,False,False,False,-0.13018533375012997
+618,46521,RA,8.449912415063451,298.8484889851852,46477,primary,SP253,SP253,Via Albergone,1.6371983785122923,0,False,False,False,False,False,False,False,0.32516576918182727
+619,25532,RA,2.874756214535819,inf,-1,secondary,SP8/B,SP8/B,Via Sinistra Canale Inferiore,5.783739329564453,0,False,False,False,False,False,False,False,0.27270503529360113
+651,90882,RA,8.608797210322626,inf,-1,primary,SS9,SS9,Via Emilia Ponente,4.633462529624659,0,False,False,False,False,False,False,False,0.10618944113509061
+653,8693,RA,6.145948829815452,inf,-1,secondary,SP254,SP254,Via Salara Statale,3.5136699662377437,0,False,False,False,False,False,False,False,
+654,3583,RA,6.241684318858937,262.8953761386803,51763,primary,SP71bis,SP71bis,Via Bollana,1.719356995466915,0,False,False,False,False,False,False,False,0.1212248908008027
+655,126804,RA,5.0300224997207845,inf,-1,primary,,,Via Faentina,1.159126174911727,0,False,False,False,False,False,False,False,0.018551822613478552
+675,128842,RA,3.7252896916805818,inf,-1,primary,SS309,SS309,Via Romea Nord,9.555441696983477,0,False,False,False,False,False,False,False,-0.027372113287677285
+676,165890,RA,1.1657966527307877,inf,-1,primary,,,Via Reale,4.0705135650960065,0,False,False,False,False,False,False,False,-0.1285628317276734
+677,174037,RA,1.9777934154043069,inf,-1,primary,SS67,SS67,Via Ravegnana,5.839205097518826,0,False,False,False,False,False,False,False,0.2355181443009931
+678,6591,RA,8.8285616585765,inf,-1,primary,SS16,SS16,,1.7431070516955733,0,False,False,False,False,False,False,False,-0.16804738400054328
+107,26913,RE,3.608615131066032,195.40214807932486,46225,secondary,RE85,RE85,Via Fontana,2.018790745238704,0,False,False,False,False,False,False,False,0.14552516244045363
+112,99714,RE,6.293565017145494,inf,-1,primary,SP111,SP358R,Strada Provinciale 358R di Castelnovo,2.4292442553092113,0,False,False,True,False,False,False,True,-0.11080116910522797
+117,314724,RE,11.54935317842251,108.25714066266127,315170,primary,SS63,SS63,Strada Statale 63 del Valico del Cerreto,7.1843486535149745,0,False,False,False,False,False,False,False,
+137,114629,RE,9.116723834841382,140.71373440327145,95725,primary,,,Via Carlo Teggi,0.9340322135128548,0,False,False,False,False,False,False,False,0.04009887209161935
+138,403645,RE,9.516456503692071,inf,-1,primary,SS63,SS63,Via della Repubblica,3.774952871964004,0,False,False,False,False,False,False,False,0.11633279259199902
+139,198745,RE,5.355479699173268,inf,-1,primary,SP467R,SP467R,Via Bosco,4.598961154907019,0,False,False,False,False,False,False,False,0.2630143528711407
+140,254601,RE,8.30483051979126,inf,-1,primary,SS9,SS9,Via Federico Garcia Lorca,5.129114266872059,0,False,False,False,False,False,False,False,0.3238085391686638
+141,255809,RE,7.2713359724274484,inf,-1,secondary,,,Via Vladimir Il'ic Lenin,3.0066854057671373,0,False,False,False,False,False,False,False,
+143,152060,RE,10.057373081306867,295.2494932734572,167355,primary,SP63R,SP63R,Via dei Gonzaga,1.0111317586284452,0,False,False,False,False,False,False,False,-0.06634731801517549
+228,398407,RE,7.073532345830129,inf,-1,primary,SP62R,SP62R,Strada Statale n. 62 della Cisa,6.018177896000389,0,False,False,False,False,False,False,False,0.2082719228072614
+229,98755,RE,9.718765978316197,inf,-1,primary,SP358R,SP358R,Via Matteotti,3.850643446835102,0,False,False,False,False,False,False,False,0.05302381349779363
+230,116519,RE,8.816977270160901,inf,-1,trunk,SP62Rvar,SP62Rvar,Variante Strada Statale 62,4.164527612553349,0,False,False,False,False,False,False,False,0.02113889572474814
+231,184514,RE,5.600692305668066,inf,-1,primary,SP63R,SP63R,Strada Statale 63,3.1962749090842824,0,False,False,False,False,False,False,False,
+237,95819,RE,9.744155700736593,135.65423438858215,80601,primary,SP23,SP23,Via Filippo Turati,1.559241667350997,0,False,False,False,False,False,False,False,0.030224019076034836
+238,148260,RE,7.4728236610223355,291.32704692770085,255153,primary,SP37,SP37,Via Matteotti,3.3838847430893733,0,False,False,False,False,False,False,False,0.21691911360691482
+239,253502,RE,11.277568221561928,inf,-1,primary,SP486R,,Via Radici in Monte,10.793861731707302,0,False,False,False,False,False,False,False,-0.018518275313625786
+294,98540,RE,10.934644221068778,inf,-1,primary,SP111,,Via Val D'Enza,4.381094188481447,0,False,False,False,False,False,False,False,0.23224777589057388
+310,163610,RE,3.7059762441624136,inf,-1,primary,SP358R,SP358R,Strada Provinciale 358R di Castelnovo,4.812294750434119,0,False,False,False,False,False,False,False,
+311,201099,RE,9.358703066463791,inf,-1,primary,SP62Rvar,SP62Rvar,Variante Strada Statale 62,5.844516186514365,0,False,False,False,False,False,False,False,-0.01083844476472015
+312,200433,RE,6.0657204731941965,inf,-1,primary,SP42,SP42,Via Massimo D'Azeglio,1.8329696266868725,0,False,False,False,False,False,False,False,-0.035967331380408446
+314,31267,RE,5.7101549040268,inf,-1,secondary,SP2,SP2,Via Guastalla,4.7343813639975805,0,False,False,False,False,False,False,False,-0.15309061100256843
+318,40624,RE,10.814266151155834,inf,-1,secondary,RE51,RE51,Circonvallazione di Salvaterra,5.559321941518512,0,False,False,False,False,False,False,False,0.14603875728979465
+356,45173,RE,7.488824626038269,inf,-1,secondary,SP2,SP48,Strada Pascoletto,1.1525770701825364,0,False,False,True,False,False,False,True,-0.14081031934826496
+383,199040,RE,18.766313690486086,77.22777442773055,255809,trunk,SS722,SS722,Viale Martiri di Piazza Tien An Men,1.797979279521692,0,False,False,False,False,False,False,False,-0.04080497821735695
+426,113792,RE,7.3357118143752915,209.94589460361132,39137,primary,SS63,SS63,Via Roma Nord,6.247139536768429,0,False,False,False,False,False,False,False,-0.19743402723694303
+427,180931,RE,7.069117635760444,237.0037889786954,254188,secondary,SP7,SP7,Via delle Scuole,9.209780647818214,0,False,False,False,False,False,False,False,
+428,157396,RE,11.29128244478694,96.26004469474383,157489,secondary,SP19,SP19,Via Malpasso,2.6798569547438285,0,False,False,False,False,False,False,False,
+429,254868,RE,7.233008497348822,inf,-1,primary,SP12,SP12,Strada San Polo,6.656689646115617,0,False,False,False,False,False,False,False,
 430,394973,RE,9.202777133100488,inf,-1,secondary,SP28,SP28,Via Fratelli Cervi,1.910785909746577,0,False,False,False,False,False,False,False,
-431,283892,RE,10.175603884840502,inf,-1,secondary,SP12,SP12,Via Osvaldo Piacentini,7.490556970191138,0,False,False,False,False,False,False,False,0.3343698207957522
-432,373383,RE,6.201959202200142,inf,-1,primary,SP67,SP67,Via Andrea Rivasi,6.053859165048111,0,False,False,False,False,False,False,False,0.2854892246516877
+431,283892,RE,10.175603884840502,inf,-1,secondary,SP12,SP12,Via Osvaldo Piacentini,7.4905569701911405,0,False,False,False,False,False,False,False,0.34653422716614657
+432,373383,RE,6.201959202200142,inf,-1,primary,SP67,SP67,Via Andrea Rivasi,6.053859165048124,0,False,False,False,False,False,False,False,0.28512673358363466
 434,15945,RE,7.377918025247402,54.86787179836547,32652,tertiary,SP39,SP39,Via San Nicola,0.6530349039516433,0,False,False,False,False,True,False,True,
-448,30021,RE,5.389476000220423,inf,-1,primary,SP5,SP5,Via Cristoforo Colombo,5.221500306295932,0,False,False,False,False,False,False,False,0.24159585204865727
-449,81423,RE,7.396759041227575,295.42422463183647,41686,primary,SP111,SP111,Strada della Val d'Enza,2.4911871124886704,0,False,False,False,False,False,False,False,0.18911989768839504
-450,201183,RE,10.728238369873358,inf,-1,secondary,SP35,SP35,Strada Provinciale 35,2.4324974013072382,0,False,False,False,False,False,False,False,-0.4059530249285927
-451,411066,RE,9.345996303887029,inf,-1,trunk,SP62Rvar,SP62Rvar,Strada Provinciale 62Rvar Cispadana,0.9852486868590473,0,False,False,False,False,False,False,False,-0.2967249711964248
-452,199091,RE,8.969494707980207,inf,-1,primary,SP3,SP3,Viale dei Trattati di Roma,3.9621248334760106,0,False,False,False,False,False,False,False,0.16253120365016643
-500,361889,RE,7.858533449424564,inf,-1,primary,SP513R,SP513R,Via Val d'Enza Nord,2.400233523349094,0,False,False,False,False,False,False,False,
-620,255525,RE,10.05901315481614,98.71789436545642,32607,primary,SS468,SS468,Via della Pace,6.567955725756377,0,False,False,False,False,False,False,False,0.5573681907709234
-621,359414,RE,8.839957844172313,inf,-1,primary,SP513R,SP513R,Località Giaretta Ienza,8.21404750713405,0,False,False,False,False,False,False,False,
-622,118062,RE,9.982523491030607,133.31343711787508,436853,primary,SS468,SS468,Via Carpi,1.3862687256530406,0,False,False,False,False,False,False,False,0.16941496783047583
-623,30134,RE,8.834024759049926,inf,-1,primary,SP30,SP30,Via Guastalla,3.2982084865402777,0,False,False,False,False,False,False,False,0.0850650373733037
-624,129651,RE,7.148338781603956,inf,-1,secondary,SP23,SP23,Via Sant'Ambrogio,4.573325946583488,0,False,False,False,False,False,False,False,-0.11459635114231179
-638,130135,RE,8.27124282746507,inf,-1,primary,SS9,SS9,Via Isacco Newton,6.1756708861848635,0,False,False,False,False,False,False,False,0.11559287704419721
-639,38351,RE,11.005525156238715,inf,-1,trunk,SS63,SS63,,4.55965665782887,0,False,False,False,False,False,False,False,-0.18204598128553245
-670,198656,RE,0.42206579921862886,inf,-1,primary,SS722var,SS722var,Viale Osvaldo Piacentini,4.653669723187241,0,False,False,False,False,False,False,False,0.271794090960213
-681,254123,RE,4.44741243087341,inf,-1,secondary,SP52,SP52,Via 11 Settembre 2001,3.2865997947187156,0,False,False,False,False,False,False,False,
-12,1199,RI,3.624226875192408,33.550454222925175,906,primary,SS16,SS16,Strada Statale 16 Adriatica,1.9683246129695906,0,False,False,False,False,False,False,False,0.23196657913575897
-100,132791,RI,5.701226510179268,inf,-1,primary,SS258,SS258,,1.6153724486775696,0,False,False,False,False,False,False,False,-0.05181625419095583
-182,207309,RI,6.810399923481634,inf,-1,primary,SS258,SS258,Via Marecchiese,4.874904377861105,0,False,False,False,False,False,False,False,0.26395225309534287
-184,220791,RI,8.515312467203193,inf,-1,primary,SS16,SS16,Via Flaminia,8.11744033876822,0,False,False,False,False,False,False,False,0.35677456017268233
-186,207233,RI,9.741185388570436,inf,-1,primary,SS16,SS16,Via Popilia,3.858252448635841,0,False,False,False,False,False,False,False,0.15121440689159585
-187,405417,RI,13.953624889776236,inf,-1,trunk,SS16,SS16,Strada Statale 16 Adriatica,1.9357236854857292,0,False,False,False,False,False,False,False,
-188,202041,RI,11.167687498423122,inf,-1,primary,SS9,SS9,Via Emilia,1.6234893945218718,0,False,False,False,False,False,False,False,0.2028216315394777
-263,222736,RI,6.836640354738935,inf,-1,primary,SS16,SS16,Via Adriatica,2.5151181411165244,0,False,False,False,False,False,False,False,0.33604119391796006
-350,165453,RI,10.022942268263867,inf,-1,tertiary,SP41,SP41,Via Montescudo,5.918271718608618,0,False,False,False,False,False,False,False,0.16915281322614328
-351,206422,RI,10.980733805328207,294.59245892303755,221366,primary,SS72,SS72,Via Ausa,3.803569500073334,0,False,False,False,False,False,False,False,
-352,201792,RI,10.194136251089597,209.8871997517509,201768,secondary,SP136,SP136,Via Tolemaide,2.0890269031311166,0,False,False,False,False,False,False,False,
-354,205466,RI,4.384689457642717,inf,-1,secondary,SP31,SP31,,4.611878941961789,0,False,False,False,False,False,False,False,0.17084136466698513
-355,437163,RI,10.832812679288613,inf,-1,secondary,SP17var,,Via Laghetto,4.322005519784621,0,False,False,False,False,False,False,False,0.02099501115977956
-437,136183,RI,4.074004772259431,inf,-1,tertiary,SP13,SP13,Via Cornacchiara,3.61124134728816,0,False,False,False,False,False,False,False,0.1552241795733061
-438,64713,RI,9.669030874418302,inf,-1,secondary,SP14,SP14,Via Santarcangiolese,3.9218555242716318,0,False,False,False,False,False,False,False,0.04471963207443749
-439,134692,RI,5.8806244152434335,280.063550516392,134667,secondary,SP49,SP49,Via Trasversale Marecchia,2.762752249521127,0,False,False,False,False,False,False,False,0.07784463541359232
-440,201831,RI,0.1582893767346478,inf,-1,secondary,SP35,SP35,Via Tavoleto,3.163711005879568,0,False,False,False,False,False,False,False,0.16704757655269253
-441,1098,RI,3.220254506257392,inf,-1,secondary,SP58,SP58,Via Tavullia,3.594678599022213,0,False,False,False,False,False,False,False,0.06478894529197873
+448,30021,RE,5.389476000220423,inf,-1,primary,SP5,SP5,Via Cristoforo Colombo,5.221500306295939,0,False,False,False,False,False,False,False,0.2888244275709328
+449,81423,RE,7.396759041227575,295.42422463183647,41686,primary,SP111,SP111,Strada della Val d'Enza,2.49118711248866,0,False,False,False,False,False,False,False,0.17343739098362249
+450,201183,RE,10.728238369873358,inf,-1,secondary,SP35,SP35,Strada Provinciale 35,2.4324974013072422,0,False,False,False,False,False,False,False,-0.41384032622149025
+451,411066,RE,9.345996303920655,inf,-1,trunk,SP62Rvar,SP62Rvar,Strada Provinciale 62Rvar Cispadana,0.985248686859046,0,False,False,False,False,False,False,False,-0.29245959562559076
+452,199091,RE,8.969494707954388,inf,-1,primary,SP3,SP3,Viale dei Trattati di Roma,3.9621248334760044,0,False,False,False,False,False,False,False,0.1751208412398563
+500,361889,RE,7.858533449424564,inf,-1,primary,SP513R,SP513R,Via Val d'Enza Nord,2.400233523349083,0,False,False,False,False,False,False,False,
+620,255525,RE,10.05901315481614,98.71789436545642,32607,primary,SS468,SS468,Via della Pace,6.5679557257563905,0,False,False,False,False,False,False,False,0.5975206604303778
+621,359414,RE,8.83995784412774,inf,-1,primary,SP513R,SP513R,Località Giaretta Ienza,8.214047507134092,0,False,False,False,False,False,False,False,
+622,118062,RE,9.982523491030607,133.31343711787508,436853,primary,SS468,SS468,Via Carpi,1.3862687256530406,0,False,False,False,False,False,False,False,0.22703064453321592
+623,30134,RE,8.834024759049926,inf,-1,primary,SP30,SP30,Via Guastalla,3.298208486540264,0,False,False,False,False,False,False,False,0.09155264746760025
+624,129651,RE,7.148338781603956,inf,-1,secondary,SP23,SP23,Via Sant'Ambrogio,4.573325946583493,0,False,False,False,False,False,False,False,-0.10264867473069289
+638,130135,RE,8.27124282746507,inf,-1,primary,SS9,SS9,Via Isacco Newton,6.175670886184865,0,False,False,False,False,False,False,False,0.1922113953651859
+639,38351,RE,11.005525156238715,inf,-1,trunk,SS63,SS63,,4.559656657828834,0,False,False,False,False,False,False,False,-0.19169195351278132
+670,198656,RE,0.42206579921862886,inf,-1,primary,SS722var,SS722var,Viale Osvaldo Piacentini,4.653669723187232,0,False,False,False,False,False,False,False,0.3216855033180923
+681,254123,RE,4.44741243087341,inf,-1,secondary,SP52,SP52,Via 11 Settembre 2001,3.2865997947187187,0,False,False,False,False,False,False,False,
+12,1199,RI,3.624226875192408,33.550454222925175,906,primary,SS16,SS16,Strada Statale 16 Adriatica,1.9683246129694791,0,False,False,False,False,False,False,False,0.2221574157582737
+100,132791,RI,5.701226510179268,inf,-1,primary,SS258,SS258,,1.6153724486775665,0,False,False,False,False,False,False,False,0.044082954977437624
+182,207309,RI,6.810399923481634,inf,-1,primary,SS258,SS258,Via Marecchiese,4.8749043778610845,0,False,False,False,False,False,False,False,0.3092087794409019
+184,220791,RI,8.515312467203193,inf,-1,primary,SS16,SS16,Via Flaminia,8.11744033876823,0,False,False,False,False,False,False,False,0.3985645841224622
+186,207233,RI,9.741185388570436,inf,-1,primary,SS16,SS16,Via Popilia,3.858252448635853,0,False,False,False,False,False,False,False,0.23805016030593185
+187,405417,RI,13.953624889776236,inf,-1,trunk,SS16,SS16,Strada Statale 16 Adriatica,1.9357236854857187,0,False,False,False,False,False,False,False,
+188,202041,RI,11.167687498423122,inf,-1,primary,SS9,SS9,Via Emilia,1.6234893945218718,0,False,False,False,False,False,False,False,0.29489560852718577
+263,222736,RI,6.836640354738935,inf,-1,primary,SS16,SS16,Via Adriatica,2.5151181411164205,0,False,False,False,False,False,False,False,0.337913044097403
+350,165453,RI,10.022942268263867,inf,-1,tertiary,SP41,SP41,Via Montescudo,5.9182717186086276,0,False,False,False,False,False,False,False,0.2102052825841093
+351,206422,RI,10.980733805329802,294.59245892303755,221366,primary,SS72,SS72,Via Ausa,3.8035695000733183,0,False,False,False,False,False,False,False,
+352,201792,RI,10.194136251089597,209.8871997517509,201768,secondary,SP136,SP136,Via Tolemaide,2.0890269031311153,0,False,False,False,False,False,False,False,
+354,205466,RI,4.384689457642717,inf,-1,secondary,SP31,SP31,,4.611878941961798,0,False,False,False,False,False,False,False,0.20772420040785647
+355,437163,RI,10.832812679288613,inf,-1,secondary,SP17var,,Via Laghetto,4.322005519784617,0,False,False,False,False,False,False,False,0.018241187264289214
+437,136183,RI,4.074004772259431,inf,-1,tertiary,SP13,SP13,Via Cornacchiara,3.6112413472881566,0,False,False,False,False,False,False,False,0.17851292125641938
+438,64713,RI,9.669030874418302,inf,-1,secondary,SP14,SP14,Via Santarcangiolese,3.9218555242717548,0,False,False,False,False,False,False,False,0.11777065813137855
+439,134692,RI,5.8806244152434335,280.063550516392,134667,secondary,SP49,SP49,Via Trasversale Marecchia,2.762752249521141,0,False,False,False,False,False,False,False,0.2175015512649961
+440,201831,RI,0.15828937668848636,inf,-1,secondary,SP35,SP35,Via Tavoleto,3.1637110058796494,0,False,False,False,False,False,False,False,0.18706814011944367
+441,1098,RI,3.220254506257392,inf,-1,secondary,SP58,SP58,Via Tavullia,3.5946785990222097,0,False,False,False,False,False,False,False,0.06093840783168761
 454,132670,RI,16.37237256771137,158.58383596781536,203645,primary,SS72,SS72,Via Consolare Rimini-San Marino,0.6319995656807206,0,False,False,False,False,False,False,False,
-625,136452,RI,6.0320532708116925,inf,-1,secondary,SP14,SP14,Via Santarcangiolese,4.056490530809235,0,False,False,False,False,False,False,False,
-626,205353,RI,5.212823204908069,inf,-1,secondary,SP18,SP18,Via Provinciale Conca,3.2127872419158487,0,False,False,False,False,False,False,False,0.10997194713702912
+625,136452,RI,6.0320532708495,inf,-1,secondary,SP14,SP14,Via Santarcangiolese,4.056490530809192,0,False,False,False,False,False,False,False,
+626,205353,RI,5.212823204908069,inf,-1,secondary,SP18,SP18,Via Provinciale Conca,3.2127872419158408,0,False,False,False,False,False,False,False,0.13247881290843158
