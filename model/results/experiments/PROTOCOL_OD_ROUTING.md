@@ -81,3 +81,10 @@ Known pairs use the 10-km radius only where both ends have at least 3 nodes with
 - **Does not hold:** dispersion equal or higher, or `k` at the edge. Then the reported model stays the base.
 
 Dispersion also gets a 95% paired bootstrap interval, and 2021 is reported beside it. Hourly error and GEH are not computed in this step. One configuration is chosen among several, so a success is exploratory.
+
+## Step 1b outcome and step 1c, last test of this line, registered before its runs (2026-11-02)
+Step 1b did not hold: dispersion on the development test half 0.27-0.30 against 0.22, with higher Spearman (0.75-0.76 against 0.72). The province factors had been kept from v2, which may penalise the arms.
+
+**Arm.** `TTB` 1,800 s, radius 25 km. As in v2, `k` is chosen first without factors, on the calibration half, per day type, on the grid 1.5, 2.0, 2.5, 3.0, 3.5. Then two rounds of factors on the calibration half, with the rule of `province_demand.py` (median by province over both day types, clipped to 0.5-2.5), and `k` fixed.
+
+**Decision rule, as in step 1b.** On the development test half, mean of Monday and Saturday, against the reported model: holds if dispersion is below it, the volume ratio is within 0.90-1.10 and `k` is not at the edge of the grid. If it does not hold, this line stops and the reported model stays. 2021 is reported beside it, including its volume ratio. The blind detectors stay out. If it holds, hourly error and GEH are computed next, and any adoption means repeating the selection and all tests of the paper.
