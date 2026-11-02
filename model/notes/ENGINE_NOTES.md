@@ -27,7 +27,7 @@ Written 2026-11-02. Each item says how it is known: **read** (code), **measured*
 - **Two or more generators (read).** `pawn.h` has `static std::mt19937 generator`, so each source file has its own copy. `simulation.cpp:752` seeds only its own, so draws in `pawn.cpp` (transition choice, leaving the best path) do not follow the seed.
 
 ## Defects
-- **`dump_sources` (read and reproduced).** It indexes `c->node[s.node_lid]`, and `node_lid` is uninitialised for sources with no `source_location` (`_dest_OUT`, `LOCALS`). Results are garbage rows in `_sources.csv`, or a segmentation fault that depends on memory. Corrected on branch `explore/od-routing` by skipping those rows. The frozen binary of model v2 still has it.
+- **`dump_sources` (read and reproduced).** It indexes `c->node[s.node_lid]`, and `node_lid` is uninitialised for sources with no `source_location` (`_dest_OUT`, `LOCALS`). Results are garbage rows in `_sources.csv`, or a segmentation fault that depends on memory. Corrected on branch `explore/od-routing` by skipping those rows. The frozen binary of model v2 still has it. The corrected binary reproduces the v2 Monday link flows byte for byte (measured), so the defect did not alter that run.
 - **Probably the same defect (not tested):** the fault of null M at 347 municipalities, and the "long paths" crash of LOCALS-only runs, which led to the `nr_*` directories.
 - `pawn.flow` holds near-zero garbage in `_pawn_` files (measured, unused by the analysis).
 
