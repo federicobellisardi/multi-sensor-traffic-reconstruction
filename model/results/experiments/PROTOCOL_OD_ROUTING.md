@@ -59,3 +59,25 @@ Any new model must then repeat the selection and all tests of the paper. Omitted
 **Engine.** The arms `multi4*` ended with a segmentation fault in `dump_sources`, which indexes an uninitialised `node_lid`. This step therefore deviates from "engine unchanged": the arms `multi4*` run with a binary in `$WORK_ROOT/build_explore`, whose only change skips sources without a location in that diagnostic file, and only if it reproduces the v2 Monday link flows byte for byte. The arms `miss*` ran with the earlier binary. Their source is the same.
 
 **Added comparison, descriptive, outside the decision rule.** The run `od_pairing_d2/r10_real_s1` (N347, endpoints within 10 km) is reported with the same metrics. Reading the engine showed that known pairs have both ends redrawn within 25 km, and travel about 27 km against 12-13 km between centres, so this redrawing is an alternative explanation for the loss of roads (`model/notes/ENGINE_NOTES.md`).
+
+## Step 1 outcome and amendment 2, 2026-11-02
+Step 1 fell between the thresholds: best low tail 11.9% (`miss30`), against 17.9% for `real` and 6.5% for the reported model. With the author, routing is not pursued further for now.
+
+## Step 1b: trip length, registered before its runs
+**Observation (exploratory, TIM OD, Monday).** Inter-municipal trips have a mean centre-to-centre distance of 12.0 km, with 96.5% below 25 km. The reported model simulates about 40 km per agent (random-end agents 42-45 km, known pairs 27 km), so about 2.5 times the OD distance even with an assumed 30% detour.
+
+**Hypothesis.** `k` and trip length compensate each other: long walks reach the right level with too few agents, and spread traffic over the network. Shorter trips with a higher `k` should lower dispersion. Alternative: the long walks compensate something else, such as missing short or long trips in the tables.
+
+**Arms.** Model of v2 (50 municipalities, v2 province factors, not re-estimated), engine in `$WORK_ROOT/build_explore`, Monday and Saturday:
+- `TTB` 900 s for random-end agents (the minimum the engine allows: fixed walk of about 14 km), radius of known pairs 25 km or 10 km, `k` 2.0, 2.5, 3.0, 3.5, 4.0, 5.0.
+- `TTB` 1,800 s (900-1,800 s), radius 25 km, `k` 2.0, 2.5, 3.0.
+
+Known pairs use the 10-km radius only where both ends have at least 3 nodes within it, as in `od_matrix.py`.
+
+**Selection.** For each day and configuration, `k` minimises the mean squared log10(sim/obs) on the calibration half. The test half of development and the 2021 development detectors are used only to evaluate. The blind 49 detectors stay out.
+
+**Decision rule.** On the development test half, mean of Monday and Saturday, against the reported model on the same detectors:
+- **Holds:** dispersion below that of the reported model, with volume ratio within 0.90-1.10 and a selected `k` not at the edge of the grid.
+- **Does not hold:** dispersion equal or higher, or `k` at the edge. Then the reported model stays the base.
+
+Dispersion also gets a 95% paired bootstrap interval, and 2021 is reported beside it. Hourly error and GEH are not computed in this step. One configuration is chosen among several, so a success is exploratory.
