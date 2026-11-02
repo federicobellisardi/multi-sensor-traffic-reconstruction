@@ -54,3 +54,8 @@ Any new model must then repeat the selection and all tests of the paper. Omitted
 ## Known limits
 - `minimocas/src/lib/pawn.h` has a `static` generator in a header, so each source file has its own copy and `simulation.cpp` seeds only its own. The draws in `pawn.cpp` (leaving the best path, random walks) do not follow the seed. `multi4_s2` therefore understates the variation between runs.
 - One simulated day per day type.
+
+## Amendment 1, 2026-11-02, before any result of step 1 was evaluated
+**Engine.** The arms `multi4*` ended with a segmentation fault in `dump_sources`, which indexes an uninitialised `node_lid`. This step therefore deviates from "engine unchanged": the arms `multi4*` run with a binary in `$WORK_ROOT/build_explore`, whose only change skips sources without a location in that diagnostic file, and only if it reproduces the v2 Monday link flows byte for byte. The arms `miss*` ran with the earlier binary. Their source is the same.
+
+**Added comparison, descriptive, outside the decision rule.** The run `od_pairing_d2/r10_real_s1` (N347, endpoints within 10 km) is reported with the same metrics. Reading the engine showed that known pairs have both ends redrawn within 25 km, and travel about 27 km against 12-13 km between centres, so this redrawing is an alternative explanation for the loss of roads (`model/notes/ENGINE_NOTES.md`).

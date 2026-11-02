@@ -301,6 +301,7 @@ void simulation::dump_sources(){
     << std::endl;
 
     for (const auto &s : sources){
+      if (!s.is_localized) continue;  // node_lid is set only for sources with a location
       out_source << s.tag 
       // << separator << s.
       << separator << s.lat 

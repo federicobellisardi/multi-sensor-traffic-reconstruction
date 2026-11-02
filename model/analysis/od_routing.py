@@ -102,7 +102,7 @@ def metrics(s, o):
 
 
 def evaluate():
-    folders = {"real": P.OUT / "N347_real_s1", "model": D.OUT / "V6_scaled", **{a: OUT / a for a in ARMS}}
+    folders = {"real": P.OUT / "N347_real_s1", "model": D.OUT / "V6_scaled", "r10": D.RUNS / "od_pairing_d2/r10_real_s1", **{a: OUT / a for a in ARMS}}
     rng = np.random.default_rng(BOOT_SEED)
     res = {}
     for day in DAYS:
@@ -117,7 +117,7 @@ def evaluate():
                 d = np.array([[metrics(flows[a][i], o[i])[k] - metrics(flows["real"][i], o[i])[k] for k in ("low_tail", "spearman", "robust_spread", "dispersion")] for i in idx])
                 r[a]["minus_real_ci95"] = dict(zip(("low_tail", "spearman", "robust_spread", "dispersion"), np.percentile(d, [2.5, 97.5], axis=0).T.tolist()))
             res[f"{day}_{year}"] = r
-    res["rule"] = {a: {"mean_low_tail_2020": float(np.mean([res[f"{d}_2020"][a]["low_tail"] for d in DAYS])), "mean_spearman_2020_minus_real": float(np.mean([res[f"{d}_2020"][a]["spearman"] - res[f"{d}_2020"]["real"]["spearman"] for d in DAYS]))} for a in ("real", "model", *ARMS)}
+    res["rule"] = {a: {"mean_low_tail_2020": float(np.mean([res[f"{d}_2020"][a]["low_tail"] for d in DAYS])), "mean_spearman_2020_minus_real": float(np.mean([res[f"{d}_2020"][a]["spearman"] - res[f"{d}_2020"]["real"]["spearman"] for d in DAYS]))} for a in ("real", "model", "r10", *ARMS)}
     (R1 / "experiments/od_routing.json").write_text(json.dumps(res, indent=1) + "\n")
     print(json.dumps(res["rule"], indent=1))
 
