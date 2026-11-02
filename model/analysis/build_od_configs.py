@@ -14,6 +14,7 @@ reproduced. The clean period is 13 January - 23 February 2020 (no holidays aroun
 The summed cells are cached in $SIM_RUNS/od_cells_cache.pkl (proprietary, outside the repository).
 """
 import json
+import os
 import pickle
 import sys
 from collections import defaultdict
@@ -36,6 +37,7 @@ TEST_PERIOD = (date(2020, 1, 1), date(2020, 2, 29))
 CLEAN_PERIOD = (date(2020, 1, 13), date(2020, 2, 23))
 NAME = lambda s: str(s).replace(" ", "")  # noqa: E731
 FOREIGN = "000000000"
+NO_PROVINCE_COPY = bool(os.environ.get("NO_PROVINCE_COPY"))  # model v2: cells of a province relation stay out of the random-end classes (model/submission/FINAL_MODEL_AUDIT.md)
 
 
 def read_cells(day_hour):
@@ -82,6 +84,11 @@ def province_codes():
     return {NAME(n): u[:6] for n, u in g.drop_duplicates("PRO_NAME")[["PRO_NAME", "UID"]].values}
 
 
+def province_cells(o, d, relations):
+    """Boolean mask of the cells (origin ids, destination ids) that belong to a province relation."""
+    return np.array([x in relations for x in zip(o.str[:6], d.str[:6])], dtype=bool)
+
+
 def build(template, by_hour, ndays, names):
     """Rates of every source of `template` for one weekday. by_hour: {hour: Series summed over ndays, index (o, d)}."""
     src = template["sources"]
@@ -98,6 +105,7 @@ def build(template, by_hour, ndays, names):
     act_ids = set(act.values())
     prov = province_codes()
     prov_ids = {n: c for n, c in prov.items()}
+    relations = {tuple(prov_ids[x] for x in k[:-3].split("_")) for k, c in src.items() if "scr_dest_prov" in c["pawns"]}
     out = {k: np.zeros(24) for k in src}
     for h in range(24):
         s = by_hour[h]
@@ -105,11 +113,12 @@ def build(template, by_hour, ndays, names):
         cells = cells[cells > 0].reset_index()
         cells.columns = ["o", "d", "v"]
         oa, da = cells.o.isin(act_ids), cells.d.isin(act_ids)
-        dest = cells[~oa & da].groupby("d").v.sum()
-        orig = cells[oa & ~da].groupby("o").v.sum()
+        free = ~province_cells(cells.o, cells.d, relations) if NO_PROVINCE_COPY else np.ones(len(cells), dtype=bool)
+        dest = cells[~oa & da & free].groupby("d").v.sum()
+        orig = cells[oa & ~da & free].groupby("o").v.sum()
         pairs = cells[oa & da].set_index(["o", "d"]).v
         pv = (s.groupby([s.index.get_level_values(0).str[:6], s.index.get_level_values(1).str[:6]]).sum() / ndays).astype(int)
-        locals_ = cells[~oa & ~da].v.sum()
+        locals_ = cells[~oa & ~da & free].v.sum()
         for k, c in src.items():
             kind = next(iter(c["pawns"]))
             if kind == "rnd_rnd":

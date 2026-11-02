@@ -41,7 +41,11 @@ $J frozen_validation.py config > /dev/null 2>&1
 for f in "$SIM_RUNS"/final_q15/sim_*.json; do j=nc_q15_$(basename "$f" .json); run -t 3:00 -c 2 -m 8 -j "$j" -o "$LOGS/$j.out" -e "$LOGS/$j.err" bash "$R/hpc/run_engine.sh" "$f" < /dev/null | tail -1 | grep -c Sub; done
 sub final_stage 3:00 8 final; sub source_value 3:00 8; sub od_pairing 3:00 12; sub link_weight_test 3:00 8
 for i in 1 2 3; do sub final_experiments 3:00 12; wait_jobs; done
-cd model/analysis; for s in final_experiments od_pairing source_value; do echo "$s missing: $($PY $s.py jobs 2>/dev/null | wc -l)"; done; echo "final missing: $($PY final_stage.py jobs final 2>/dev/null | wc -l)"; cd "$R"
+# OD pairing, null D2: controls and generator checks before its runs (PROTOCOL_OD_PAIRING_D2.md, amendment 1)
+run -t 3:00 -c 2 -m 16 -j nc_d2_controls -o "$LOGS/d2_controls.log" -e "$LOGS/d2_controls.err" bash "$R/hpc/run_script.sh" od_pairing_d2.py controls < /dev/null | tail -1
+run -t 3:00 -c 2 -m 16 -j nc_d2_check -o "$LOGS/d2_check.log" -e "$LOGS/d2_check.err" bash "$R/hpc/run_script.sh" od_pairing_d2.py check < /dev/null | tail -1; wait_jobs; tail -1 "$LOGS/d2_check.log"
+if tail -1 "$LOGS/d2_check.log" | grep -q 'passed True'; then sub od_pairing_d2 3:00 8; wait_jobs; else echo STOP_D2; fi
+cd model/analysis; for s in final_experiments od_pairing od_pairing_d2 source_value; do echo "$s missing: $($PY $s.py jobs 2>/dev/null | wc -l)"; done; echo "final missing: $($PY final_stage.py jobs final 2>/dev/null | wc -l)"; cd "$R"
 cmp "$SIM_RUNS"/final_experiments/regression/sim_200210_uniq_*.csv "$SIM_RUNS"/demand/V6_scaled/sim_200210_uniq_*.csv && echo REGRESSION_IDENTICAL
 echo "== analysis"; run -t 16:00 -c 8 -m 32 -j nc_pipeline -o "$LOGS/pipeline.out" -e "$LOGS/pipeline.err" bash "$R/hpc/pipeline.sh" < /dev/null | tail -1; wait_jobs
 grep -E '^RC' "$LOGS/pipeline.out" | grep -v 'RC 0'; tail -1 "$LOGS/pipeline.out"

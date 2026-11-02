@@ -94,5 +94,4 @@ model/manuscript/*.synctex.gz
 model/manuscript/supplementary/*.aux
 model/manuscript/supplementary/*.log
 model/manuscript/supplementary/*.out
-model/submission/
 digital_twin/notes/

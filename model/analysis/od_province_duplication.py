@@ -6,6 +6,7 @@ without removing them. Two audit arms, same k, factors, routing and seed as the 
   no_province_class : without scr_dest_prov
   no_random_copy    : scr_dest_prov kept, its cells removed from the random-end classes
 Exploratory: added after the suspicion arose, no rule, k not retuned, outputs in $SIM_RUNS/province_duplication. Reported, not adopted.
+Audit of model v1: run it from the tag frozen-v1, on sim_runs_nocode2.
 
   python3 od_province_duplication.py count | jobs | one ARM DAY | evaluate -> model/results/demand/province_duplication.json
 """

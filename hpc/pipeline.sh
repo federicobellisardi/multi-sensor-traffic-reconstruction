@@ -33,6 +33,9 @@ step python $A/k_choice_figure.py
 step python $A/gps_fc.py
 for e in e2 e3k e3f e3c e4 e5 e6 e7; do step python $A/final_experiments_eval.py $e; done
 step python $A/od_pairing.py evaluate
+step python $A/od_pairing_d2.py evaluate
+step python $A/od_winter2023.py frozen
+step python $A/od_winter2023.py pairing
 step python $A/independent_2021.py
 step python $A/road_error_diagnosis.py
 step python $A/link_weight_test.py evaluate

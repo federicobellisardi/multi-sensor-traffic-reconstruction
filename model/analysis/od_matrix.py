@@ -101,6 +101,8 @@ def sources(name, day, m=1.0):
     src = {a: b for a, b in D.scaled_sources(day, {x: k for x in D.CLASSES}).items() if "scr_dest_prov" in b["pawns"]}
     rel, org, dst, loc = {}, {}, {}, np.zeros(24)
     drop, dropped = name.endswith("_x"), 0.0
+    code = B.province_codes()
+    relations = {tuple(code[x] for x in a[:-3].split("_")) for a in src} if B.NO_PROVINCE_COPY else set()
     for h in range(24):
         s = sums["clean"][wd, h] / cnt["clean"][wd]
         for (o, d), v in s.items():
@@ -111,6 +113,8 @@ def sources(name, day, m=1.0):
             if oa and da:
                 if o != d:
                     rel.setdefault((o, d), np.zeros(24))[h] += v
+            elif (o[:6], d[:6]) in relations:
+                continue
             elif oa:
                 org.setdefault(o, np.zeros(24))[h] += v
             elif da:
