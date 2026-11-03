@@ -40,6 +40,16 @@ plt.rcParams.update({"font.size": 9, "axes.spines.top": False, "axes.spines.righ
                      "pdf.fonttype": 42, "savefig.dpi": 300, "font.family": "sans-serif"})
 
 
+def font(size):
+    """Larger base font for a figure drawn wider than the text, so that it stays readable once shrunk in print."""
+    def wrap(f):
+        def g(*a, **k):
+            with plt.rc_context({"font.size": size}):
+                return f(*a, **k)
+        return g
+    return wrap
+
+
 def save(fig, name):
     for ext in ("pdf", "png"):
         fig.savefig(FIG / f"{name}.{ext}", bbox_inches="tight", dpi=300)
@@ -135,11 +145,11 @@ def fig1():
         ax.add_collection(LineCollection([np.asarray(x.coords) for x in g.geometry], colors=col, linewidths=lw, zorder=2))
     fc.boundary.plot(ax=ax, color="#252525", lw=1.0, zorder=3)
     ax.legend(handles=[Line2D([], [], color=col, lw=2, label=c) for c, col, _ in ROAD], loc="lower left",
-              frameon=False, fontsize=7, ncol=2)
+              frameon=False, fontsize=10, ncol=2)
     km50 = 50e3 / np.cos(np.radians(44.5))  # web-Mercator units for 50 km at the latitude of the region
-    ax.plot([xmax - 1.0e4 - km50, xmax - 1.0e4], [ymin + 1.5e4] * 2, color="k", lw=1.5)
-    ax.text(xmax - 1.0e4 - km50 / 2, ymin + 2.2e4, "50 km", ha="center", fontsize=7)
-    ax.set_title(f"(a) Road graph: {len(carto):,} links; Forlì–Cesena outlined", fontsize=9)
+    ax.plot([xmax - 1.0e4 - km50, xmax - 1.0e4], [ymax - 1.0e4] * 2, color="k", lw=1.5)  # north-east corner, clear of Forli-Cesena
+    ax.text(xmax - 1.0e4 - km50 / 2, ymax - 0.6e4, "50 km", ha="center", va="bottom", fontsize=10)
+    ax.set_title("(a) Road network by class", fontsize=13)
 
     ax = axes[1]
     _, ends = demand(WEEKDAY)
@@ -150,17 +160,17 @@ def fig1():
     ax.scatter(m.geometry.x, m.geometry.y, s=6 + 400 * m.n / m.n.max(), color="#C8693F", alpha=0.6, edgecolor="white", lw=0.3, zorder=3)
     for n in (1e4, 5e4, 2e5):
         ax.scatter([], [], s=6 + 400 * n / m.n.max(), color="#C8693F", alpha=0.6, label=f"{n:,.0f}")
-    ax.legend(title="Trip ends per day", loc="lower left", frameon=False, fontsize=7, title_fontsize=7, labelspacing=1.1)
-    ax.set_title(f"(b) Observed trip ends of the injected demand, weekday ({len(m)} municipalities)", fontsize=9)
+    ax.legend(title="Trip ends per day", loc="lower left", frameon=False, fontsize=10, title_fontsize=10, labelspacing=1.1)
+    ax.set_title("(b) Trip ends with a known location, weekday", fontsize=13)
 
     ax = axes[2]
     ax.add_collection(LineCollection([np.asarray(x.coords) for x in carto.geometry], colors="#bdbdbd", linewidths=0.3, zorder=2))
-    for use, col, lab in [("other", "#9e9e9e", "other"), ("validation", "#1F7F8C", "validation"), ("calibration", "#C8693F", "calibration")]:
+    for use, col, lab in [("validation", "#1F7F8C", "validation"), ("calibration", "#C8693F", "calibration")]:  # "other": no complete counts in either campaign
         b = bar[bar.use == use]
-        ax.scatter(b.geometry.x, b.geometry.y, s=9, color=col, edgecolor="white", lw=0.3, zorder=4, label=f"{lab} ({len(b)})")
+        ax.scatter(b.geometry.x, b.geometry.y, s=30, color=col, edgecolor="white", lw=0.5, zorder=4, label=f"{lab} ({len(b)})")
     h, l = ax.get_legend_handles_labels()
-    ax.legend(h[::-1], l[::-1], loc="lower left", frameon=False, fontsize=7, title="Detectors", title_fontsize=7)
-    ax.set_title(f"(c) Loop detectors on the graph ({len(bar)})", fontsize=9)
+    ax.legend(h[::-1], l[::-1], loc="lower left", frameon=False, fontsize=10, title="Detectors", title_fontsize=10)
+    ax.set_title("(c) Loop detectors by use", fontsize=13)
 
     ax = axes[3]
     obs = pd.read_csv(ROOT / "data/old_coils_data/_coils_table_200201-000000_200331-234500.csv", sep=";", index_col=0)
@@ -169,19 +179,21 @@ def fig1():
     hrs = (obs.index - obs.index.normalize()).total_seconds() / 3600
     for c, col, lab in [("282_0", "#252525", "direction 0"), ("282_1", "#8c8c8c", "direction 1")]:
         ax.plot(hrs, obs[c], color=col, lw=1.2, label=lab)
-    ax.set(xlim=(0, 24), xticks=range(0, 25, 3), xlabel="Local time, Monday 10 February 2020 (h)", ylabel="Vehicles per 15 min")
-    ax.legend(frameon=False, loc="upper left")
-    ax.set_title("(d) Counts of detector 282 (Bologna area)", fontsize=9)
-    ins = ax.inset_axes([0.36, 0.63, 0.27, 0.36])
+    ax.set(xlim=(0, 24), xticks=range(0, 25, 3), ylim=(0, 1.3 * obs.values.max()))
+    ax.set_xlabel("Local time (h)", fontsize=12); ax.set_ylabel("Vehicles per 15 min", fontsize=12)
+    ax.tick_params(labelsize=11)
+    ax.legend(frameon=False, loc="upper left", fontsize=11)
+    ax.set_title("(d) Counts of detector 282, 10 February 2020", fontsize=13)
+    ins = ax.inset_axes([0.40, 0.66, 0.24, 0.33])
     c282 = bar[bar.tag == 282].geometry.iloc[0]
     half = 2.0e4
     ins.set_xlim(c282.x - half, c282.x + half); ins.set_ylim(c282.y - half, c282.y + half)
     ins.add_collection(LineCollection([np.asarray(x.coords) for x in carto.geometry], colors="#9e9e9e", linewidths=0.4, zorder=2))
     ins.scatter([c282.x], [c282.y], s=30, color="#C8693F", edgecolor="k", lw=0.6, zorder=4)
-    ins.annotate("detector 282", (c282.x, c282.y), xytext=(5, 5), textcoords="offset points", fontsize=7, zorder=5)
+    ins.annotate("282", (c282.x, c282.y), xytext=(5, 5), textcoords="offset points", fontsize=10, zorder=5)
     bo = gpd.GeoSeries(gpd.points_from_xy([11.3426], [44.4949]), crs=4326).to_crs(3857).iloc[0]
     ins.scatter([bo.x], [bo.y], s=12, marker="s", color="#252525", zorder=4)
-    ins.annotate("Bologna", (bo.x, bo.y), xytext=(-4, -9), textcoords="offset points", fontsize=7, ha="right", zorder=5)
+    ins.annotate("Bologna", (bo.x, bo.y), xytext=(-4, -9), textcoords="offset points", fontsize=10, ha="right", zorder=5)
     if not basemap(ins, zoom=11):
         ins.set_facecolor("#f4f4f2")
     ins.set_xticks([]); ins.set_yticks([])
@@ -189,11 +201,12 @@ def fig1():
         sp.set_visible(True); sp.set_color("#6f6f6f"); sp.set_linewidth(0.6)
     ins.set_aspect("equal")
     if os.environ.get("CARTO_API_KEY"):
-        fig.text(0.005, -0.01, "Basemap \u00a9 OpenStreetMap contributors \u00a9 CARTO", fontsize=6, color="#6f6f6f")
+        fig.text(0.005, -0.01, "Basemap \u00a9 OpenStreetMap contributors \u00a9 CARTO", fontsize=9, color="#6f6f6f")
     save(fig, "fig1_inputs")
     return dict(polylines=len(carto), detectors=len(bar), detectors_use=bar.use.value_counts().to_dict(), calibration_also_2021=len(calib & y2021), municipalities=len(m))
 
 
+@font(12.5)
 def fig2():
     fig = plt.figure(figsize=(10, 3.6), constrained_layout=True)
     gs = fig.add_gridspec(1, 3, width_ratios=[1.3, 1, 0.9])
@@ -204,20 +217,21 @@ def fig2():
         tot = sum(bc.values()).reshape(24, 4).sum(axis=1)
         ax.plot(range(24), tot / 1e3, "o-", ms=3, color=col, label=lab)
         out[lab] = dict(agents=float(tot.sum()), shares={k: float(v.sum() / sum(x.sum() for x in bc.values())) for k, v in bc.items()})
-    ax.set(xticks=range(0, 24, 3), xlabel="Hour of day (local time, start of hour)", ylabel="Generated agents per hour (thousands)")
-    ax.legend(frameon=False)
-    ax.set_title("(a) Injected demand, mean OD 13 Jan-23 Feb 2020", fontsize=9)
+    ax.set(xticks=range(0, 24, 6), xlabel="Hour (local time)", ylabel="Agents per hour (thousands)")
+    ax.set_ylim(0, 1.35 * ax.get_ylim()[1])
+    ax.legend(frameon=False, loc="upper left", ncol=2, fontsize=11)
+    ax.set_title("(a) Generated agents", fontsize=13)
 
     ax = fig.add_subplot(gs[1])
     for j, (lab, col) in enumerate([("weekday", "#252525"), ("weekend day", "#8c8c8c")]):
         for i, k in enumerate(CLASSES):
             w = 100 * out[lab]["shares"].get(k, 0.0)
             ax.barh(i + (j - 0.5) * 0.38, w, height=0.36, color=col, label=lab if i == 0 else None)
-            ax.text(w + 0.7, i + (j - 0.5) * 0.38, f"{w:.0f}", va="center", fontsize=7)
+            ax.text(w + 0.7, i + (j - 0.5) * 0.38, f"{w:.0f}", va="center", fontsize=10)
     ax.set(yticks=range(len(CLASSES)), yticklabels=[v.replace(", ", ",\n") for v in CLASSES.values()], xlim=(0, 46), xlabel="Share of generated agents (%)")
-    ax.tick_params(axis="y", labelsize=7, length=0)
+    ax.tick_params(axis="y", labelsize=10, length=0)
     ax.invert_yaxis()
-    ax.set_title("(b) What is known of the trip ends", fontsize=9)
+    ax.set_title("(b) What is known of the trip ends", fontsize=13)
 
     ax = fig.add_subplot(gs[2])
     _, ends = demand(WEEKDAY)
@@ -226,13 +240,20 @@ def fig2():
     top = pd.Series(ends).drop("LOCALS", errors="ignore").sort_values(ascending=False).head(15)[::-1]
     ax.barh([label(k, names) for k in top.index], top.values / 1e3, color="#1F7F8C")
     ax.set(xlabel="Trip ends per weekday (thousands)")
-    ax.tick_params(axis="y", labelsize=7)
-    ax.set_title("(c) Most active municipalities", fontsize=9)
+    ax.tick_params(axis="y", labelsize=10)
+    ax.set_title("(c) Most active municipalities", fontsize=13)
     save(fig, "fig2_demand")
     return out
 
 
 def main():
+    if sys.argv[1:] == ["fig1"]:  # this figure only; the fig2 entry of the numbers is kept
+        f = RES / "corrected/input_figure_numbers.json"
+        nums = json.loads(f.read_text())
+        nums["fig1"] = fig1()
+        f.write_text(json.dumps(nums, indent=2) + "\n")
+        print(json.dumps(nums["fig1"], indent=1))
+        return
     nums = {"fig1": fig1(), "fig2": fig2()}
     (RES / "corrected/input_figure_numbers.json").write_text(json.dumps(nums, indent=2) + "\n")
     print(json.dumps(nums, indent=1))

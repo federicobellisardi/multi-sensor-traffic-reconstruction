@@ -11,10 +11,13 @@ import json
 import sys
 from pathlib import Path
 
+import geopandas as gpd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from matplotlib.collections import LineCollection
 from scipy.stats import spearmanr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -22,6 +25,7 @@ import calibrate_demand as C  # noqa: E402
 import delay_quarter as Q  # noqa: E402
 import demand_scaling as D  # noqa: E402
 import demand_scan_eval as E  # noqa: E402
+from paths import RESULTS, ROOT  # noqa: E402
 
 OUT = D.RUNS / "final_q15"
 FROZEN = D.RUNS / "province_demand/round2"
@@ -30,6 +34,8 @@ EXAMPLE = 282
 OBS, SIM = "#222222", "#D55E00"
 N_BOOT, SEED = 2000, 20261040
 NAMES = {"2020-02-10": "Weekdays", "2020-02-15": "Weekend"}
+MARK = {"Weekdays": ("o", "#0072B2"), "Weekend": ("s", "#009E73")}
+QUANTILES = (0.125, 0.375, 0.625, 0.875)  # middle of each error quartile
 
 
 def config():
@@ -84,33 +90,69 @@ def quarter(day):
          "remaining_best_shift_quarters": min(curve, key=curve.get), "oracle_level_error_hourly_pct": float(Q.err(obs, Q.rescale(obs, sim))),
          "peaks_obs_am_sim_am_obs_pm_sim_pm": [Q.peak(po, 5, 12), Q.peak(so, 5, 12), Q.peak(po, 14, 21), Q.peak(so, 14, 21)]}
     order = np.argsort(err)
-    picks = [(f"rank {i + 1} of {len(order)}", int(order[i])) for i in range(4)]  # best cases, the distribution is in fig8
+    # one detector per error quartile, so the panels span the distribution instead of showing the best cases
+    picks = [(f"quartile {j + 1}, rank {i + 1} of {len(order)}", int(order[i]))
+             for j, i in enumerate(int(round(q * (len(order) - 1))) for q in QUANTILES)]
     panels = [(lab, int(coil[i]), obs[i], sim[i], float(sim[i].sum() / obs[i].sum()), float(err[i]), float(corr[i])) for lab, i in picks]
     r["shown"] = {str(p[1]): {"label": p[0], "ratio": p[4], "error_15min_pct": p[5], "correlation": p[6]} for p in panels}
     return r, panels
 
 
+def detector_map(ax, shown):
+    """Road graph, test detectors and the detectors of the panels, by day type."""
+    carto = gpd.read_file(RESULTS / "carto_a059fb0.geojson").to_crs(3857)
+    prov = gpd.read_file(ROOT / "vars/extra/er-shapes.geojson").to_crs(3857)
+    bar = pd.read_csv(ROOT / "vars/extra/er_barriers_cartodata.csv", sep=";")
+    bar = gpd.GeoDataFrame(bar, geometry=gpd.points_from_xy(bar.lon, bar.lat), crs=4326).to_crs(3857).set_index("tag")
+    u = D.group_observations().drop_duplicates("coil").reset_index(drop=True)
+    test = bar.loc[bar.index.isin(set(u.coil[~E.split(u)]))]
+    prov.plot(ax=ax, color="#f4f4f2", edgecolor="#9e9e9e", lw=0.4, zorder=1)
+    ax.add_collection(LineCollection([np.asarray(x.coords) for x in carto.geometry], colors="#cfcfcf", linewidths=0.3, zorder=2))
+    ax.scatter(test.geometry.x, test.geometry.y, s=5, color="#9e9e9e", lw=0, zorder=3, label=f"Test detectors ({len(test)})")
+    done = set()
+    for name, coils in shown.items():
+        m, col = MARK[name]
+        p = bar.loc[coils]
+        ax.scatter(p.geometry.x, p.geometry.y, s=22, marker=m, facecolor="none", edgecolor=col, lw=1.1, zorder=4, label=f"Shown, {name.lower()}")
+        for c, g in zip(coils, p.geometry):
+            if c not in done:
+                ax.annotate(str(c), (g.x, g.y), xytext=(4, 3), textcoords="offset points", fontsize=7.5, zorder=5)
+                done.add(c)
+    xmin, ymin, xmax, ymax = prov.total_bounds
+    km50 = 50e3 / np.cos(np.radians(44.5))  # web-Mercator units for 50 km at the latitude of the region
+    ax.plot([xmax - 1.0e4 - km50, xmax - 1.0e4], [ymin + 1.5e4] * 2, color="k", lw=1.2)
+    ax.text(xmax - 1.0e4 - km50 / 2, ymin + 2.2e4, "50 km", ha="center", fontsize=7.5)
+    ax.set(xlim=(xmin, xmax), ylim=(ymin, ymax), aspect="equal")
+    ax.axis("off")
+    ax.legend(loc="lower left", frameon=False, fontsize=7.5)
+
+
 def evaluate():
     out = {"k_weekday": D.k_of("2020-02-10"), "k_weekend": D.k_of("2020-02-15"), "radius_km": D.CHERRY_RADIUS_KM,
            "shift_quarters": D.DEPARTURE_SHIFT_QUARTERS, "daily": daily()}
-    plt.rcParams.update({"font.size": 7.5, "font.family": "sans-serif", "axes.linewidth": .6, "axes.spines.top": False,
+    plt.rcParams.update({"font.size": 8.5, "font.family": "sans-serif", "axes.linewidth": .6, "axes.spines.top": False,
                          "axes.spines.right": False, "pdf.fonttype": 42, "svg.fonttype": "none"})
-    fig, ax = plt.subplots(2, 4, figsize=(7.2, 4.4), constrained_layout=True)
+    fig = plt.figure(figsize=(7.2, 7.0), constrained_layout=True)
+    gs = fig.add_gridspec(3, 4, height_ratios=[1.5, 1, 1])
+    ax = np.array([[fig.add_subplot(gs[row + 1, j]) for j in range(4)] for row in range(2)])
     t = np.arange(96) / 4
+    shown = {}
     for row, day in enumerate(C.CAL_DAYS):
         r, panels = quarter(day)
         out[NAMES[day]] = r
+        shown[NAMES[day]] = [p[1] for p in panels]
         for a, (lab, c, o, s, ratio, e, cr) in zip(ax[row], panels):
             a.plot(t, o, color=OBS, lw=1.2, label="Detector")
             a.plot(t, s, color=SIM, lw=1.1, ls="--", label="Simulation")
             a.set(xticks=range(0, 25, 6), xlim=(0, 24), ylim=(0, None))
-            a.set_title(f"{NAMES[day]}, detector {c}\n{lab.lower()}\nratio {ratio:.2f}, error {e:.0f}%, r {cr:.2f}", fontsize=6)
+            a.set_title(f"{NAMES[day]}, detector {c}\n{lab.lower()}\nratio {ratio:.2f}, error {e:.0f}%, r {cr:.2f}", fontsize=7.5)
         for a in ax[row, len(panels):]:
             a.axis("off")
         ax[row, 0].set_ylabel("Flow, both directions (veh/15 min)")
     for a in ax[1]:
         a.set_xlabel("Hour (interval start)")
-    fig.legend(*ax[0, 0].get_legend_handles_labels(), frameon=False, loc="outside lower center", ncol=2, fontsize=7)
+    fig.legend(*ax[0, 0].get_legend_handles_labels(), frameon=False, loc="outside lower center", ncol=2, fontsize=8.5)
+    detector_map(fig.add_subplot(gs[0, :]), shown)
     for e, kw in (("pdf", {}), ("svg", {}), ("png", {"dpi": 200})):
         fig.savefig(D.RES / f"frozen_validation.{e}", **kw)
     (D.RES / "frozen_validation.json").write_text(json.dumps(out, indent=1) + "\n")

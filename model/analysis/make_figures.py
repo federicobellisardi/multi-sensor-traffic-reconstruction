@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Figures for Article 1 from the corrected reconstruction (run after reconstruct_and_validate.py).
 
-fig3_reconstruction : (a) coil 282 withheld from the correction, hourly counts, 10 Feb 2020; (b) daily link flows
+fig3_reconstruction : daily link flows, 10 Feb 2020, with an inset of the best left-out detector (python3 make_figures.py fig3: this figure only)
 fig4_gps            : (a,b) GPS-matched links in 2020 and 2021; (c) GPS-to-simulation ratio
 fig5_validation     : hourly-share MAE distributions, Forli-Cesena links, all days; fig5b_daytypes: weekdays and weekends
 fig6_diagnostics    : pooled hourly profiles; effect of the correction by distance from the nearest detector
@@ -23,11 +23,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.collections import LineCollection
+from matplotlib.patches import ConnectionPatch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from make_input_figures import basemap  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from paths import ARTICLE as A1, RESULTS as R1, SIM_RUNS  # noqa: E402
+from paths import ARTICLE as A1, RESULTS as R1, ROOT, SIM_RUNS  # noqa: E402
 
 SIM = Path(os.environ.get("SIM_DIR", SIM_RUNS / "demand/V6_scaled"))  # final configuration (demand_scaling.py)
 RES = R1 / "corrected"
@@ -37,6 +38,16 @@ CARTO = R1 / "carto_a059fb0.geojson"
 C = {"assim": "#1F7F8C", "raw": "#C8693F", "gps": "#252525", "od": "#8c8c8c", "mts": "#545454"}
 plt.rcParams.update({"font.size": 9, "axes.spines.top": False, "axes.spines.right": False,
                      "pdf.fonttype": 42, "savefig.dpi": 300, "font.family": "sans-serif"})
+
+
+def font(size):
+    """Larger base font for a figure drawn wider than the text, so that it stays readable once shrunk in print."""
+    def wrap(f):
+        def g(*a, **k):
+            with plt.rc_context({"font.size": size}):
+                return f(*a, **k)
+        return g
+    return wrap
 
 
 def save(fig, name):
@@ -87,32 +98,40 @@ def coil_withheld(coil):
     return rec, obs.reindex(rec.index)
 
 
+@font(12.5)
 def fig3(carto):
     day = "200210"
     coil, n, median_error = best_withheld()
     rec, obs = coil_withheld(coil)
     hrs = rec.index.hour
-    fig = plt.figure(figsize=(10, 4.2), constrained_layout=True)
-    gs = fig.add_gridspec(1, 2, width_ratios=[1, 1.25])
-    ax = fig.add_subplot(gs[0])
-    ax.plot(hrs, obs.values, "o-", ms=3, color=C["gps"], lw=1.2, label=f"Detector {coil}, observed ({obs.sum():,.0f})")
-    ax.plot(hrs, rec.values, "s-", ms=3, color=C["assim"], lw=1.2, label=f"Reconstruction, detector left out ({rec.sum():,.0f})")
-    ax.set(xlim=(-0.5, 23.5), xticks=range(0, 24, 3), xlabel="Hour (local time, interval start), 10 February 2020",
-           ylabel="Vehicles per hour, both directions", title="(a) Best case: prediction at a left-out detector")
-    ax.set_ylim(0, 1.25 * max(obs.max(), rec.max()))
-    ax.legend(fontsize=8, frameon=False, loc="upper left")
-    ax2 = fig.add_subplot(gs[1])
+    fig, ax = plt.subplots(figsize=(10, 5.4), constrained_layout=True)
     q = daily_flows(day)
     g = carto.to_crs(3857).set_index("poly_cid").join(q.rename("flow")).fillna({"flow": 0})
     ranks = g.flow.rank(pct=True)
     order = np.argsort(ranks.values)
     lc = LineCollection([lines(g)[i] for i in order], array=ranks.values[order], cmap="viridis",
                         linewidths=0.4 + 1.6 * ranks.values[order], zorder=2)
-    ax2.add_collection(lc)
-    ax2.autoscale(); ax2.set_aspect("equal"); ax2.axis("off")
-    basemap(ax2)
-    fig.colorbar(lc, ax=ax2, shrink=0.6, label="Daily flow quantile")
-    ax2.set_title("(b) Reconstructed daily link flows, 10 Feb 2020")
+    ax.add_collection(lc)
+    ax.autoscale()
+    x0, x1 = ax.get_xlim()
+    ax.set_xlim(x0, x1 + 0.45 * (x1 - x0))  # room on the sea side for the inset
+    ax.set_aspect("equal"); ax.axis("off")
+    basemap(ax)
+    cax = ax.inset_axes([0.03, 0.10, 0.22, 0.03])  # empty corner south-west of the region
+    fig.colorbar(lc, cax=cax, orientation="horizontal", label="Daily flow quantile")
+    bar = pd.read_csv(ROOT / "vars/extra/er_barriers_cartodata.csv", sep=";").set_index("tag")
+    p = gpd.GeoSeries(gpd.points_from_xy([bar.lon[coil]], [bar.lat[coil]]), crs=4326).to_crs(3857).iloc[0]
+    ax.scatter([p.x], [p.y], s=45, facecolor="white", edgecolor="k", lw=1.2, zorder=5)
+    ins = ax.inset_axes([0.71, 0.42, 0.28, 0.50])
+    ins.plot(hrs, obs.values, "o-", ms=2.5, color=C["gps"], lw=1.1, label=f"Observed ({obs.sum():,.0f})")
+    ins.plot(hrs, rec.values, "s-", ms=2.5, color=C["assim"], lw=1.1, label=f"Reconstruction, left out ({rec.sum():,.0f})")
+    ins.set(xlim=(-0.5, 23.5), xticks=range(0, 24, 6), ylim=(0, 1.45 * max(obs.max(), rec.max())))
+    ins.set_xlabel("Hour (local time, interval start)", fontsize=10)
+    ins.set_ylabel("Vehicles per hour", fontsize=10)
+    ins.tick_params(labelsize=10)
+    ins.set_title(f"Detector {coil}, 10 February 2020", fontsize=11)
+    ins.legend(fontsize=9.5, frameon=False, loc="upper left")
+    fig.add_artist(ConnectionPatch((p.x, p.y), (0, 0), coordsA=ax.transData, coordsB=ins.transAxes, color="k", lw=0.7, zorder=6))
     save(fig, "fig3_reconstruction")
     err = np.abs(rec.values - obs.values).sum() / obs.sum()
     return dict(best_coil=coil, detectors_that_day=n, median_directional_error_pct=median_error, best_obs=float(obs.sum()), best_withheld=float(rec.sum()),
@@ -153,6 +172,7 @@ def cdf(ax, v, **kw):
     ax.step(v, np.arange(1, len(v) + 1) / len(v), where="post", **kw)
 
 
+@font(12.5)
 def fig5():
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), constrained_layout=True)
     fig2, axes2 = plt.subplots(1, 2, figsize=(10, 3.6), constrained_layout=True)
@@ -164,7 +184,7 @@ def fig5():
             cdf(ax, m[col], color=c, ls=ls, label=lab)
         ax.set(xlim=(0, 6), xlabel="Hourly-share MAE (percentage points)", ylabel="Fraction of links",
                title=f"({chr(97 + j)}) {year}, all days, {len(m)} links")
-        ax.legend(fontsize=8, frameon=False)
+        ax.legend(fontsize=11, frameon=False)
         ax = axes2[j]
         for kind, c in [("weekday", C["assim"]), ("weekend", C["raw"])]:
             z = fc_metrics(PRIV / f"corrected_link_metrics_{year}_{kind}.csv")
@@ -172,7 +192,7 @@ def fig5():
             cdf(ax, z.mae_pp_mts, color=c, ls="--", lw=0.9, label=f"{kind.capitalize()}, detector profile")
         ax.set(xlim=(0, 6), xlabel="Hourly-share MAE (percentage points)", ylabel="Fraction of links",
                title=f"({chr(97 + j)}) {year}, weekdays and weekends")
-        ax.legend(fontsize=8, frameon=False)
+        ax.legend(fontsize=11, frameon=False)
     save(fig, "fig5_validation")
     save(fig2, "fig5b_daytypes")
 
@@ -282,6 +302,13 @@ def fig8():
 
 def main():
     carto = gpd.read_file(CARTO)
+    if sys.argv[1:] == ["fig3"]:  # this figure only; the other entries of figure_numbers.json are kept
+        f = RES / "figure_numbers.json"
+        info = json.loads(f.read_text())
+        info["fig3"] = fig3(carto)
+        f.write_text(json.dumps(info, indent=2, default=float) + "\n")
+        print(json.dumps(info["fig3"], indent=1, default=float))
+        return
     info = {"fig3": fig3(carto), "fig4": fig4(carto)}
     fig5()
     fig6()

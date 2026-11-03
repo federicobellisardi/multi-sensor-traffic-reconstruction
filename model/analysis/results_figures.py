@@ -30,7 +30,7 @@ from paths import ARTICLE, RESULTS  # noqa: E402
 
 C20, C21, GREY, INK = "#1F7F8C", "#C8693F", "#9e9e9e", "#252525"
 PROV = {"PI": "Piacenza", "PA": "Parma", "RE": "Reggio Emilia", "MO": "Modena", "BO": "Bologna", "FE": "Ferrara", "RA": "Ravenna", "FO": "Forlì–Cesena", "RI": "Rimini"}
-plt.rcParams.update({"font.size": 7.5, "axes.spines.top": False, "axes.spines.right": False, "axes.linewidth": 0.6, "pdf.fonttype": 42, "font.family": "sans-serif"})
+plt.rcParams.update({"font.size": 8.5, "axes.spines.top": False, "axes.spines.right": False, "axes.linewidth": 0.6, "pdf.fonttype": 42, "font.family": "sans-serif"})
 
 
 def js(name):
@@ -50,10 +50,10 @@ def fig_level():
     ax[0].hlines(range(len(s)), 1, [f[k] for k in s], color=GREY, lw=1)
     ax[0].plot([f[k] for k in s], range(len(s)), "o", color=INK, ms=4)
     for i, k in enumerate(s):
-        ax[0].text(f[k] + (0.05 if f[k] >= 1 else -0.05), i, f"{f[k]:.2f}", va="center", ha="left" if f[k] >= 1 else "right", fontsize=6.5)
+        ax[0].text(f[k] + (0.05 if f[k] >= 1 else -0.05), i, f"{f[k]:.2f}", va="center", ha="left" if f[k] >= 1 else "right", fontsize=7.5)
     ax[0].axvline(1, color=GREY, lw=0.6, ls="--")
     ax[0].set_yticks(range(len(s)), [PROV[k] for k in s])
-    ax[0].set(xlabel="Province factor", xlim=(0.15, 2.05), title="(a) Province factors")
+    ax[0].set(xlabel="Province factor", xlim=(0, 2.15), title="(a) Province factors")
     out = {}
     for a, t, col, mk, lab in [(ax[1], t20, C20, "o", "(b) Test half, February 2020"), (ax[2], t21, C21, "s", "(c) All detectors, June–July 2021")]:
         lim = np.array([1e3, 1.5e5])
@@ -132,7 +132,7 @@ def fig_single():
     ax[2].bar(y + 0.19, [100 * a["variance_explained_monday"][k] for k, _ in labs], 0.38, color=C20, label="with factors")
     ax[2].set_xticks(y, [v for _, v in labs], rotation=35, ha="right")
     ax[2].set(ylabel="Variance explained (%)", title="(c) What explains it\n ")
-    ax[2].legend(frameon=False, fontsize=6.5, loc="upper left")
+    ax[2].legend(frameon=False, fontsize=7.5, loc="upper left")
     bins = list(a["neighbours"])
     x = np.arange(len(bins))
     n = [a["neighbours"][b]["null_ci95"] for b in bins]
@@ -142,7 +142,7 @@ def fig_single():
     ax[3].axhline(0, color=INK, lw=0.5)
     ax[3].set_xticks(x, [b.replace("km", "") for b in bins], rotation=35, ha="right")
     ax[3].set(xlabel="Distance between detectors (km)", ylabel="Correlation of errors", title="(d) Between neighbours\n ")
-    ax[3].legend(frameon=False, fontsize=6.5, loc="upper right")
+    ax[3].legend(frameon=False, fontsize=7.5, loc="upper right")
     save(fig, "fig_single")
 
 
@@ -161,8 +161,8 @@ def fig_factorial():
             ax[i, j].set_xlim(-0.3, 1.3)
             if j == 0:
                 ax[i, j].set_ylabel(yl)
-        ax[0, j].set_title(lab, fontsize=7.5)
-    ax[1, 0].legend(frameon=False, fontsize=6.5, loc="lower right")
+        ax[0, j].set_title(lab, fontsize=9)
+    ax[1, 0].legend(frameon=False, fontsize=7.5, loc="lower right")
     save(fig, "fig_factorial")
 
 
@@ -190,13 +190,13 @@ def fig_od():
         y -= 0.8
     for a in ax:
         a.axvline(0, color=INK, lw=0.7, ls="--")
-    ax[0].set_yticks([v for v, _ in labels], [l.split(": ")[-1] for _, l in labels], fontsize=6.5)
+    ax[0].set_yticks([v for v, _ in labels], [l.split(": ")[-1] for _, l in labels], fontsize=9)
     for v, l in labels:
         if ": " in l:
-            ax[0].text(0.0, v + 0.72, l.split(": ")[0], transform=ax[0].get_yaxis_transform(), fontsize=6.5, fontweight="bold", ha="left", va="center")
+            ax[0].text(0.0, v + 0.72, l.split(": ")[0], transform=ax[0].get_yaxis_transform(), fontsize=7.5, fontweight="bold", ha="left", va="center")
     ax[0].set(xlabel="Change in dispersion", title="(a) Spread of the error (left of zero: real relations better)")
     ax[1].set(xlabel="Change in Spearman correlation", title="(b) Ranking of roads (right of zero: real relations better)")
-    ax[0].title.set_fontsize(7.5); ax[1].title.set_fontsize(7.5)
+    ax[0].title.set_fontsize(9); ax[1].title.set_fontsize(9)
     save(fig, "fig_od")
 
 
