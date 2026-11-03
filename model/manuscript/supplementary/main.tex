@@ -55,6 +55,16 @@ Demand is generated in five classes, after removing the cells with the code 0000
 
 We obtained the MTS counts of 2021 from the monthly open-data files of Regione Emilia-Romagna (dataset DS-1944, CC BY), summing all vehicle classes. The time labels of these files are in local time; converted to UTC, they reproduce the counts of the February 2020 archive used for 2020 (ratio of totals 0.995 on 12 February 2020).
 
+
+Figure~\ref{fig:demand} shows the simulated demand by hour and by what is known of the trip ends.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig2_demand.pdf}
+\caption{\textbf{Simulated demand.} \textbf{(a)} Agents generated per hour for a weekday and a weekend day, after scaling by $k$ and the province factors: weekdays show morning and evening peaks, and weekends a single broad rise through the day. \textbf{(b)} Shares of agents by what is known of their trip ends; "provinces" are relations with provinces of neighbouring regions. More than a quarter of agents have both ends known, and the largest group has both ends drawn at random. \textbf{(c)} Municipalities with the most trip ends on a weekday.}
+\label{fig:demand}
+\end{figure}
+
 \section{Demand scale}
 \label{sec:scale}
 
@@ -90,6 +100,27 @@ Radius 25 km against 20 km & $-0.0006$ & [$-0.0096$, +0.0086] & no & yes \\
 The destination change corrects a verified defect, so we kept it regardless of the result. The origin spreading has no demonstrated effect. The factors by day type bring the level of both day types close to one without measurably changing the dispersion. The radius and $k$ follow the minimum of the loss, so the 25-km radius is the selected value of that rule, without a demonstrated gain over 20~km.
 
 \paragraph{Province factors.} The factors were set on the calibration half in two rounds. Dispersion and Spearman correlation are 0.222 and 0.66 without them, 0.193 and 0.72 after the first round, and 0.185 and 0.74 after the second. The factors are 1.74 (Piacenza), 1.42 (Parma), 0.51 (Reggio Emilia), 1.19 (Modena), 0.90 (Bologna), 1.48 (Ferrara), 0.82 (Ravenna), 0.70 (Forl\`i--Cesena) and 0.55 (Rimini). The evaluation uses the rule stated in the main text, which is met on the test half and in 2021; the dispersion there includes a detector without simulated traffic.
+
+Table~\ref{tab:province_effect} gives the effect of the factors on all three sets of detectors.
+
+\begin{table}[htbp]
+\centering
+\caption{Effect of the province factors, without and with them. Lower dispersion and median error, higher Spearman correlation and a volume ratio closer to one are better; an interval that excludes zero marks a change the data can establish. Dispersion: standard deviation of $\log_{10}$(simulated/observed) of daily volumes across detectors; the test-half values include detector 153, which has no simulated traffic. Median error: median absolute $\log_{10}$ ratio per detector and day type. Intervals: 95\% paired bootstrap of the change.}
+\label{tab:province_effect}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{Calibration half} & \multicolumn{2}{c}{Test half, 2020} & \multicolumn{2}{c}{2021} \\
+Measure & without & with & without & with & without & with \\
+\midrule
+Dispersion & 0.222 & 0.185 & 0.500 & 0.489 & 0.415 & 0.399 \\
+\quad change, interval & \multicolumn{2}{r}{$[-0.052, -0.022]$} & \multicolumn{2}{r}{$[-0.034, -0.003]$} & \multicolumn{2}{r}{$[-0.037, -0.008]$} \\
+Spearman correlation & 0.66 & 0.74 & 0.63 & 0.66 & 0.63 & 0.66 \\
+\quad change, interval & \multicolumn{2}{r}{$[0.02, 0.13]$} & \multicolumn{2}{r}{$[-0.01, 0.08]$} & \multicolumn{2}{r}{$[-0.01, 0.07]$} \\
+Median error & 0.151 & 0.101 & 0.180 & 0.148 & 0.177 & 0.142 \\
+Volume ratio & 1.08 & 1.02 & 1.06 & 1.01 & 1.19 & 1.10 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Simulation model and route-choice variants}
 \label{sec:routing}
@@ -189,6 +220,47 @@ describes how GPS samples traffic (Fig.~\ref{fig:viasat}). Figure~\ref{fig:loo_v
 \caption{\textbf{Timing on weekdays and weekends.} Error of the hourly shares on the GPS-matched links of Forl\`i--Cesena, as in Fig.~\ref{M-fig:timing_cdf}, for weekdays and weekends separately: reconstruction and mean detector profile. Each curve shows the fraction of links whose error is below the value on the horizontal axis. Weekend curves lie to the right, so errors are larger on weekends. Curves continue beyond the 6~pp limit of the axis.}
 \label{fig:daytypes}
 \end{figure}
+
+Table~\ref{tab:gps_split} gives the median profile errors behind Fig.~\ref{M-fig:timing_cdf}, Fig.~\ref{fig:distributions} the simulated volume by road class, and Table~\ref{tab:sources} the effect of each source in numbers, as shown in Fig.~\ref{M-fig:sources}.
+
+\begin{table}[htbp]
+\centering
+\caption{How well each estimate reproduces the daily rhythm: median hourly-share error (pp) on the GPS links of Forl\`i--Cesena, all days of each campaign; lower is better. Raw: simulation. Corrected: simulation after the local correction. Mean detector, OD and flat: profiles without simulation, as benchmarks.}
+\label{tab:gps_split}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Campaign & Links & Raw & Corrected & Mean detector & OD & Flat \\
+\midrule
+2020 & 442 & 1.08 & 1.05 & 1.03 & 1.14 & 2.72 \\
+2021 & 439 & 1.21 & 1.21 & 1.15 & 1.25 & 2.60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig8_distributions.pdf}
+\caption{\textbf{Simulated volume by road class.} Ratio of simulated to observed daily volume, raw simulation, on the detectors with complete days of the leave-one-out test. Each point is a detector, and the number of detectors is below each group; 106 detectors appear in both campaigns. Black bars: medians. Primary and secondary roads also show quartiles and whiskers at 1.5 interquartile ranges, and the coloured bars beside them are 95\% bootstrap intervals of the median. The dashed line marks perfect agreement and the dotted lines a factor of two. Trunk and tertiary roads have few detectors, and motorways have none. One detector with zero simulated traffic in 2021 is not shown.}
+\label{fig:distributions}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{What each source adds, on data not used to set it. Each row gives a source, its job in the model and the change measured when it is added. Differences are in the sense of adding the source; negative errors are improvements. Intervals are 95\% bootstrap.}
+\label{tab:sources}
+\begin{tabularx}{\textwidth}{@{}p{4.2cm}p{3.6cm}X@{}}
+\toprule
+Source & Role & Effect \\
+\midrule
+Mobile-phone OD, total and timing & agents per interval & hourly-share error on FC links 1.08 and 1.21~pp against 2.72 and 2.60 flat; 0.06 and 0.06~pp lower than the OD profile (median paired difference); mean detector profile 1.03 and 1.15~pp \\
+Mobile-phone OD, relations as used (28\% of the trips between municipalities with known ends) & known trip ends & with the factors kept on both sides: Spearman $+0.02$ to $+0.07$, intervals include zero; dispersion $+0.021$ to $+0.037$ (worse), three of four intervals exclude zero. Against random pairs: dispersion $-0.017$ to $-0.039$, all four intervals exclude zero, two of them narrowly. Against pairs with the same distances: no interval excludes zero at 50 municipalities, one of four at 347; value of the pairings not determined (power at most 0.11) \\
+Detectors, half & scale $k$ by day type & test ratio 1.00; 1.10 in 2021 \\
+Detectors, half (nine values) & province factors & median $|\log_{10}|$ ratio per detector and day type 0.180 to 0.148 on the test half, 0.177 to 0.142 in 2021; dispersion $-0.011$ and $-0.015$ (intervals exclude zero) \\
+GPS traces & route weights & Spearman $+0.08$ [0.01, 0.17] and $+0.10$ [0.03, 0.18] outside the province; median error not measurably different; profiles unchanged \\
+Detectors, all & local correction & hourly error $-2.4$~pp [$-4.8$, $-0.2$] and $-6.0$~pp [$-10.3$, $-2.5$] at left-out detectors; profile error $-0.01$ and $0.00$~pp on GPS links \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \input{tables/od_decomposition}
 
@@ -311,7 +383,7 @@ These experiments followed protocols written before their runs, in the code repo
 
 \paragraph{Variability between runs.} Between four seeds, the ranges are at most 0.002 for the volume ratio, 0.002 for the Spearman correlation, 0.006 for dispersion and 0.011 for the median error. These ranges may understate the variation between runs, because choices made while agents move use a random generator that does not change with the seed.
 
-\paragraph{What explains the error at single roads.} This diagnostic followed a protocol in the code repository, written before it was computed, and uses no simulations. The outcome is $\log_{10}$(simulated/observed) of daily volume and its absolute value, raw simulation. Table~\ref{tab:road_error} gives the out-of-fold $R^2$ lost when a group of predictors is removed from an ordinary least squares model (5 folds, 100 repeats), with permutation $p$ values Holm-adjusted within outcome. By its rule, a group is relevant if on the Monday it loses at least 0.05 with adjusted $p<0.05$, and at least 0.02 in 2021. Only road class meets it, on the signed error: primary roads are overestimated (median $+0.051$, 94 detectors) and secondary roads underestimated ($-0.036$, 53), while trunk roads have an unstable value ($-0.237$ with 12 detectors, $-0.044$ with 6 in 2021). This diagnostic uses the 164 detectors with weekday data on the Monday, whereas Fig.~\ref{M-fig:distributions} of the main text uses the 152 with complete days of the leave-one-out test. The full model has an out-of-fold $R^2$ of 0.09 on the Monday, 0.12 on the Saturday and $-0.10$ in 2021, and $-0.33$ on the Monday when one province is left out in turn; a random forest gives 0.04 out of bag on the Monday. No group predicts the absolute error under the rule. The measure of omitted roads counts their length within 1~km, and does not show whether a given road takes traffic from the detector's road. 2021 is not a replication, since detectors and demand are the same.
+\paragraph{What explains the error at single roads.} This diagnostic followed a protocol in the code repository, written before it was computed, and uses no simulations. The outcome is $\log_{10}$(simulated/observed) of daily volume and its absolute value, raw simulation. Table~\ref{tab:road_error} gives the out-of-fold $R^2$ lost when a group of predictors is removed from an ordinary least squares model (5 folds, 100 repeats), with permutation $p$ values Holm-adjusted within outcome. By its rule, a group is relevant if on the Monday it loses at least 0.05 with adjusted $p<0.05$, and at least 0.02 in 2021. Only road class meets it, on the signed error: primary roads are overestimated (median $+0.051$, 94 detectors) and secondary roads underestimated ($-0.036$, 53), while trunk roads have an unstable value ($-0.237$ with 12 detectors, $-0.044$ with 6 in 2021). This diagnostic uses the 164 detectors with weekday data on the Monday, whereas Fig.~\ref{fig:distributions} of the main text uses the 152 with complete days of the leave-one-out test. The full model has an out-of-fold $R^2$ of 0.09 on the Monday, 0.12 on the Saturday and $-0.10$ in 2021, and $-0.33$ on the Monday when one province is left out in turn; a random forest gives 0.04 out of bag on the Monday. No group predicts the absolute error under the rule. The measure of omitted roads counts their length within 1~km, and does not show whether a given road takes traffic from the detector's road. 2021 is not a replication, since detectors and demand are the same.
 
 \begin{table}[htbp]
 \centering

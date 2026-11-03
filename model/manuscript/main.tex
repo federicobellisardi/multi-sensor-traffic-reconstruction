@@ -1,4 +1,4 @@
-\documentclass[preprint,12pt,a4paper]{elsarticle}
+\documentclass[preprint,11pt,a4paper]{elsarticle}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -11,7 +11,10 @@
 \usepackage{setspace}
 \usepackage{lineno}
 \usepackage{tikz}
+\usepackage{xr-hyper}
 \usepackage{hyperref}
+\externaldocument[S-]{supplementary}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 \usetikzlibrary{arrows.meta,positioning,shadows.blur,fit}
 
 \graphicspath{{./figures/}}
@@ -64,7 +67,7 @@ Agent-based simulation \sep Simulation validation \sep Traffic reconstruction \s
 
 \end{frontmatter}
 
-\doublespacing
+\onehalfspacing
 \linenumbers
 
 \section{Introduction}
@@ -85,7 +88,7 @@ In this paper we build and test such a simulator for a whole region, Emilia-Roma
 \item a comparison of every output with predictors that use no simulation, so that agreement with the data is not mistaken for skill;
 \item an account of what the evidence does not establish, including the error at single roads and the value of specific origin--destination pairings.
 \end{itemize}
-Half of the detectors scale the demand, with one factor per day type and one per province. Route choice uses GPS measured in one province and transferred to the rest of the region by road class. We compare timing on the GPS-matched roads of Forl\`i--Cesena, volumes at held-out detectors in two seasons, and a local correction by leaving out each detector in turn, always against predictors that use no simulation. Section~\ref{sec:data} describes the data and Section~\ref{sec:methods} the model and the tests. Section~\ref{sec:results} follows the model as it is built: first the level of traffic, then its timing, the ranking of roads and the correction, then the error at single roads, and finally what each source adds. Section~\ref{sec:discussion} discusses what this means.
+Half of the detectors scale the demand, with one factor per day type and one per province. Route choice uses GPS measured in one province and transferred to the rest of the region by road class. We compare timing on the GPS-matched roads of Forl\`i--Cesena, volumes at held-out detectors in two seasons, and a local correction by leaving out each detector in turn, always against predictors that use no simulation. Section~\ref{sec:data} describes the data, Section~\ref{sec:methods} the model and the tests, Section~\ref{sec:results} the results in the order in which the model is built, and Section~\ref{sec:discussion} what they mean.
 
 \begin{table}[htbp]
 \centering
@@ -144,20 +147,13 @@ The road network comes from OpenStreetMap \cite{osm,boeing2017}, whose road cove
 
 For the demand, the operator TIM provided hourly activity between municipalities for January--March 2020. We used 13 January--23 February, which excludes the holidays of early January and the restrictions for COVID-19 that began in the region on 23 February, and averaged it separately for each day of the week: each simulated day uses the mean of its own day of the week, so a Tuesday is simulated with the mean of the six Tuesdays of the period. The model keeps the relations among the 50 most active municipalities and between them and the provinces of neighbouring regions. When one end of a trip, or both, is outside this set, the model draws the missing end at random. We left out trips within each of the 50 municipalities, because adding them did not reduce the spread of the errors on the calibration detectors (Supplementary Section~S2). Trips within the other municipalities stay in the demand, with both ends drawn at random.
 
-So only part of the recorded activity enters the model as a relation. We give the figures for the mean Monday; those for the mean Saturday are similar (Supplementary Section~S8). The Monday table holds 3.15 million trips per day, in three parts. 18\% have the code 000000000 at one or both ends; this code identifies no place, and we remove these trips. 43\% are within a municipality: those within the 50 municipalities (38\% of the table) are left out, and those within the other municipalities (5\%) enter with both ends drawn at random. The remaining 39\% are between municipalities: 28\% of them keep their relation, and 72\% have a recorded relation that the model does not use and enter with their end in the selected set, if they have one, and the other end drawn at random. The result is 1.99 million agents on a Monday and 1.61 million on a Saturday, after scaling by $k$ and the province factors. Of the Monday agents, 28\% have a known origin and destination and 72\% have at least one random end (Fig.~\ref{fig:demand}; Supplementary Section~S1). The configuration generator we inherited counted the trips with neighbouring provinces a second time among the agents with random ends (4.4\% of the agents on a Monday before scaling), and we corrected this (Supplementary Section~S2). Since the demand depends only on the day of the week, the fifteen days of the two campaigns need one simulation for each day of the week, plus a second Monday that checks that a run is reproducible. The 2021 days therefore use demand measured in early 2020. The hour labels in the tables refer to local time at the start of the hour (Supplementary Section~S7).
+So only part of the recorded activity enters the model as a relation. We give the figures for the mean Monday; those for the mean Saturday are similar (Supplementary Section~S8). The Monday table holds 3.15 million trips per day, in three parts. 18\% have the code 000000000 at one or both ends; this code identifies no place, and we remove these trips. 43\% are within a municipality: those within the 50 municipalities (38\% of the table) are left out, and those within the other municipalities (5\%) enter with both ends drawn at random. The remaining 39\% are between municipalities: 28\% of them keep their relation, and 72\% have a recorded relation that the model does not use and enter with their end in the selected set, if they have one, and the other end drawn at random. The result is 1.99 million agents on a Monday and 1.61 million on a Saturday, after scaling by $k$ and the province factors. Of the Monday agents, 28\% have a known origin and destination and 72\% have at least one random end (Supplementary Fig.~\ref{S-fig:demand} and Section~S1). We also corrected a double counting of the trips with neighbouring provinces in the configuration generator we inherited (Supplementary Section~S2). Since the demand depends only on the day of the week, the fifteen days of the two campaigns need one simulation for each day of the week, plus a second Monday that checks that a run is reproducible. The 2021 days therefore use demand measured in early 2020. The hour labels in the tables refer to local time at the start of the hour (Supplementary Section~S7).
 
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig1_inputs.pdf}
 \caption{\textbf{The region and the data that enter the model.} \textbf{(a)} Road network coloured by OpenStreetMap road class; the province of Forl\`i--Cesena, where GPS traces inform route choice, is outlined. \textbf{(b)} Daily trip ends with a known location in the weekday demand, by municipality: a larger circle means more trips, and the demand concentrates along the central axis of the region and on the coast. \textbf{(c)} Loop detectors of the regional MTS system placed on the network, by their use for daily volumes: the calibration half of February 2020 (100; 60 of them also enter the 2021 tests) and validation only (115: the 97 of the test half and 18 used only in 2021). The other 77 detectors of the network have no complete counts in either campaign and are not shown. \textbf{(d)} Counts of detector 282 near Bologna on 10 February 2020, 15-min resolution, local time. Road network \copyright{} OpenStreetMap contributors.}
 \label{fig:inputs}
-\end{figure*}
-
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=\textwidth]{fig2_demand.pdf}
-\caption{\textbf{Simulated demand.} \textbf{(a)} Agents generated per hour for a weekday and a weekend day, after scaling by $k$ and the province factors: weekdays show morning and evening peaks, and weekends a single broad rise through the day. \textbf{(b)} Shares of agents by what is known of their trip ends; "provinces" are relations with provinces of neighbouring regions. More than a quarter of agents have both ends known, and the largest group has both ends drawn at random. \textbf{(c)} Municipalities with the most trip ends on a weekday.}
-\label{fig:demand}
 \end{figure*}
 
 The regional MTS system counts vehicles every 15~min in both directions, and 292 of its detectors lie on links of the network (Fig.~\ref{fig:inputs}c,d). A detector is used on a given day only if both of its directions are complete. This filter favours busy roads, but relaxing it hardly changes the errors (Supplementary Section~S7).
@@ -181,7 +177,7 @@ where $L_i$ is its length, $v_i$ its speed, $v_0=20$~km/h a reference speed of t
 
 \subsection{Implementation, verification and computational cost}
 \label{sec:implementation}
-The simulator, \texttt{minimocas}, is written in C++14. Its inputs are the road graph with turn restrictions, the speed and usage weight of each road class, the trip sources with their creation rate in each 15-min interval, and the detector positions. Before the run it computes a best-path matrix for each class of agents with Dijkstra's algorithm, in parallel over nodes with OpenMP. Agents are then moved one after the other in each 10-s step, without parallelism, from 00:00 to 23:45 (8,550 steps). Outputs are the number of distinct agents per link, hour and direction, and the crossings of the virtual counters every 15~min.
+The simulator, \texttt{minimocas}, is written in C++14. Its inputs are the road graph with turn restrictions, the speed and usage weight of each road class, the trip sources with their creation rate in each 15-min interval, and the detector positions. Before the run it computes a best-path matrix for each class of agents with Dijkstra's algorithm, in parallel over nodes with OpenMP. Agents are then moved one after the other in each 10-s step, without parallelism, from 00:00 to 23:45 (8,550 steps).
 
 We verified the implementation in three ways. A given random seed always gives the same run: the second simulated Monday of the 2020 campaign is identical to the first. After a defect in a diagnostic output was corrected, the engine reproduced the link flows of the final Monday byte for byte. The configuration generator, rewritten because the original was not available, writes the configurations only after it has reproduced the creation rates of the inherited ones for the same period. Between four random seeds, the volume ratio and the Spearman correlation on held-out detectors change by at most 0.002 and the dispersion by at most 0.006 (Supplementary Section~S8), well below the differences we interpret.
 
@@ -228,9 +224,9 @@ The experiments on the OD relations followed protocols written before their runs
 \label{sec:results}
 
 \subsection{Level and timing of traffic}
-We first ask whether the simulator puts the right amount of traffic on the network. Scaling the demand by day type, with $k=1.5$ on weekdays and $k=1.3$ on weekends, brings simulated and observed volume on the calibration detectors within 7\% and 10\%, and within 1\% and 4\% with the province factors. A single factor of 1.4, the best common value, would leave weekdays 1\% too low and weekends 18\% too high (Supplementary Fig.~S1). The selected values remain the minima of the grid with province factors, and subsets of 50 calibration detectors choose the same value or a neighbour in nearly all cases (Supplementary Section~S8). Regional differences remain after this step, and the province factors correct them. Figure~\ref{fig:level}a shows that the correction is far from uniform: demand is raised in the north-west, in Modena and in Ferrara and lowered along the east and in Reggio Emilia. We treat these factors as empirical, not as measured differences in phone coverage or car use.
+We first ask whether the simulator puts the right amount of traffic on the network. Scaling the demand by day type, with $k=1.5$ on weekdays and $k=1.3$ on weekends, brings simulated and observed volume on the calibration detectors within 7\% and 10\%, and within 1\% and 4\% with the province factors. A single common factor would leave weekends 18\% too high, and the choice is robust to subsets of detectors (Supplementary Fig.~\ref{S-fig:k_choice} and Section~S8). Regional differences remain after this step, and the province factors correct them. Figure~\ref{fig:level}a shows that the correction is far from uniform: demand is raised in the north-west, in Modena and in Ferrara and lowered along the east and in Reggio Emilia. We treat these factors as empirical, not as measured differences in phone coverage or car use.
 
-Figures~\ref{fig:level}b and \ref{fig:level}c show the outcome at detectors that did not set these values, or set them only in part in 2021. In both campaigns the cloud of points follows the diagonal: the overall level is right and busy roads tend to be simulated as busy, while the width of the cloud shows the error at single roads. Table~\ref{tab:province_effect} shows what the province factors contribute. Their gain is clearest at the typical detector, where the median error falls by about a fifth, and the rule for adopting them was met in both data sets. Factors estimated on 25 or 50 calibration detectors mostly give a dispersion close to that of the 100 used here, although the value for a single province varies strongly between subsets, so the factors should be read as effective corrections and not as precise estimates (Supplementary Section~S8). All later results use the model with the factors.
+Figures~\ref{fig:level}b and \ref{fig:level}c show the outcome at detectors that did not set these values, or set them only in part in 2021. In both campaigns the cloud of points follows the diagonal: the overall level is right and busy roads tend to be simulated as busy, while the width of the cloud shows the error at single roads. The province factors met the rule for adoption in both data sets: dispersion falls from 0.500 to 0.489 on the test half and from 0.415 to 0.399 in 2021, and the gain is clearest at the typical detector, where the median error falls by about a fifth, from 0.180 to 0.148 and from 0.177 to 0.142 (Supplementary Table~\ref{S-tab:province_effect}). Factors estimated on 25 or 50 calibration detectors mostly give a dispersion close to that of the 100 used here, although the value for a single province varies strongly between subsets, so the factors should be read as effective corrections and not as precise estimates (Supplementary Section~S8). All later results use the model with the factors.
 
 \begin{figure*}[htbp]
 \centering
@@ -239,26 +235,7 @@ Figures~\ref{fig:level}b and \ref{fig:level}c show the outcome at detectors that
 \label{fig:level}
 \end{figure*}
 
-\begin{table}[htbp]
-\centering
-\caption{Effect of the province factors, without and with them. Lower dispersion and median error, higher Spearman correlation and a volume ratio closer to one are better; an interval that excludes zero marks a change the data can establish. Dispersion: standard deviation of $\log_{10}$(simulated/observed) of daily volumes across detectors; the test-half values include detector 153, which has no simulated traffic. Median error: median absolute $\log_{10}$ ratio per detector and day type. Intervals: 95\% paired bootstrap of the change.}
-\label{tab:province_effect}
-\begin{tabular}{@{}lrrrrrr@{}}
-\toprule
- & \multicolumn{2}{c}{Calibration half} & \multicolumn{2}{c}{Test half, 2020} & \multicolumn{2}{c}{2021} \\
-Measure & without & with & without & with & without & with \\
-\midrule
-Dispersion & 0.222 & 0.185 & 0.500 & 0.489 & 0.415 & 0.399 \\
-\quad change, interval & \multicolumn{2}{r}{$[-0.052, -0.022]$} & \multicolumn{2}{r}{$[-0.034, -0.003]$} & \multicolumn{2}{r}{$[-0.037, -0.008]$} \\
-Spearman correlation & 0.66 & 0.74 & 0.63 & 0.66 & 0.63 & 0.66 \\
-\quad change, interval & \multicolumn{2}{r}{$[0.02, 0.13]$} & \multicolumn{2}{r}{$[-0.01, 0.08]$} & \multicolumn{2}{r}{$[-0.01, 0.07]$} \\
-Median error & 0.151 & 0.101 & 0.180 & 0.148 & 0.177 & 0.142 \\
-Volume ratio & 1.08 & 1.02 & 1.06 & 1.01 & 1.19 & 1.10 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-With the level set, we turn to when traffic occurs, using GPS as a view of the daily rhythm on the matched roads of Forl\`i--Cesena. Figure~\ref{fig:timing_cdf}a,b compares the simulation with two simple alternatives: the hourly profile of the demand itself and the average profile of the detectors. All three are far better than a flat profile, and the curves are close: most of the daily rhythm is already in the demand. The simulation improves on the demand profile, and after correction it stays slightly behind the detector average in both campaigns (Table~\ref{tab:gps_split}). Weekend timing is harder than weekday timing for both the simulation and the detector average (Supplementary Fig.~S4). GPS traces of this province also set the route weights, so this comparison is not fully independent of route choice, although route choice hardly changes the profiles (Supplementary Section~S3).
+With the level set, we turn to when traffic occurs, using GPS as a view of the daily rhythm on the matched roads of Forl\`i--Cesena. Figure~\ref{fig:timing_cdf}a,b compares the simulation with two simple alternatives: the hourly profile of the demand itself and the average profile of the detectors. All three are far better than a flat profile, and the curves are close: most of the daily rhythm is already in the demand. The simulation improves on the demand profile, and after correction it stays slightly behind the detector average in both campaigns (median errors 1.08 and 1.21~pp raw, 1.05 and 1.21~pp corrected, 1.03 and 1.15~pp for the detector average; Supplementary Table~\ref{S-tab:gps_split}). Weekend timing is harder than weekday timing for both the simulation and the detector average (Supplementary Fig.~\ref{S-fig:daytypes}). GPS traces of this province also set the route weights, so this comparison is not fully independent of route choice, although route choice hardly changes the profiles (Supplementary Section~S3).
 
 \begin{figure*}[htbp]
 \centering
@@ -266,20 +243,6 @@ With the level set, we turn to when traffic occurs, using GPS as a view of the d
 \caption{\textbf{The timing of traffic follows GPS on nearly all links.} For each GPS-matched link we compute the error of its hourly shares, the mean absolute difference between the share of daily traffic in each hour in the estimate and in GPS. Each curve shows the fraction of links whose error is below the value on the horizontal axis, so a curve further up and to the left is better. Reconstruction: simulation after local correction. \textbf{(a,b)} All days, against the OD demand profile and the mean detector profile, in 2020 and 2021. The curves are close, and a minority of links has large errors for all three. Curves continue beyond the 6~pp limit of the axis.}
 \label{fig:timing_cdf}
 \end{figure*}
-
-\begin{table}[htbp]
-\centering
-\caption{How well each estimate reproduces the daily rhythm: median hourly-share error (pp) on the GPS links of Forl\`i--Cesena, all days of each campaign; lower is better. Raw: simulation. Corrected: simulation after the local correction. Mean detector, OD and flat: profiles without simulation, as benchmarks.}
-\label{tab:gps_split}
-\begin{tabular}{@{}lrrrrrr@{}}
-\toprule
-Campaign & Links & Raw & Corrected & Mean detector & OD & Flat \\
-\midrule
-2020 & 442 & 1.08 & 1.05 & 1.03 & 1.14 & 2.72 \\
-2021 & 439 & 1.21 & 1.21 & 1.15 & 1.25 & 2.60 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 Detectors count all vehicles, so they let us look at the actual flow through the day. Figure~\ref{fig:detector_profiles} shows four test detectors for each day type, one from the middle of each quartile of the 15-min error, and where they lie in the region.
 On weekdays the simulation follows both peaks and the midday plateau at all four detectors, also where the level is wrong (profile correlations 0.93--0.97), so the error comes mostly from the level. On weekends it follows the general shape less closely, starting too low at night and running too high late in the evening. Table~\ref{tab:baselines_detectors} gives the picture over all test detectors. The hourly error is about 40\%, and it would fall by about two thirds on weekdays if each detector were given its observed daily level, so at a single road the difference is mostly how much traffic there is, not when. All detectors share a similar daily pattern, and the plain average of the calibration detectors has a higher profile correlation with each test detector than the simulation has. The simulation, however, ranks the roads clearly better than a predictor based on road class.
@@ -312,9 +275,9 @@ Median profile correlation & 0.96 & 0.99 & $[-0.04, -0.03]$ & 0.86 & 0.98 & $[-0
 \end{table}
 
 \subsection{Daily volumes and local correction}
-Since most of the difference at detectors is about level, we now look at daily volumes (Table~\ref{tab:volumes}, top). The results of the two campaigns are similar: the total volume is close to the observed one, the ranking of roads is good and more than four detectors in five are within a factor of two. The level in 2021 is reached with demand measured in early 2020 and a scale fixed on winter counts, so it should not be read as a test of demand in that season. Without the 60 calibration detectors, the 81 remaining detectors of 2021 give a volume ratio of 1.11 [0.99, 1.24], a Spearman correlation of 0.65 [0.50, 0.76] and 81\% [73, 90] within a factor of two. Road class adds a further pattern (Fig.~\ref{fig:distributions}): the simulation underestimates secondary roads (median ratio 0.78 in both campaigns) and tends to overestimate primary roads slightly (1.05 and 1.12), while trunk and tertiary roads have too few detectors for a clear value. No detector lies on a motorway, so the level on motorways, 709~km of the network, is not tested.
+Since most of the difference at detectors is about level, we now look at daily volumes (Table~\ref{tab:volumes}, top). The results of the two campaigns are similar: the total volume is close to the observed one, the ranking of roads is good and more than four detectors in five are within a factor of two. The level in 2021 is reached with demand measured in early 2020 and a scale fixed on winter counts, so it should not be read as a test of demand in that season. Without the 60 calibration detectors, the 81 remaining detectors of 2021 give a volume ratio of 1.11 [0.99, 1.24], a Spearman correlation of 0.65 [0.50, 0.76] and 81\% [73, 90] within a factor of two. Road class adds a further pattern (Supplementary Fig.~\ref{S-fig:distributions}): the simulation underestimates secondary roads (median ratio 0.78 in both campaigns) and tends to overestimate primary roads slightly (1.05 and 1.12), while trunk and tertiary roads have too few detectors for a clear value. No detector lies on a motorway, so the level on motorways, 709~km of the network, is not tested.
 
-The contribution of GPS appears when route choice is changed under the same demand (Table~\ref{tab:volumes}, bottom, and Fig.~\ref{fig:sources}a). At detectors outside the province where route choice was set, GPS-informed routing ranks roads better than shortest-distance routing in both campaigns, while the typical error does not change measurably. This gain comes mainly from the use of each road class, and GPS speeds alone add little (Supplementary Section~S8). Repeating the selection on the final model confirms the chosen form. A simple predictor gives a useful comparison: road class and the mean profile, with no simulation, give a similar error on daily volumes, and the simulation does better in ranking the detectors (Table~\ref{tab:baselines_detectors}).
+The contribution of GPS appears when route choice is changed under the same demand (Table~\ref{tab:volumes}, bottom, and Fig.~\ref{fig:sources}a). At detectors outside the province where route choice was set, GPS-informed routing ranks roads better than shortest-distance routing in both campaigns, while the typical error does not change measurably. This gain comes mainly from the use of each road class, and GPS speeds alone add little (Supplementary Section~S8). Repeating the selection on the final model confirms the chosen form.
 
 \begin{table}[htbp]
 \centering
@@ -336,16 +299,9 @@ Median $|\log_{10}|$ ratio, shortest distance to GPS & 0.151 to 0.147, $0.00$ [$
 \end{tabular}
 \end{table}
 
-All results so far describe the raw simulation. We now add the local correction. To test it fairly, we leave out each detector in turn and ask the correction, which uses the other detectors, to predict its count. The correction removes 2.4 percentage points of the error in 2020 and 6.0 in 2021 at detectors it has not seen (Table~\ref{tab:correction}), and the spread between detectors remains larger than the gain. About three detectors in five improve and about one in four gets worse. The 2020 set includes the calibration detectors and the depth of the correction was selected on 2020, so 2021 is the estimate free of that selection (Supplementary Section~S4). With a fixed 20\% held out on single days, the gain grows with the number of detectors, from 1.4 to 3.1~pp on the winter day and from $-0.1$ to 1.4~pp on the summer day (Supplementary Section~S8).
+All results so far describe the raw simulation. We now add the local correction. To test it fairly, we leave out each detector in turn and ask the correction, which uses the other detectors, to predict its count. The correction removes 2.4 percentage points of the error in 2020 and 6.0 in 2021 at detectors it has not seen (Table~\ref{tab:correction}), and the spread between detectors remains larger than the gain. About three detectors in five improve and about one in four gets worse. The 2020 set includes the calibration detectors and the depth of the correction was selected on 2020, so 2021 is the estimate free of that selection (Supplementary Section~S4). The gain grows with the number of detectors used (Supplementary Section~S8).
 
 Again we compare with the predictor built on the other detectors of the same day (Table~\ref{tab:correction} and Fig.~\ref{fig:sources}c). The corrected reconstruction cannot be told apart from it, and each is better at about half of the detectors. The simulation, in addition, gives a complete and consistent field over all links of the network.
-
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=\textwidth]{fig8_distributions.pdf}
-\caption{\textbf{Simulated volume by road class.} Ratio of simulated to observed daily volume, raw simulation, on the detectors with complete days of the leave-one-out test. Each point is a detector, and the number of detectors is below each group; 106 detectors appear in both campaigns. Black bars: medians. Primary and secondary roads also show quartiles and whiskers at 1.5 interquartile ranges, and the coloured bars beside them are 95\% bootstrap intervals of the median. The dashed line marks perfect agreement and the dotted lines a factor of two. Trunk and tertiary roads have few detectors, and motorways have none. One detector with zero simulated traffic in 2021 is not shown.}
-\label{fig:distributions}
-\end{figure*}
 
 \begin{table}[htbp]
 \centering
@@ -391,7 +347,7 @@ We tested the OD relations in detail in Supplementary Section~S9. Removing them 
 \label{sec:single_roads}
 With the regional level, the ranking and the timing in place, we can ask what kind of error remains at each road. Figure~\ref{fig:single}a,b shows that it is not noise but a stable property of the road. A road that the simulator overestimates on weekdays is overestimated by about the same amount on weekends ($r=0.95$), and the same holds between winter 2020 and summer 2021 ($r=0.98$). The day-to-day variation of the counts is about ten times smaller than this error. Part of the stability between seasons is expected, since both campaigns use the same demand; it also means that the counts on each road changed little relative to the simulated ones.
 
-Figures~\ref{fig:single}c and \ref{fig:single}d show what the province factors did to this error. Without them, province was its largest known component and nearby detectors had similar errors. With them, that regional component has mostly gone and nearby errors are no more alike than chance would give. Together, province, road class and volume now explain about a quarter of the variance. Misplaced detectors do not explain the rest: comparing their coordinates with the road geometry, we flagged 5 of 292 as doubtful, and dispersion remains large without them (Supplementary Section~S5). A further analysis, out of sample, shows that road class is the only group of road properties with a repeatable signal, whereas nearby population and activities, centrality, parallel roads and the density of OpenStreetMap roads not in the network do not explain the error in a way that carries over between provinces (Supplementary Section~S8). Route weights from the GPS count of each link, instead of its class, did not give a clear gain at the detectors of Forl\`i--Cesena, on few detectors (Supplementary Section~S8). What remains is a stable property of each road, which may reflect how demand reaches the road locally, and which these data cannot separate further. Its stability suggests that local information could address it, as the correction already does where detectors exist.
+Figures~\ref{fig:single}c and \ref{fig:single}d show what the province factors did to this error. Without them, province was its largest known component and nearby detectors had similar errors. With them, that regional component has mostly gone and nearby errors are no more alike than chance would give. Together, province, road class and volume now explain about a quarter of the variance. Misplaced detectors do not explain the rest: comparing their coordinates with the road geometry, we flagged 5 of 292 as doubtful, and dispersion remains large without them (Supplementary Section~S5). Of the other road properties we tested out of sample (nearby population and activities, centrality, parallel roads, density of roads not in the network) and of route weights from the GPS count of each link, none explains the error in a way that carries over between provinces (Supplementary Section~S8). What remains is a stable property of each road, which may reflect how demand reaches the road locally, and which these data cannot separate further. Its stability suggests that local information could address it, as the correction already does where detectors exist.
 
 \begin{figure*}[htbp]
 \centering
@@ -422,29 +378,11 @@ Slope, log--log volumes ($R^2$) & 0.94 [0.72, 1.18] (0.19) & 0.86 [0.70, 1.05] (
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:sources} collects the effect of each source on data not used to set it. Phone data give the timing and, with detector scaling, the level; GPS improves the ranking of roads; detectors also bring a local gain through the correction. The OD tables add the short-range structure of trips; the value of specific pairings beyond it remains undetermined.
-
-\begin{table}[htbp]
-\centering
-\caption{What each source adds, on data not used to set it. Each row gives a source, its job in the model and the change measured when it is added. Differences are in the sense of adding the source; negative errors are improvements. Intervals are 95\% bootstrap.}
-\label{tab:sources}
-\begin{tabular}{@{}p{3.5cm}p{5.2cm}p{5.8cm}@{}}
-\toprule
-Source & Role & Effect \\
-\midrule
-Mobile-phone OD, total and timing & agents per interval & hourly-share error on FC links 1.08 and 1.21~pp against 2.72 and 2.60 flat; 0.06 and 0.06~pp lower than the OD profile (median paired difference); mean detector profile 1.03 and 1.15~pp \\
-Mobile-phone OD, relations as used (28\% of the trips between municipalities with known ends) & known trip ends & with the factors kept on both sides: Spearman $+0.02$ to $+0.07$, intervals include zero; dispersion $+0.021$ to $+0.037$ (worse), three of four intervals exclude zero. Against random pairs: dispersion $-0.017$ to $-0.039$, all four intervals exclude zero, two of them narrowly. Against pairs with the same distances: no interval excludes zero at 50 municipalities, one of four at 347; value of the pairings not determined (power at most 0.11) \\
-Detectors, half & scale $k$ by day type & test ratio 1.00; 1.10 in 2021 \\
-Detectors, half (nine values) & province factors & median $|\log_{10}|$ ratio per detector and day type 0.180 to 0.148 on the test half, 0.177 to 0.142 in 2021; dispersion $-0.011$ and $-0.015$ (intervals exclude zero) \\
-GPS traces & route weights & Spearman $+0.08$ [0.01, 0.17] and $+0.10$ [0.03, 0.18] outside the province; median error not measurably different; profiles unchanged \\
-Detectors, all & local correction & hourly error $-2.4$~pp [$-4.8$, $-0.2$] and $-6.0$~pp [$-10.3$, $-2.5$] at left-out detectors; profile error $-0.01$ and $0.00$~pp on GPS links \\
-\bottomrule
-\end{tabular}
-\end{table}
+Figure~\ref{fig:sources} and Supplementary Table~\ref{S-tab:sources} collect the effect of each source on data not used to set it. Phone data give the timing and, with detector scaling, the level; GPS improves the ranking of roads; detectors also bring a local gain through the correction. The OD tables add the short-range structure of trips; the value of specific pairings beyond it remains undetermined.
 
 \section{Discussion}
 \label{sec:discussion}
-We built a simulator of ordinary regional traffic from three data sources. With eleven demand-level parameters (two by day type, nine by province), it reaches the observed overall level and timing, it ranks roads well above chance, and each source has a measurable role. Detectors set the level and reduce the regional bias. GPS use by road class improves the ranking of roads. Phone tables give the daily timing and the short-range structure of trips. The correction brings a further local gain. The province factors are empirical: a factor of 1.74 or 0.51 cannot be read as a difference in phone coverage or car use without further evidence, and the factors would have to be estimated again for another period or region.
+With eleven demand-level parameters (two by day type, nine by province), the simulator reaches the observed overall level and timing, ranks roads well above chance, and each source has a measurable role. The province factors are empirical: a factor of 1.74 or 0.51 cannot be read as a difference in phone coverage or car use without further evidence, and the factors would have to be estimated again for another period or region.
 
 The OD tables need careful reading, because our tests answer narrower questions than "do OD data have value?". Destinations rearranged at random make trips far too long and tend to worsen the model, so the tables carry useful information on trip length. Random ends drawn near the known end supply much of the same information, which may be why removing the relations does not raise dispersion; this explanation is a hypothesis. The value of specific origin--destination pairings could not be determined from link-count observations with the statistical power available in this study. Just over a quarter of the trips between municipalities with known ends keep their relation, and link counts respond little to pairings: at the 25-km radius of the model, the change at detectors is below the variation between seeds. This is not evidence that pairings have no value, and they may be useful in applications that need trips rather than link volumes. In the same way, a value of $k=1.5$ cannot be read as the inverse of the operator's coverage.
 
@@ -460,7 +398,7 @@ This paper establishes what the simulator does for ordinary traffic: regional le
 
 \section{Conclusions}
 \label{sec:conclusions}
-We have built a regional traffic simulator from mobile-phone demand, detector counts and GPS, and measured what each source adds on data not used to set each step. The study shows that such a simulator can be validated on independent observations, and that the contribution of each input can be measured, when each source has one role and is tested on data it did not set. Scaling by day type and province gives the observed overall volume on held-out detectors and reduces the regional bias. Route weights based on GPS use improve the ranking of roads, and the local correction reduces the error at left-out detectors. The overall timing comes from the daily profile of the demand. The OD tables contribute the level, the timing and the short-range structure of trips; the value of specific pairings beyond that structure could not be determined from link counts with the power available. Tests on held-out data support the overall level, the ranking of roads and the timing. At single roads the error is stable and specific to each road, and the simulation is comparable to predictors based on road class and other detectors. A simulator of this type gives a consistent picture of ordinary traffic at the scale of the region, over all links of the network, and its use for scenarios remains future work that needs its own assessment on observed changes.
+We have built a regional traffic simulator from mobile-phone demand, detector counts and GPS, and measured what each source adds on data not used to set each step. The study shows that such a simulator can be validated on independent observations, and that the contribution of each input can be measured, when each source has one role and is tested on data it did not set. On held-out data the simulator reaches the overall level, ranks roads above chance and better than a road-class predictor, and follows the daily timing, which comes mostly from the demand. Detector scaling sets the level, GPS-based route weights improve the ranking, and the local correction reduces the error at unseen detectors. At single roads the error is stable, specific to each road and comparable to that of simple predictors, and the value of specific origin--destination pairings could not be determined. Its use for scenarios is future work that needs its own assessment on observed changes.
 
 \section*{Supplementary material}
 The Supplementary Material describes the data layers and the demand classes (S1), the demand scale and the changes tested on the calibration detectors (S2), the simulation model and the route-choice variants (S3), the detector correction and its sensitivity to depth (S4), additional results (S5), the final configuration and the reproduction of all results (S6), further details of data and methods (S7), the experiments on the final model (S8) and the value of the OD relations (S9).
