@@ -44,8 +44,11 @@
   postcode={07122},
   city={Palma de Mallorca},
   country={Spain}}
-\affiliation[mindicity]{organization={Mindicity},
-  country={Italy}}
+\affiliation[mindicity]{
+  organization={Mindicity, fabbricadigitale S.r.l.},
+  city={Casalmaggiore (CR)},
+  country={Italy}
+}
 \affiliation[unibo]{organization={Department of Physics and Astronomy ``Augusto Righi'', University of Bologna},
   addressline={Viale Carlo Berti Pichat 6/2},
   postcode={40127},
@@ -75,7 +78,7 @@ Agent-based simulation \sep Simulation validation \sep Traffic reconstruction \s
 
 Transport planning \cite{toole2015}, the study of congestion \cite{colak2016} and the assessment of emissions \cite{grujic2022} all need to know how much traffic each road carries, hour by hour. No single data source provides this. Mobile phones show where people travel \cite{gonzalez2008,calabrese2011} but not which roads they use, and phone samples have their own biases \cite{wesolowski2013}. Loop detectors count every vehicle, but only at a few points, and where they are placed limits what we can learn about the rest of the network \cite{yang1998,castillo2008,gentili2012,castillo2015}. GPS-equipped vehicles cover many roads, but they are a small sample of traffic, and the chance of sampling a vehicle changes between roads and hours \cite{herrera2010,jenelius2013,patire2015}. A regional model therefore has to combine these sources \cite{elfaouzi2011,zheng2014,chen2016,anda2017}. This raises a simple question: what does each of them actually add?
 
-Each source has been studied for a long time. Phone and GPS data have shown statistical regularities in how individuals move \cite{bazzani2010,gallotti2016,mizzi2018,mizzi2022,mizzi2023,bellisardi2025}. Phone records have also been used to estimate origin--destination (OD) matrices \cite{iqbal2014,alexander2015}, and these matrices have been assigned to road networks \cite{wardrop1952} to study road use and congestion \cite{wang2012,toole2015,colak2016}. Detector counts have long been used to estimate OD matrices \cite{cascetta1984,yang1992,antoniou2016} and to calibrate agent-based simulations \cite{flotterod2011}. GPS probes and fixed sensors are used to estimate the state of traffic, mostly on motorways and urban corridors \cite{wang2005,work2010,bachmann2013,seo2015,nantes2016,seo2017}.
+Each source has been studied for a long time. Phone and GPS data have shown statistical regularities in how individuals move \cite{bazzani2010,gallotti2016,mizzi2018,mizzi2022,mizzi2023}. Phone records have also been used to estimate origin--destination (OD) matrices \cite{iqbal2014,alexander2015}, and these matrices have been assigned to road networks \cite{wardrop1952} to study road use and congestion \cite{wang2012,toole2015,colak2016}. Detector counts have long been used to estimate OD matrices \cite{cascetta1984,yang1992,antoniou2016} and to calibrate agent-based simulations \cite{flotterod2011}. GPS probes and fixed sensors are used to estimate the state of traffic, mostly on motorways and urban corridors \cite{wang2005,work2010,bachmann2013,seo2015,nantes2016,seo2017}.
 
 More recent work combines the sources. Telecom data and vehicle flows have been used together to predict traffic where there is no camera \cite{lin2024}, traffic has been estimated at places without sensors \cite{lei2024}, and a few fixed sensors have been scaled up to describe whole urban networks \cite{maiti2025}. Closer to our work, agent-based simulations now take their demand from phone data. In Barcelona, activity diaries built from phone records feed a MATSim model \cite{bassolas2019}. In Novi Sad, telecom data are combined with population and GIS data, and traffic is calibrated and validated with vehicle counters \cite{grujic2022}. Aggregated phone data have also been used to build a model of Brussels \cite{li2024}. A recent review of more than 60 such case studies shows how common these data-driven, city-wide simulations have become \cite{bochenina2025}. Combining the sources is therefore no longer new, but doing so does not by itself show what each of them adds.
 
@@ -143,7 +146,7 @@ Figure~\ref{fig:pipeline} shows how the data enter the simulator and which data 
 \section{Data}
 \label{sec:data}
 
-The road network comes from OpenStreetMap \cite{osm,boeing2017}, whose road coverage has been estimated to exceed 95\% in most European countries \cite{barrington2017}. It has 3,925 links and 2,548 nodes, with their length, direction and turn restrictions, and each link has an OpenStreetMap road class (Fig.~\ref{fig:inputs}a). 
+The road network comes from OpenStreetMap \cite{osm}, whose road coverage has been estimated to exceed 95\% in most European countries \cite{barrington2017}. It has 3,925 links and 2,548 nodes, with their length, direction and turn restrictions, and each link has an OpenStreetMap road class (Fig.~\ref{fig:inputs}a). 
 
 For the demand, the operator TIM provided hourly activity between municipalities for January--March 2020. We used 13 January--23 February, which excludes the holidays of early January and the restrictions for COVID-19 that began in the region on 23 February, and averaged it separately for each day of the week: each simulated day uses the mean of its own day of the week, so a Tuesday is simulated with the mean of the six Tuesdays of the period. The model keeps the relations among the 50 most active municipalities and between them and the provinces of neighbouring regions. When one end of a trip, or both, is outside this set, the model draws the missing end at random. We left out trips within each of the 50 municipalities, because adding them did not reduce the spread of the errors on the calibration detectors (Supplementary Section~S2). Trips within the other municipalities stay in the demand, with both ends drawn at random.
 
