@@ -16,6 +16,8 @@ v1 is also archived in `$WORK_ROOT/archive_frozen_v1_20261102/`. Do not delete `
 
 Steps 2 and 3 need the proprietary inputs, which are not distributed.
 
+The CSV tables in `vars/extra/`, `model/results/corrected/` and `model/results/road_class.csv` are not in the repository either. The pipeline reads them, so they must be placed at those paths before steps 2 and 3. The JSON results and figures that come from them are tracked.
+
 ## What was run for the reported results
 - `hpc/run_all.sh` on 2026-11-02, then six runs repeated after the correction described in `FINAL_MODEL_AUDIT.md`, then the full pipeline: 47 steps, all with return code 0.
 - `final_experiments` regression run: byte-identical to the final Monday simulation.

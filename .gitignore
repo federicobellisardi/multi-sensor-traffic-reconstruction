@@ -95,3 +95,8 @@ model/manuscript/supplementary/*.aux
 model/manuscript/supplementary/*.log
 model/manuscript/supplementary/*.out
 digital_twin/notes/
+
+# Data tables not redistributed with the repository
+vars/extra/*.csv
+model/results/corrected/*.csv
+model/results/road_class.csv
