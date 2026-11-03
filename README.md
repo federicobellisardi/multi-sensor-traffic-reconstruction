@@ -12,7 +12,7 @@ demand, an agent-based simulator on an OpenStreetMap-derived road graph, inducti
 | `digital_twin/` | Second paper: web platform for launching and inspecting simulations, and its analyses (see `digital_twin/README.md`) |
 | `minimocas/` | Agent-based traffic simulator (C++, pybind11 interface) |
 | `src/`, `CMakeLists.txt`, `cmake/`, `build.sh` | Build of the simulator and of the Python bindings |
-| `vars/` | Project cartography (`vars/carto`, 3,925 polylines) and metadata (detectors, no-turn rules) |
+| `vars/` | Project cartography (`vars/carto`, 3,925 polylines), simulator configurations and regional shapes; the metadata tables `vars/extra/*.csv` (detectors, no-turn rules, distances) are not tracked |
 | `hpc/` | Setup, smoke test and job scripts for workstations and the Slurm cluster (see `hpc/README.md`) |
 | `environment.yml` | Python environment of the analysis |
 | `platform/` | Earlier operational platform, not used by the model pipeline: web dashboard (`dashboard/`), OD and configuration tools (`python/`), `scripts/` |
@@ -39,7 +39,9 @@ Not included in this repository:
   regional open-data catalogue (dataset DS-1944);
 * ISTAT road-accident microdata: public, downloadable from istat.it (see
   `research/datasets/scripts/`);
-* OpenStreetMap extracts: © OpenStreetMap contributors, ODbL (Geofabrik).
+* OpenStreetMap extracts: © OpenStreetMap contributors, ODbL (Geofabrik);
+* the CSV tables in `vars/extra/`, `model/results/corrected/` and `model/results/road_class.csv`,
+  which the pipeline reads at those paths (see `model/submission/REPRODUCIBILITY.md`).
 
 Dashboard credentials are read from environment variables; see `platform/dashboard/.env.example`.
 

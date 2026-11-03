@@ -1,11 +1,11 @@
 # Regional traffic model
 
-**Data-driven regional traffic simulation from heterogeneous mobility sources** (target: EPJ Data Science).
+**Data-driven regional traffic simulation from heterogeneous mobility sources** (target: Simulation Modelling Practice and Theory; submission documents in `submission/SMPT_*`).
 
 | Path | Content |
 |---|---|
 | `analysis/` | Pipeline: demand, route choice, detector correction, assessment, figures and tables |
-| `results/` | Aggregate results of the final configuration; link-level outputs derived from proprietary data stay in `results/private/` (git-ignored) |
+| `results/` | Aggregate results of the final configuration; link-level outputs derived from proprietary data stay in `results/private/` (git-ignored), and the CSV tables of `results/corrected/` and `results/road_class.csv` are not tracked |
 | `results/experiments/` | Experiments and the protocols written before them (`PROTOCOL*.md`) |
 | `manuscript/` | `main.tex`, `references.bib`, `supplementary/main.tex`, generated `figures/` and `tables/` |
 | `notes/` | Reference metadata |
