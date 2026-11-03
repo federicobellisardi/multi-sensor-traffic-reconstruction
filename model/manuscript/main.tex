@@ -1,7 +1,8 @@
-\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+\documentclass[preprint,12pt,a4paper]{elsarticle}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=2.2cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
@@ -9,37 +10,60 @@
 \usepackage{xcolor}
 \usepackage{setspace}
 \usepackage{lineno}
-% \usepackage[numbers,sort&compress]{natbib}
 \usepackage{tikz}
 \usepackage{hyperref}
 \usetikzlibrary{arrows.meta,positioning,shadows.blur,fit}
 
 \graphicspath{{./figures/}}
-\geometry{a4paper,left=1.8cm,right=1.8cm,top=1.8cm,bottom=1.8cm}
 \setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
 \setlength{\floatsep}{10pt plus 2pt minus 2pt}
 \setlength{\intextsep}{10pt plus 2pt minus 2pt}
 \setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
 \setlength{\dblfloatsep}{10pt plus 2pt minus 2pt}
 
-\title{Data-driven regional traffic simulation from heterogeneous mobility sources}
-
-\author*[1]{\fnm{Federico} \sur{Bellisardi}}\email{fbellisardi@ifisc.uib-csic.es}
-\author[2]{\fnm{Chiara} \sur{Mizzi}}
-\author[2]{\fnm{Alessandro} \sur{Fabbri}}
-\author[3,4]{\fnm{Armando} \sur{Bazzani}}
-
-\affil*[1]{\orgdiv{Instituto de F\'{\i}sica Interdisciplinar y Sistemas Complejos IFISC}, \orgname{CSIC-UIB}, \street{Campus UIB}, \postcode{07122}, \city{Palma de Mallorca}, \country{Spain}}
-\affil[2]{\orgname{Mindicity}, \country{Italy}}
-\affil[3]{\orgdiv{Department of Physics and Astronomy "Augusto Righi"}, \orgname{University of Bologna}, \street{Viale Carlo Berti Pichat 6/2}, \postcode{40127}, \city{Bologna}, \country{Italy}}
-\affil[4]{\orgname{INFN, Sezione di Bologna}, \street{Viale Carlo Berti Pichat 6/2}, \postcode{40127}, \city{Bologna}, \country{Italy}}
-
-\abstract{Accurate link-level traffic estimation requires integrating heterogeneous mobility data, as single sources capture only partial dimensions of human movement. Here, we present a data-driven agent-based simulator for the regional road network of Emilia-Romagna, Italy, fusing three multi-scale data streams: mobile-phone records to model demand and diurnal rhythms, inductive loop detectors to scale flow volume, and GPS vehicle traces to inform route choices. To assess performance and layer redundancy, we validate the simulator against independent out-of-sample observations—including held-out detectors across different seasons—and compare it against non-simulative baseline predictors. The simulator reproduces total regional volume within 1\% in winter and 10\% in summer campaigns, achieves high spatial rank correlation across links, and accurately matches hourly profiles. Crucially, by quantifying the marginal information added by each data layer, we show that loop detectors anchor absolute volume levels, GPS traces improve spatial traffic distribution, and telecom data establish temporal profiles and trip-length dynamics. The framework delivers a validated, network-consistent computational foundation for regional mobility modeling and scenario assessments.}
-
-\keywords{traffic reconstruction, mobile-phone demand, inductive loop detectors, GPS probes, route choice, agent-based simulation}
+\journal{Simulation Modelling Practice and Theory}
 
 \begin{document}
-\maketitle
+
+\begin{frontmatter}
+
+\title{Data-driven regional traffic simulation from heterogeneous mobility sources}
+
+\author[ifisc]{Federico Bellisardi\corref{cor1}}
+\ead{fbellisardi@ifisc.uib-csic.es}
+\cortext[cor1]{Corresponding author.}
+\author[mindicity]{Chiara Mizzi}
+\author[mindicity]{Alessandro Fabbri}
+\author[unibo,infn]{Armando Bazzani}
+
+\affiliation[ifisc]{organization={Instituto de F\'{\i}sica Interdisciplinar y Sistemas Complejos IFISC (CSIC-UIB)},
+  addressline={Campus UIB},
+  postcode={07122},
+  city={Palma de Mallorca},
+  country={Spain}}
+\affiliation[mindicity]{organization={Mindicity},
+  country={Italy}}
+\affiliation[unibo]{organization={Department of Physics and Astronomy ``Augusto Righi'', University of Bologna},
+  addressline={Viale Carlo Berti Pichat 6/2},
+  postcode={40127},
+  city={Bologna},
+  country={Italy}}
+\affiliation[infn]{organization={INFN, Sezione di Bologna},
+  addressline={Viale Carlo Berti Pichat 6/2},
+  postcode={40127},
+  city={Bologna},
+  country={Italy}}
+
+\begin{abstract}
+Regional traffic simulators increasingly draw on mobile-phone demand, loop-detector counts and GPS traces, but they are rarely validated on independent data, and the contribution of each source is seldom measured. We present an agent-based simulator of ordinary traffic on the regional road network of Emilia-Romagna, Italy, in which each source has one role: mobile-phone origin--destination tables give the demand and its timing, half of the loop detectors set the demand scale, and GPS traces from one province set route weights by road class. We evaluate it on held-out detectors in winter 2020 and summer 2021, on GPS link counts and in a leave-one-detector-out test of a local correction, always against predictors without simulation, and we measure the change brought by each source. On held-out detectors the simulated total volume is within 1\% of the observed one in winter and 10\% in summer, and roads are ranked better than by a road-class predictor (Spearman correlation 0.67--0.68 against 0.41--0.48). The daily timing comes mostly from the demand profile and does not improve on the mean detector profile. GPS-informed route choice improves the ranking of roads, province factors reduce the regional bias, and the local correction lowers the hourly error at unseen detectors by 2.4 and 6.0 percentage points. The error at individual roads remains comparable to that of simple predictors, and the value of specific origin--destination pairings could not be determined with the available statistical power. Aggregate level, spatial ranking, timing, unmonitored roads and source contributions are treated as distinct evaluation objectives.
+\end{abstract}
+
+\begin{keyword}
+Agent-based simulation \sep Simulation validation \sep Traffic reconstruction \sep Mobile phone data \sep Loop detector \sep GPS probe data
+\end{keyword}
+
+\end{frontmatter}
+
 \doublespacing
 \linenumbers
 
@@ -52,9 +76,16 @@ Each source has been studied for a long time. Phone and GPS data have shown stat
 
 More recent work combines the sources. Telecom data and vehicle flows have been used together to predict traffic where there is no camera \cite{lin2024}, traffic has been estimated at places without sensors \cite{lei2024}, and a few fixed sensors have been scaled up to describe whole urban networks \cite{maiti2025}. Closer to our work, agent-based simulations now take their demand from phone data. In Barcelona, activity diaries built from phone records feed a MATSim model \cite{bassolas2019}. In Novi Sad, telecom data are combined with population and GIS data, and traffic is calibrated and validated with vehicle counters \cite{grujic2022}. Aggregated phone data have also been used to build a model of Brussels \cite{li2024}. A recent review of more than 60 such case studies shows how common these data-driven, city-wide simulations have become \cite{bochenina2025}. Combining the sources is therefore no longer new, but doing so does not by itself show what each of them adds.
 
-Three things make this hard to see. First, independent data are scarce. Simulations should be validated on data not used for calibration \cite{toledo2004,hollander2008}, yet demand is often rescaled to match the counts, and agreement at those same counts is then reported. The closest studies show how few options there can be: \c{C}olak et al.\ report that no single validation source existed for their cities \cite{colak2016}, Toole et al.\ compare their estimates with travel surveys \cite{toole2015}, and Bassolas et al.\ keep traffic counts out of the calibration but have them only at some main entrances of the city \cite{bassolas2019}. Second, the sources are usually tested together. The result then shows whether the complete model works, not which source made it work, even though uncertainty in demand affects every stage of a model \cite{zhao2002,rasouli2012}. Third, a model needs a benchmark. Simple historical profiles predict the daily pattern of traffic very well \cite{lippi2013,vlahogianni2014}, so good timing means little unless a model does better than they do.
+Three things make this hard to see. First, independent data are scarce. The simulation literature separates verification, whether a model is implemented as intended, from validation, whether it is accurate enough for its purpose, and asks that validation use data not used to build the model \cite{kleijnen1995,sargent2013}; the same holds for traffic simulation \cite{toledo2004,hollander2008}. Yet demand is often rescaled to match the counts, and agreement at those same counts is then reported. The closest studies show how few options there can be: \c{C}olak et al.\ report that no single validation source existed for their cities \cite{colak2016}, Toole et al.\ compare their estimates with travel surveys \cite{toole2015}, and Bassolas et al.\ keep traffic counts out of the calibration but have them only at some main entrances of the city \cite{bassolas2019}. Second, the sources are usually tested together. The result then shows whether the complete model works, not which source made it work, even though uncertainty in demand affects every stage of a model \cite{zhao2002,rasouli2012}. Third, a model needs a benchmark. Simple historical profiles predict the daily pattern of traffic very well \cite{lippi2013,vlahogianni2014}, so good timing means little unless a model does better than they do.
 
-In this paper we build and test such a simulator for a whole region, Emilia-Romagna, Italy, with hourly traffic on the regional road network.  Besides the simulator itself, we add a measure of the marginal information of each source: what changes when that source is added, changed or removed. We give each source one job in the model and check that job with data that played no part in it (Table~\ref{tab:roles}). Half of the detectors scale the demand, with one factor per day type and one per province. Route choice uses GPS measured in one province and transferred to the rest of the region by road class. We compare timing on the GPS-matched roads of Forl\`i--Cesena, volumes at held-out detectors in two seasons, and a local correction by leaving out each detector in turn, always against predictors that use no simulation. Section~\ref{sec:data} describes the data and Section~\ref{sec:methods} the model and the tests. Section~\ref{sec:results} follows the model as it is built: first the level of traffic, then its timing, the ranking of roads and the correction, then the error at single roads, and finally what each source adds. Section~\ref{sec:discussion} discusses what this means.
+In this paper we build and test such a simulator for a whole region, Emilia-Romagna, Italy, with hourly traffic on the regional road network. We give each source one job in the model and check that job with data that played no part in it (Table~\ref{tab:roles}). The contributions are methodological as much as regional:
+\begin{itemize}
+\item an assessment protocol that keeps apart five objectives that are often reported together: the aggregate level of traffic, the ranking of roads, the daily timing, the estimate at roads without detectors, and the contribution of each source;
+\item a measure of the marginal information of each source, the change on held-out data when that source is added, changed or removed, with the parameters that act through it held fixed;
+\item a comparison of every output with predictors that use no simulation, so that agreement with the data is not mistaken for skill;
+\item an account of what the evidence does not establish, including the error at single roads and the value of specific origin--destination pairings.
+\end{itemize}
+Half of the detectors scale the demand, with one factor per day type and one per province. Route choice uses GPS measured in one province and transferred to the rest of the region by road class. We compare timing on the GPS-matched roads of Forl\`i--Cesena, volumes at held-out detectors in two seasons, and a local correction by leaving out each detector in turn, always against predictors that use no simulation. Section~\ref{sec:data} describes the data and Section~\ref{sec:methods} the model and the tests. Section~\ref{sec:results} follows the model as it is built: first the level of traffic, then its timing, the ranking of roads and the correction, then the error at single roads, and finally what each source adds. Section~\ref{sec:discussion} discusses what this means.
 
 \begin{table}[htbp]
 \centering
@@ -148,6 +179,14 @@ w_i = L_i\left[\alpha + \alpha_s\,\frac{v_0}{v_i} + (1-\alpha-\alpha_s)\,\frac{1
 \end{equation}
 where $L_i$ is its length, $v_i$ its speed, $v_0=20$~km/h a reference speed of the simulator that makes the speed term dimensionless (only the product $\alpha_s v_0$ enters, so $v_0$ only sets the scale of $\alpha_s$), and $c_i$ the usage weight of its class, so that busier road classes cost less. This cost describes an empirical preference by road class, and it is not a behavioural model. We chose the usage-weighted form among shortest-distance, travel-time and mixed alternatives because of its rank correlation between simulated daily volumes and GPS counts in Forl\`i--Cesena, without using detectors. The weights $\alpha=0.5$ and $\alpha_s=0.25$ come from a discrete grid compared on the calibration detectors; they are chosen values, not estimates (Supplementary Section~S3).
 
+\subsection{Implementation, verification and computational cost}
+\label{sec:implementation}
+The simulator, \texttt{minimocas}, is written in C++14. Its inputs are the road graph with turn restrictions, the speed and usage weight of each road class, the trip sources with their creation rate in each 15-min interval, and the detector positions. Before the run it computes a best-path matrix for each class of agents with Dijkstra's algorithm, in parallel over nodes with OpenMP. Agents are then moved one after the other in each 10-s step, without parallelism, from 00:00 to 23:45 (8,550 steps). Outputs are the number of distinct agents per link, hour and direction, and the crossings of the virtual counters every 15~min.
+
+We verified the implementation in three ways. A given random seed always gives the same run: the second simulated Monday of the 2020 campaign is identical to the first. After a defect in a diagnostic output was corrected, the engine reproduced the link flows of the final Monday byte for byte. The configuration generator, rewritten because the original was not available, writes the configurations only after it has reproduced the creation rates of the inherited ones for the same period. Between four random seeds, the volume ratio and the Spearman correlation on held-out detectors change by at most 0.002 and the dispersion by at most 0.006 (Supplementary Section~S8), well below the differences we interpret.
+
+On a desktop computer (AMD Ryzen 3 3200G, four cores), one simulated Monday with 1.99 million agents took 7.1~min of wall-clock time, 6.5~min of which to move the agents, with a peak memory of 2.5~GB; it used about one core, with two OpenMP threads for the best paths. Its link flows and counter crossings were identical, byte for byte, to those of the final run used in this paper. Simulated days are independent, so the days of a campaign run in parallel as separate processes. We did not measure how the cost grows with the size of the network or the number of agents.
+
 \subsection{Demand scaling and local correction}
 Detectors enter the model in two ways. Half of them set the overall level of the demand, with one factor for each day type and one for each province. The counts of each day then correct the simulation locally, near each detector.
 
@@ -236,7 +275,7 @@ With the level set, we turn to when traffic occurs, using GPS as a view of the d
 \toprule
 Campaign & Links & Raw & Corrected & Mean detector & OD & Flat \\
 \midrule
-2020 & 442 & 1.09 & 1.05 & 1.03 & 1.14 & 2.72 \\
+2020 & 442 & 1.08 & 1.05 & 1.03 & 1.14 & 2.72 \\
 2021 & 439 & 1.21 & 1.21 & 1.15 & 1.25 & 2.60 \\
 \bottomrule
 \end{tabular}
@@ -291,7 +330,7 @@ Median $|\log_{10}|$ ratio & 0.148 [0.113, 0.176] & 0.142 [0.118, 0.174] \\
 Within a factor of two (\%) & 81 [73, 90] & 84 [78, 90] \\
 \midrule
  & Test half, outside FC (87) & 2021, outside FC (128) \\
-Spearman, shortest distance to GPS & 0.63 to 0.71, $+0.08$ [0.01, 0.17] & 0.54 to 0.64, $+0.10$ [0.02, 0.17] \\
+Spearman, shortest distance to GPS & 0.63 to 0.71, $+0.08$ [0.01, 0.17] & 0.54 to 0.64, $+0.10$ [0.03, 0.18] \\
 Median $|\log_{10}|$ ratio, shortest distance to GPS & 0.151 to 0.147, $0.00$ [$-0.04$, 0.03] & 0.152 to 0.141, $-0.01$ [$-0.04$, 0.03] \\
 \bottomrule
 \end{tabular}
@@ -330,7 +369,7 @@ Spearman of volumes, raw to corrected & 0.72 to 0.72 & 0.66 to 0.69 \\
 \end{tabular}
 \end{table}
 
-With the correction we can draw the full traffic field (Fig.~\ref{fig:simulation}). The motorway axis and the roads around the main cities carry most traffic, and the Apennine roads in the south carry little. The inset shows a case of the test: with detector 349 left out, the reconstruction on its road follows the daily curve and misses the daily total by about 3\%. This is what the simulator can achieve where it works best (Table~\ref{tab:correction} gives all detectors). Figure~\ref{fig:sources} collects the gains and differences discussed so far, together with the OD relations.
+With the correction we can draw the full traffic field (Fig.~\ref{fig:simulation}). The motorway axis and the roads around the main cities carry most traffic, and the Apennine roads in the south carry little. The inset shows the best case of the test: with detector 349 left out, the reconstruction on its road follows the daily curve and misses the daily total by about 3\%. This is what the simulator can achieve where it works best (Table~\ref{tab:correction} gives all detectors). Figure~\ref{fig:sources} collects the gains and differences discussed so far, together with the OD relations.
 
 We tested the OD relations in detail in Supplementary Section~S9. Removing them lowers the ranking of roads on the test half, but this also removes the regional pattern of the province factors. With that pattern kept, no gain in ranking can be established, and the spread of errors is larger with the relations. Destinations rearranged at random make trips far too long and tend to raise the spread, while destinations rearranged at the same distances cannot be told apart from the real ones. The value of specific origin--destination pairings could not be determined from link-count observations with the statistical power available in this study: in the registered test the power was at most 0.11, far below the 80\% it required.
 
@@ -377,7 +416,7 @@ Volume ratio, resampling detectors & 1.00 [0.91, 1.09]: pass & 1.10 [1.02, 1.18]
 Volume ratio, resampling provinces & [0.86, 1.13]: pass & [0.97, 1.20]: pass \\
 Spearman above chance & 0.69, $p<0.001$ & 0.66, $p<0.001$ \\
 Spearman within road class & $p<0.001$ & $p<0.001$ \\
-Timing against flat, FC links (error, pp) & 1.09 against 2.72, $p<10^{-70}$ & 1.21 against 2.60, $p<10^{-70}$ \\
+Timing against flat, FC links (error, pp) & 1.08 against 2.72, $p<10^{-70}$ & 1.21 against 2.60, $p<10^{-70}$ \\
 Slope, log--log volumes ($R^2$) & 0.94 [0.72, 1.18] (0.19) & 0.86 [0.70, 1.05] (0.17) \\
 \bottomrule
 \end{tabular}
@@ -393,11 +432,11 @@ Table~\ref{tab:sources} collects the effect of each source on data not used to s
 \toprule
 Source & Role & Effect \\
 \midrule
-Mobile-phone OD, total and timing & agents per interval & hourly-share error on FC links 1.09 and 1.21~pp against 2.72 and 2.60 flat; 0.06 and 0.06~pp lower than the OD profile; mean detector profile 1.03 and 1.15~pp \\
+Mobile-phone OD, total and timing & agents per interval & hourly-share error on FC links 1.08 and 1.21~pp against 2.72 and 2.60 flat; 0.06 and 0.06~pp lower than the OD profile (median paired difference); mean detector profile 1.03 and 1.15~pp \\
 Mobile-phone OD, relations as used (28\% of the trips between municipalities with known ends) & known trip ends & with the factors kept on both sides: Spearman $+0.02$ to $+0.07$, intervals include zero; dispersion $+0.021$ to $+0.037$ (worse), three of four intervals exclude zero. Against random pairs: dispersion $-0.017$ to $-0.039$, all four intervals exclude zero, two of them narrowly. Against pairs with the same distances: no interval excludes zero at 50 municipalities, one of four at 347; value of the pairings not determined (power at most 0.11) \\
 Detectors, half & scale $k$ by day type & test ratio 1.00; 1.10 in 2021 \\
 Detectors, half (nine values) & province factors & median $|\log_{10}|$ ratio per detector and day type 0.180 to 0.148 on the test half, 0.177 to 0.142 in 2021; dispersion $-0.011$ and $-0.015$ (intervals exclude zero) \\
-GPS traces & route weights & Spearman $+0.08$ [0.01, 0.17] and $+0.10$ [0.02, 0.17] outside the province; median error not measurably different; profiles unchanged \\
+GPS traces & route weights & Spearman $+0.08$ [0.01, 0.17] and $+0.10$ [0.03, 0.18] outside the province; median error not measurably different; profiles unchanged \\
 Detectors, all & local correction & hourly error $-2.4$~pp [$-4.8$, $-0.2$] and $-6.0$~pp [$-10.3$, $-2.5$] at left-out detectors; profile error $-0.01$ and $0.00$~pp on GPS links \\
 \bottomrule
 \end{tabular}
@@ -413,36 +452,46 @@ The simulation ranks the test half better than a predictor without simulation, w
 
 Three findings may apply beyond this region, as hypotheses for other settings. Timing needs a benchmark, since a common daily profile already explains most of the hourly pattern. A few scale parameters can reach the overall level, so the error at single roads should be reported along with it. Removing a source can mislead when other parameters act through it, so its effect should be tested with those parameters kept, and with the marginals preserved. The values we report are marginal to this model and to the order in which we built it, and they are not an exchangeable decomposition. They also concern ordinary traffic.
 
+None of the fitted values should be carried to another region or period: the demand scale, the province factors, the class speeds and usage, the radius and the departure shift would all have to be estimated again. What can be carried over is the procedure: one role per source, held-out data for each role, predictors without simulation as benchmarks, and the effect of each source measured with the parameters that act through it held fixed. Whether other regions show the same pattern of contributions is an open question.
+
 Some boundaries of these results should be kept in mind. GPS comparison covers one province, which also informs route choice. Several routes per relation, shorter walks and a smaller radius improved the ranking of roads in exploratory tests but did not reduce dispersion (Supplementary Section~S8), so the reach of the relations remains limited by the structure of the model. The experiments on the OD relations are exploratory and rest on one simulated Monday and Saturday per campaign. The test half and 2021 took part in the decision on the province factors and had been seen when the final configuration was fixed. Several settings (trip radius, cost weights, origin spreading) were chosen on the calibration half without a demonstrated gain on held-out detectors. The largest remaining error is the level at individual roads, so aggregate agreement should not be read as accuracy at a given road.
 
 This paper establishes what the simulator does for ordinary traffic: regional level, ranking of roads and timing, and hourly volumes on roads without detectors that are consistent with the network. It can therefore serve as a computational basis for later work on road closures, demand perturbations and network resilience. We make no claim here about those applications: skill on ordinary traffic does not imply skill under a change, and they need their own assessment on observed changes.
 
 \section{Conclusions}
 \label{sec:conclusions}
-We have built a regional traffic simulator from mobile-phone demand, detector counts and GPS, and measured what each source adds on data not used to set each step. Scaling by day type and province gives the observed overall volume on held-out detectors and reduces the regional bias. Route weights based on GPS use improve the ranking of roads, and the local correction reduces the error at left-out detectors. The overall timing comes from the daily profile of the demand. The OD tables contribute the level, the timing and the short-range structure of trips; the value of specific pairings beyond that structure could not be determined from link counts with the power available. Tests on held-out data support the overall level, the ranking of roads and the timing. At single roads the error is stable and specific to each road, and the simulation is comparable to predictors based on road class and other detectors. A simulator of this type gives a consistent picture of ordinary traffic at the scale of the region, over all links of the network, and its use for scenarios remains future work that needs its own assessment on observed changes.
+We have built a regional traffic simulator from mobile-phone demand, detector counts and GPS, and measured what each source adds on data not used to set each step. The study shows that such a simulator can be validated on independent observations, and that the contribution of each input can be measured, when each source has one role and is tested on data it did not set. Scaling by day type and province gives the observed overall volume on held-out detectors and reduces the regional bias. Route weights based on GPS use improve the ranking of roads, and the local correction reduces the error at left-out detectors. The overall timing comes from the daily profile of the demand. The OD tables contribute the level, the timing and the short-range structure of trips; the value of specific pairings beyond that structure could not be determined from link counts with the power available. Tests on held-out data support the overall level, the ranking of roads and the timing. At single roads the error is stable and specific to each road, and the simulation is comparable to predictors based on road class and other detectors. A simulator of this type gives a consistent picture of ordinary traffic at the scale of the region, over all links of the network, and its use for scenarios remains future work that needs its own assessment on observed changes.
 
-\section*{Supplementary information}
-Additional file 1 describes the data layers and the demand classes (S1), the demand scale and the changes tested on the calibration detectors (S2), the simulation model and the route-choice variants (S3), the detector correction and its sensitivity to depth (S4), additional results (S5), the final configuration and the reproduction of all results (S6), further details of data and methods (S7) the experiments on the final model (S8) and the value of the OD relations (S9).
+\section*{Supplementary material}
+The Supplementary Material describes the data layers and the demand classes (S1), the demand scale and the changes tested on the calibration detectors (S2), the simulation model and the route-choice variants (S3), the detector correction and its sensitivity to depth (S4), additional results (S5), the final configuration and the reproduction of all results (S6), further details of data and methods (S7), the experiments on the final model (S8) and the value of the OD relations (S9).
 
 \section*{Abbreviations}
 GPS, Global Positioning System; MAE, mean absolute error; MTS, regional traffic monitoring system of Emilia-Romagna; OD, origin--destination; pp, percentage points.
 
-\section*{Declarations}
+\section*{CRediT authorship contribution statement}
+% Drafted from the contribution statement of the previous version; to be confirmed by all authors.
+\textbf{Federico Bellisardi:} Conceptualization, Methodology, Software, Formal analysis, Investigation, Visualization, Writing -- original draft.
+\textbf{Chiara Mizzi:} Software, Data curation.
+\textbf{Alessandro Fabbri:} Software, Data curation.
+\textbf{Armando Bazzani:} Conceptualization, Methodology, Supervision.
 
-\subsection*{Availability of data and materials}
-The mobile-phone OD tables (TIM) and the Viasat GPS data are proprietary and were used under agreements that do not allow redistribution; requests for access should be addressed to the data providers. MTS loop-detector counts are published by Regione Emilia-Romagna under a CC BY licence \cite{mtsdata}. Road classes are derived from OpenStreetMap (\copyright{} OpenStreetMap contributors, ODbL). The road graph and the aggregate results behind the figures and tables are included in the code repository; link-level metrics derived from the GPS data are not distributed. The simulation configurations derive from the mobile-phone OD tables and are not distributed. The simulator \texttt{minimocas}, the detector correction and all analysis scripts are available in the code repository \cite{repository}. Supplementary Section~S6 lists the final configuration and the steps that reproduce the results.
-
-\subsection*{Competing interests}
+\section*{Declaration of competing interest}
 C.M. and A.F. are employed by Mindicity, which contributed to the development of the modelling framework. The other authors declare no competing interests.
 
-\subsection*{Funding}
+\section*{Funding}
 F.B. received support from the Italian National Operational Programme on Research and Innovation 2014--2020 (CCI 2014IT16M2OP005), FSE REACT-EU, Actions IV.4 and IV.5.
+% Elsevier asks for the role of the funder in the study, if any; to be completed by the authors.
 
-\subsection*{Authors' contributions}
-F.B. designed the study, developed the simulation and analysis pipeline, performed the analyses and wrote the manuscript. C.M. and A.F. contributed to the simulation framework and to the processing of the mobile-phone and detector data. A.B. conceived the modelling approach and supervised the study. All authors read and approved the final manuscript.
+\section*{Data availability}
+The mobile-phone OD tables (TIM) and the Viasat GPS data are proprietary and were used under agreements that do not allow redistribution; requests for access should be addressed to the data providers. MTS loop-detector counts are published by Regione Emilia-Romagna under a CC BY licence \cite{mtsdata}. Road classes are derived from OpenStreetMap (\copyright{} OpenStreetMap contributors, ODbL). The road graph and the aggregate results behind the figures and tables are included in the code repository; link-level metrics derived from the GPS data are not distributed. The simulation configurations derive from the mobile-phone OD tables and are not distributed. The simulator \texttt{minimocas}, the detector correction and all analysis scripts are available in the code repository \cite{repository}. Supplementary Section~S6 lists the final configuration and the steps that reproduce the results.
 
-\subsection*{Acknowledgements}
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+% Required by Elsevier when such tools were used; wording and content to be completed and confirmed by the authors.
+\textbf{[To be completed by the authors.]} During the preparation of this work the authors used [name of tool/service] in order to [reason]. After using this tool/service, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
+
+\section*{Acknowledgements}
 We thank TIM (Telecom Italia) for the mobile-phone data, Viasat for the GPS data, the Mobility and Viability Section of the Emilia-Romagna Region for the MTS detector data, and Stefano Grandi, Claudio Domenichini and Elena Grossi for discussions.
 
+\bibliographystyle{elsarticle-num}
 \bibliography{references}
 \end{document}
