@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "Multi-sensor traffic reconstruction: regional agent-based traffic simulation from heterogeneous mobility sources"
+abstract: >-
+  Regional traffic simulation for Emilia-Romagna (Italy) from mobile-phone
+  origin-destination demand, an agent-based simulator on an OpenStreetMap-derived
+  road graph, inductive loop detectors and GPS probes, with the analysis pipeline,
+  HPC workflow and web platform used in the accompanying paper.
+authors:
+  - family-names: Bellisardi
+    given-names: Federico
+    orcid: "https://orcid.org/0009-0002-4282-457X"
+    affiliation: "IFISC (CSIC-UIB)"
+license: MIT
+repository-code: "https://github.com/federicobellisardi/multi-sensor-traffic-reconstruction"
+keywords:
+  - traffic simulation
+  - agent-based model
+  - mobile-phone data
+  - loop detectors
+  - GPS probes
+  - digital twin
+preferred-citation:
+  type: article
+  title: "Data-driven regional traffic simulation from heterogeneous mobility sources"
+  authors:
+    - family-names: Bellisardi
+      given-names: Federico
+      orcid: "https://orcid.org/0009-0002-4282-457X"
+    - family-names: Mizzi
+      given-names: Chiara
+    - family-names: Fabbri
+      given-names: Alessandro
+    - family-names: Micheli
+      given-names: Davide
+    - family-names: Vannelli
+      given-names: Aldo
+    - family-names: Bazzani
+      given-names: Armando
+  year: 2026
+  doi: "10.48550/arXiv.2611.13947"
+  identifiers:
+    - type: other
+      value: "arXiv:2611.13947"
