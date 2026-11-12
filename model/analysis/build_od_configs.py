@@ -37,7 +37,7 @@ TEST_PERIOD = (date(2020, 1, 1), date(2020, 2, 29))
 CLEAN_PERIOD = (date(2020, 1, 13), date(2020, 2, 23))
 NAME = lambda s: str(s).replace(" ", "")  # noqa: E731
 FOREIGN = "000000000"
-NO_PROVINCE_COPY = bool(os.environ.get("NO_PROVINCE_COPY"))  # model v2: cells of a province relation stay out of the random-end classes (model/submission/FINAL_MODEL_AUDIT.md)
+NO_PROVINCE_COPY = bool(os.environ.get("NO_PROVINCE_COPY"))  # model v2: cells of a province relation stay out of the random-end classes
 
 
 def read_cells(day_hour):

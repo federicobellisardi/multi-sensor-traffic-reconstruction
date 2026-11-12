@@ -17,7 +17,7 @@ v1 is also archived in `$WORK_ROOT/archive_frozen_v1_20261102/`. Do not delete `
 Steps 2 and 3 need the proprietary inputs, which are not distributed.
 
 ## What was run for the reported results
-- `hpc/run_all.sh` on 2026-11-02, then six runs repeated after the correction described in `FINAL_MODEL_AUDIT.md`, then the full pipeline: 47 steps, all with return code 0.
+- `hpc/run_all.sh` on 2026-11-02, then six runs repeated after the correction of the duplicated provincial demand (`NO_PROVINCE_COPY=1` in `hpc/config.sh`), then the full pipeline: 47 steps, all with return code 0.
 - `final_experiments` regression run: byte-identical to the final Monday simulation.
 - Figure 7 was regenerated alone after its code changed. It uses the same data, adds `by_class` and `both_years` to `corrected/figure_numbers.json`, and has its own seed for the jitter and the bootstrap.
 
