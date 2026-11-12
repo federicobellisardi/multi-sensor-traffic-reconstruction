@@ -1,6 +1,6 @@
 # Regional traffic model
 
-**Data-driven regional traffic simulation from heterogeneous mobility sources** (target: Simulation Modelling Practice and Theory; submission documents in `submission/SMPT_*`).
+**Data-driven regional traffic simulation from heterogeneous mobility sources** (target: Simulation Modelling Practice and Theory).
 
 | Path | Content |
 |---|---|

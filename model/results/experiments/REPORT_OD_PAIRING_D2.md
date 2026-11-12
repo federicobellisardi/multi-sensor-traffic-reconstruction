@@ -29,7 +29,7 @@ Secondary, real minus null, four comparisons per radius (not used for classifica
 - Winter 2023, set A (`winter2023_pairing.json`): r10 b = 4.29 [2.34, 7.61], power 0.11; r25 not interpretable, power 0.00. Both inconclusive. This is not a replication: same simulations and overlapping detectors.
 
 ### Why the v2 values differ from v1
-The v1 estimates must not be reused. In the N347 arms, almost all demand is assigned to specific pairs, so the duplicated province cells were a large part of what remained of the random-end traffic (`model/submission/FINAL_MODEL_AUDIT.md`). Without them, some detectors far from those pairs have almost no traffic. Residual sigma rises from 0.28 to 0.35 at r10 and from 0.33 to 0.41 at r25, while the reported model is almost unchanged.
+The v1 estimates must not be reused. In the N347 arms, almost all demand is assigned to specific pairs, so the duplicated province cells were a large part of what remained of the random-end traffic. Without them, some detectors far from those pairs have almost no traffic. Residual sigma rises from 0.28 to 0.35 at r10 and from 0.33 to 0.41 at r25, while the reported model is almost unchanged.
 
 Sensitivity of b to those detectors (ad hoc, not registered, not in the pipeline):
 
@@ -55,7 +55,7 @@ Hypothesis, supported but not demonstrated: the 25 km endpoint spreading erases 
 - The r10 sensitivity is 0.012-0.017, near the seed noise of 0.011, so tau is itself poorly known and the power figure is approximate.
 
 ## Provincial duplication
-Audit and correction: `model/submission/FINAL_MODEL_AUDIT.md`. Evidence for v1: `../demand/province_duplication_count.json`, `../demand/province_duplication.json` at tag `frozen-v1`.
+Correction: `NO_PROVINCE_COPY=1` in `hpc/config.sh`. Evidence for v1: `../demand/province_duplication_count.json`, `../demand/province_duplication.json` at tag `frozen-v1`.
 
 In v1, the province rates were computed from all cells while the destination, origin and local classes did not exclude those cells, so some trips appeared twice: 63,532 agents on Monday (4.4%) and 68,388 on Saturday (5.0%) before scaling. The feature was inherited from the legacy configurations, not a recent regression. In v2, those cells stay out of the random-end classes. The province class itself is unchanged.
 
